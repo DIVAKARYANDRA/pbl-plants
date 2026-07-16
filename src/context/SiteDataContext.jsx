@@ -24,7 +24,15 @@ function uid(prefix) {
 
 export function SiteDataProvider({ children }) {
   const [db, setDb] = useState(() => loadFromStorage(STORAGE_KEY, seedDatabase));
+  const [firebaseLoaded, setFirebaseLoaded] = useState(false);
    
+
+  useEffect(() => {
+  if (firebaseLoaded) {
+    saveSiteDataToFirebase();
+  }
+}, [db, firebaseLoaded]);
+  
   useEffect(() => {
     saveToStorage(STORAGE_KEY, db);
   }, [db]);
@@ -32,6 +40,29 @@ export function SiteDataProvider({ children }) {
   useEffect(() => {
   initializeFirebaseData();
 }, []);
+
+  
+
+
+  const saveSiteDataToFirebase = async () => {
+  try {
+    const ref = doc(
+      firestoreDb,
+      FIRESTORE_COLLECTION,
+      FIRESTORE_DOCUMENT
+    );
+
+    await setDoc(ref, db);
+
+    console.log("Site data saved to Firebase");
+
+  } catch (error) {
+    console.error(
+      "Failed saving site data to Firebase:",
+      error
+    );
+  }
+};
   
   const loadSiteDataFromFirebase = async () => {
   try {
@@ -47,6 +78,7 @@ export function SiteDataProvider({ children }) {
       console.log("Loaded site data from Firebase");
 
       setDb(snapshot.data());
+      setFirebaseLoaded(true);
     } else {
       console.log("No site data found in Firebase");
     }
