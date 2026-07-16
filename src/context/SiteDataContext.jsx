@@ -23,44 +23,50 @@ function uid(prefix) {
 }
 
 export function SiteDataProvider({ children }) {
-  const [db, setDb] = useState(() => loadFromStorage(STORAGE_KEY, seedDatabase));
+  // const [db, setDb] = useState(() => loadFromStorage(STORAGE_KEY, seedDatabase));
+  const [db, setDb] = useState(seedDatabase);
   const [firebaseLoaded, setFirebaseLoaded] = useState(false);
    
 
   useEffect(() => {
-  if (firebaseLoaded) {
+  loadSiteDataFromFirebase();
+}, []);
+  
+  useEffect(() => {
+
+  if(firebaseLoaded){
     saveSiteDataToFirebase();
   }
-}, [db, firebaseLoaded]);
-  
-  useEffect(() => {
-    saveToStorage(STORAGE_KEY, db);
-  }, [db]);
 
-  useEffect(() => {
-  initializeFirebaseData();
-}, []);
-
-  
+},[db]);
 
 
   const saveSiteDataToFirebase = async () => {
+
+  if (!firebaseLoaded) return;
+
   try {
+
     const ref = doc(
       firestoreDb,
-      FIRESTORE_COLLECTION,
-      FIRESTORE_DOCUMENT
+      "siteData",
+      "main"
     );
 
-    await setDoc(ref, db);
+    await setDoc(
+      ref,
+      db
+    );
 
-    console.log("Site data saved to Firebase");
+    console.log("Saved to Firebase");
 
-  } catch (error) {
+  } catch(error){
+
     console.error(
-      "Failed saving site data to Firebase:",
+      "Firebase save failed:",
       error
     );
+
   }
 };
   
@@ -68,55 +74,54 @@ export function SiteDataProvider({ children }) {
   try {
     const ref = doc(
       firestoreDb,
-      FIRESTORE_COLLECTION,
-      FIRESTORE_DOCUMENT
+      "siteData",
+      "main"
     );
 
     const snapshot = await getDoc(ref);
 
     if (snapshot.exists()) {
-      console.log("Loaded site data from Firebase");
 
       setDb(snapshot.data());
       setFirebaseLoaded(true);
-    } else {
-      console.log("No site data found in Firebase");
+
+      console.log("Loaded site data from Firebase");
+
     }
 
-  } catch (error) {
+  } catch(error) {
     console.error(
-      "Failed loading site data from Firebase:",
+      "Firebase load failed:",
       error
     );
   }
 };
+  
+//  const initializeFirebaseData = async () => {
+//   try {
+//     const ref = doc(
+//       firestoreDb,
+//       FIRESTORE_COLLECTION,
+//       FIRESTORE_DOCUMENT
+//     );
 
+//     const snapshot = await getDoc(ref);
 
- const initializeFirebaseData = async () => {
-  try {
-    const ref = doc(
-      firestoreDb,
-      FIRESTORE_COLLECTION,
-      FIRESTORE_DOCUMENT
-    );
+//     if (!snapshot.exists() || Object.keys(snapshot.data()).length === 0) {
+//       await setDoc(ref, seedDatabase);
 
-    const snapshot = await getDoc(ref);
+//       console.log("Seed data uploaded to Firebase");
+//     } else {
+//       console.log("Firebase already has data");
+//     }
 
-    if (!snapshot.exists() || Object.keys(snapshot.data()).length === 0) {
-      await setDoc(ref, seedDatabase);
-
-      console.log("Seed data uploaded to Firebase");
-    } else {
-      console.log("Firebase already has data");
-    }
-
-  } catch (error) {
-    console.error(
-      "Failed initializing Firebase data:",
-      error
-    );
-  }
-};
+//   } catch (error) {
+//     console.error(
+//       "Failed initializing Firebase data:",
+//       error
+//     );
+//   }
+// };
 
   // ---------- Settings ----------
   const updateSettings = useCallback((patch) => {
