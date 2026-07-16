@@ -1,5 +1,6 @@
 import { useState } from "react";
 import { useSiteData } from "../context/SiteDataContext";
+import { uploadImage } from "../utils/cloudinary";
 import { Field, inputClass, Modal, PageHeader, EmptyState } from "./components/AdminUI";
 import { Badge, PriceTag } from "../components/UI";
 
@@ -30,6 +31,7 @@ export default function AdminProducts() {
   const [editing, setEditing] = useState(null);
   const [form, setForm] = useState(EMPTY);
   const [search, setSearch] = useState("");
+  const [uploading, setUploading] = useState(false);
 
   const openAdd = () => {
     setEditing(null);
@@ -48,14 +50,28 @@ export default function AdminProducts() {
     setForm((f) => ({ ...f, [key]: value }));
   };
 
-  const setImage = (idx) => (e) => {
+  const uploadProductImage = async (idx, file) => {
+  if (!file) return;
+
+  try {
+    setUploading(true);
+
+    const imageUrl = await uploadImage(file);
+
     setForm((f) => {
       const images = [...f.images];
-      images[idx] = e.target.value;
+      images[idx] = imageUrl;
       return { ...f, images };
     });
-  };
 
+  } catch (error) {
+    alert("Image upload failed");
+    console.error(error);
+  } finally {
+    setUploading(false);
+  }
+};
+  
   const handleSubmit = (e) => {
     e.preventDefault();
     const payload = {
@@ -178,19 +194,43 @@ export default function AdminProducts() {
             </Field>
 
             <div>
-              <p className="text-sm font-medium text-forest-800 mb-2">Product Images (URLs)</p>
-              <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
-                {form.images.map((img, idx) => (
-                  <input
-                    key={idx}
-                    className={inputClass}
-                    placeholder={`Image ${idx + 1} URL`}
-                    value={img}
-                    onChange={setImage(idx)}
-                  />
-                ))}
-              </div>
-            </div>
+  <p className="text-sm font-medium text-forest-800 mb-2">
+    Product Images
+  </p>
+
+  <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
+
+    {form.images.map((img, idx) => (
+      <div key={idx} className="space-y-2">
+
+        <input
+          type="file"
+          accept="image/*"
+          className={inputClass}
+          onChange={(e) =>
+            uploadProductImage(idx, e.target.files[0])
+          }
+        />
+
+        {img && (
+          <img
+            src={img}
+            alt={`Preview ${idx + 1}`}
+            className="h-32 w-full rounded-lg object-cover"
+          />
+        )}
+
+      </div>
+    ))}
+
+  </div>
+
+  {uploading && (
+    <p className="text-sm text-forest-700 mt-2">
+      Uploading image...
+    </p>
+  )}
+</div>
 
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
               <Field label="Plant Type" hint="Use — for non-plant products">
