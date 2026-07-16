@@ -30,7 +30,7 @@ export function SiteDataProvider({ children }) {
   }, [db]);
 
   useEffect(() => {
-  loadSiteDataFromFirebase();
+  initializeFirebaseData();
 }, []);
   
   const loadSiteDataFromFirebase = async () => {
@@ -59,6 +59,32 @@ export function SiteDataProvider({ children }) {
   }
 };
 
+
+  const initializeFirebaseData = async () => {
+  try {
+    const ref = doc(
+      firestoreDb,
+      FIRESTORE_COLLECTION,
+      FIRESTORE_DOCUMENT
+    );
+
+    const snapshot = await getDoc(ref);
+
+    if (!snapshot.exists()) {
+      await setDoc(ref, seedDatabase);
+
+      console.log("Seed data uploaded to Firebase");
+    } else {
+      console.log("Firebase already has data");
+    }
+
+  } catch (error) {
+    console.error(
+      "Failed initializing Firebase data:",
+      error
+    );
+  }
+};
  
 
   // ---------- Settings ----------
