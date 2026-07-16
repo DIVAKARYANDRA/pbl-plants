@@ -7,12 +7,15 @@ import {
   addDoc,
   updateDoc,
   deleteDoc,
+  setDoc,
   doc
 } from "firebase/firestore";
 
 import { db as firestoreDb } from "../utils/firebaseConfig";
 
 const STORAGE_KEY = "pbl-plants:database:v1";
+const FIRESTORE_COLLECTION = "siteData";
+const FIRESTORE_DOCUMENT = "main";
 const SiteDataContext = createContext(null);
 
 function uid(prefix) {
@@ -21,33 +24,42 @@ function uid(prefix) {
 
 export function SiteDataProvider({ children }) {
   const [db, setDb] = useState(() => loadFromStorage(STORAGE_KEY, seedDatabase));
-
+   
   useEffect(() => {
     saveToStorage(STORAGE_KEY, db);
   }, [db]);
 
   useEffect(() => {
-    loadProductsFromFirebase();
-  }, []);
-
-  const loadProductsFromFirebase = async () => {
+  loadSiteDataFromFirebase();
+}, []);
+  
+  const loadSiteDataFromFirebase = async () => {
   try {
-    const snapshot = await getDocs(collection(firestoreDb, "products"));
+    const ref = doc(
+      firestoreDb,
+      FIRESTORE_COLLECTION,
+      FIRESTORE_DOCUMENT
+    );
 
-    const products = snapshot.docs.map((doc) => ({
-      id: doc.id,
-      ...doc.data(),
-    }));
+    const snapshot = await getDoc(ref);
 
-    setDb((prev) => ({
-      ...prev,
-      products,
-    }));
+    if (snapshot.exists()) {
+      console.log("Loaded site data from Firebase");
+
+      setDb(snapshot.data());
+    } else {
+      console.log("No site data found in Firebase");
+    }
 
   } catch (error) {
-    console.error("Failed loading products from Firebase:", error);
+    console.error(
+      "Failed loading site data from Firebase:",
+      error
+    );
   }
 };
+
+ 
 
   // ---------- Settings ----------
   const updateSettings = useCallback((patch) => {
