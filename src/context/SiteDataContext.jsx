@@ -3,7 +3,7 @@ import { seedDatabase } from "../data/seedData";
 import { loadFromStorage, saveToStorage } from "../utils/storage";
 import {
   collection,
-  getDocs,
+  getDoc,
   addDoc,
   updateDoc,
   deleteDoc,
