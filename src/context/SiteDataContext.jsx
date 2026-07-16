@@ -10,8 +10,8 @@ import {
   doc
 } from "firebase/firestore";
 
-import { db } from "../utils/firebaseConfig";
-console.log("Firebase DB object:", db);
+import { db as firestoreDb } from "../utils/firebaseConfig";
+console.log("Firebase DB object:", firestoreDb);
 
 const STORAGE_KEY = "pbl-plants:database:v1";
 const SiteDataContext = createContext(null);
@@ -33,7 +33,7 @@ export function SiteDataProvider({ children }) {
 
   const loadProductsFromFirebase = async () => {
   try {
-    const snapshot = await getDocs(collection(db, "products"));
+    const snapshot = await getDocs(collection(firestoreDb, "products"));
 
     const products = snapshot.docs.map((doc) => ({
       id: doc.id,
