@@ -4,7 +4,7 @@ import { useSiteData } from "../context/SiteDataContext";
 import { Badge, PriceTag } from "./UI";
 
 export default function ProductCard({ product }) {
-  console.log("PRODUCT FROM FIRESTORE:", product);
+  console.log("IMAGE VALUE:", product.images?.[0]);
   const { addItem, isInWishlist, lastAdded } = useWishlist();
   const { categories } = useSiteData();
   const category = categories.find((c) => c.id === product.categoryId);
@@ -15,10 +15,12 @@ export default function ProductCard({ product }) {
     <div className="group relative flex flex-col card-surface rounded-xl2 overflow-hidden transition-all duration-500 hover:shadow-soft hover:-translate-y-1.5">
       <Link to={`/product/${product.id}`} className="block relative aspect-[4/5] overflow-hidden bg-sage-100">
         <img
-          src={product.images?.[0]}
+          src={product.images?.[0] || "https://via.placeholder.com/500"}
           alt={product.name}
           loading="lazy"
           className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-110"
+          onLoad={() => console.log("IMAGE LOADED:", product.images?.[0])}
+          onError={(e) => console.log("IMAGE FAILED:", e.currentTarget.src)}
         />
         {product.discountPrice && (
           <span className="absolute top-3 left-3 bg-gold-500 text-forest-900 text-xs font-bold px-2.5 py-1 rounded-full">
