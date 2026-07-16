@@ -60,7 +60,7 @@ export function SiteDataProvider({ children }) {
 };
 
 
-  const initializeFirebaseData = async () => {
+ const initializeFirebaseData = async () => {
   try {
     const ref = doc(
       firestoreDb,
@@ -70,7 +70,7 @@ export function SiteDataProvider({ children }) {
 
     const snapshot = await getDoc(ref);
 
-    if (!snapshot.exists()) {
+    if (!snapshot.exists() || Object.keys(snapshot.data()).length === 0) {
       await setDoc(ref, seedDatabase);
 
       console.log("Seed data uploaded to Firebase");
@@ -85,7 +85,6 @@ export function SiteDataProvider({ children }) {
     );
   }
 };
- 
 
   // ---------- Settings ----------
   const updateSettings = useCallback((patch) => {
