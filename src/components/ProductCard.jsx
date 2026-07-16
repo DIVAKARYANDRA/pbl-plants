@@ -4,6 +4,7 @@ import { useSiteData } from "../context/SiteDataContext";
 import { Badge, PriceTag } from "./UI";
 
 export default function ProductCard({ product }) {
+  console.log("PRODUCT FROM FIRESTORE:", product);
   const { addItem, isInWishlist, lastAdded } = useWishlist();
   const { categories } = useSiteData();
   const category = categories.find((c) => c.id === product.categoryId);
