@@ -1,6 +1,16 @@
 import { createContext, useContext, useEffect, useState, useCallback } from "react";
 import { seedDatabase } from "../data/seedData";
 import { loadFromStorage, saveToStorage } from "../utils/storage";
+import {
+  collection,
+  getDocs,
+  addDoc,
+  updateDoc,
+  deleteDoc,
+  doc
+} from "firebase/firestore";
+
+import { db } from "../utils/firebaseConfig";
 
 const STORAGE_KEY = "pbl-plants:database:v1";
 const SiteDataContext = createContext(null);
@@ -15,6 +25,29 @@ export function SiteDataProvider({ children }) {
   useEffect(() => {
     saveToStorage(STORAGE_KEY, db);
   }, [db]);
+
+  useEffect(() => {
+    loadProductsFromFirebase();
+  }, []);
+
+  const loadProductsFromFirebase = async () => {
+  try {
+    const snapshot = await getDocs(collection(db, "products"));
+
+    const products = snapshot.docs.map((doc) => ({
+      id: doc.id,
+      ...doc.data(),
+    }));
+
+    setDb((prev) => ({
+      ...prev,
+      products,
+    }));
+
+  } catch (error) {
+    console.error("Failed loading products from Firebase:", error);
+  }
+};
 
   // ---------- Settings ----------
   const updateSettings = useCallback((patch) => {
