@@ -11,7 +11,6 @@ import {
 } from "firebase/firestore";
 
 import { db as firestoreDb } from "../utils/firebaseConfig";
-console.log("Firebase DB object:", firestoreDb);
 
 const STORAGE_KEY = "pbl-plants:database:v1";
 const SiteDataContext = createContext(null);
