@@ -29,7 +29,7 @@ export function SiteDataProvider({ children }) {
 
 
 
-  const saveSiteDataToFirebase = async () => {
+  const saveSiteDataToFirebase = async (data) => {
 
     if (!db || !firebaseLoaded) return;
 
@@ -43,8 +43,8 @@ export function SiteDataProvider({ children }) {
 
 
       await setDoc(
-        ref,
-        db
+       ref,
+       data
       );
 
 
@@ -134,25 +134,26 @@ export function SiteDataProvider({ children }) {
 
   }, []);
 
-
-
-  useEffect(() => {
-
-    if(firebaseLoaded && db){
-
-      saveSiteDataToFirebase();
-
-    }
-
-  }, [db, firebaseLoaded]);
-
-
-
-
   // ---------- Settings ----------
-  const updateSettings = useCallback((patch) => {
-    setDb((prev) => ({ ...prev, settings: { ...prev.settings, ...patch } }));
-  }, []);
+   const updateSettings = useCallback((patch) => {
+
+  setDb((prev) => {
+
+    const updated = {
+      ...prev,
+      settings:{
+        ...prev.settings,
+        ...patch
+      }
+    };
+
+    saveSiteDataToFirebase(updated);
+
+    return updated;
+
+  });
+
+}, []);
 
   // ---------- Categories ----------
   const addCategory = useCallback((category) => {
@@ -234,8 +235,12 @@ export function SiteDataProvider({ children }) {
 
   // ---------- Reset ----------
   const resetToDefaults = useCallback(() => {
-    setDb(seedDatabase);
-  }, []);
+
+  saveSiteDataToFirebase(seedDatabase);
+
+  setDb(seedDatabase);
+
+}, []);
 
   const value = {
     ...(db || {}),
