@@ -2,6 +2,7 @@ import { useState } from "react";
 import { Navigate, useNavigate } from "react-router-dom";
 import { useAuth } from "../context/AuthContext";
 import { inputClass } from "./components/AdminUI";
+import { useSiteData } from "../context/SiteDataContext";
 
 export default function AdminLogin() {
   const { isAuthenticated, login, error } = useAuth();
