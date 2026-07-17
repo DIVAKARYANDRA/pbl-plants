@@ -73,20 +73,31 @@ export default function ContactSection() {
           <Reveal delay={200} className="lg:col-span-3">
             <div className="relative h-full min-h-[320px] rounded-xl2 overflow-hidden bg-sage-100 flex items-center justify-center border border-forest-700/10">
               <div className="absolute inset-0 leaf-divider opacity-40" />
-              <div className="relative text-center px-6">
-                <span className="h-14 w-14 rounded-full bg-forest-700 text-cream-50 flex items-center justify-center mx-auto mb-4">
-                  {ICONS.pin}
-                </span>
-                <p className="font-display text-lg text-forest-800">Google Map</p>
-                <iframe
-                    src={settings.mapNote}
-                    width="100%"
-                    height="350"
-                    style={{ border:0 }}
-                    loading="lazy"
-                    allowFullScreen
-                  />
-              </div>
+              <div className="relative text-center px-6 h-full flex flex-col">
+
+  <span className="h-14 w-14 rounded-full bg-forest-700 text-cream-50 flex items-center justify-center mx-auto mb-4">
+    {ICONS.pin}
+  </span>
+
+  <p className="font-display text-lg text-forest-800 mb-4">
+    Google Map
+  </p>
+
+  <div className="flex-1 min-h-[350px] rounded-2xl overflow-hidden">
+
+    <iframe
+      src={settings.mapNote}
+      title="Google Map"
+      className="w-full h-full"
+      style={{ border: 0 }}
+      loading="lazy"
+      allowFullScreen
+      referrerPolicy="strict-origin-when-cross-origin"
+    />
+
+  </div>
+
+</div>
             </div>
           </Reveal>
         </div>
