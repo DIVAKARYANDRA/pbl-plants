@@ -80,7 +80,7 @@ export default function ContactSection() {
                 <p className="font-display text-lg text-forest-800">Google Map</p>
                 <iframe
                     src={settings.mapNote}
-                    width="60%"
+                    width="100%"
                     height="350"
                     style={{ border:0 }}
                     loading="lazy"
