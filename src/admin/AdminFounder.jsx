@@ -1,6 +1,7 @@
 import { useState } from "react";
 import { useSiteData } from "../context/SiteDataContext";
 import { Field, inputClass, PageHeader } from "./components/AdminUI";
+import ImageUploader from "./components/ImageUploader";
 
 export default function AdminFounder() {
   const { founder, updateFounder } = useSiteData();
@@ -40,8 +41,18 @@ export default function AdminFounder() {
         </div>
 
         <div className="bg-white rounded-xl2 shadow-card p-6 flex flex-col gap-4">
-          <Field label="Founder Image URL">
-            <input className={inputClass} value={form.image} onChange={set("image")} />
+          <Field label="Founder Image">
+
+            <ImageUploader
+              value={form.image}
+              onChange={(url) =>
+                setForm((f) => ({
+                  ...f,
+                  image: url
+                }))
+              }
+            />
+          
           </Field>
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
             <Field label="Founder Name">
