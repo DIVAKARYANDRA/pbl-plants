@@ -126,8 +126,12 @@ export default function AdminSettings() {
             <Field label="Facebook URL">
               <input className={inputClass} value={form.socials.facebook} onChange={setSocial("facebook")} />
             </Field>
-            <Field label="Youtube URL">
-              <input className={inputClass} value={form.socials.pinterest} onChange={setSocial("pinterest")} />
+            <Field label="YouTube URL">
+              <input 
+                className={inputClass} 
+                value={form.socials.youtube || ""}
+                onChange={setSocial("youtube")} 
+              />
             </Field>
           </div>
         </section>
