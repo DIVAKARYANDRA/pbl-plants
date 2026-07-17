@@ -26,6 +26,49 @@ export function WishlistProvider({ children }) {
     addItem._t = window.setTimeout(() => setLastAdded(null), 1800);
   }, []);
 
+  const toggleItem = useCallback((productId) => {
+
+  setItems((prev) => {
+
+    const existing = prev.find(
+      (i) => i.productId === productId
+    );
+
+
+    // Already exists → remove
+    if (existing) {
+
+      return prev.filter(
+        (i) => i.productId !== productId
+      );
+
+    }
+
+
+    // New product → add with quantity 1
+    return [
+      ...prev,
+      {
+        productId,
+        qty: 1
+      }
+    ];
+
+  });
+
+
+  setLastAdded(productId);
+
+  window.clearTimeout(toggleItem._t);
+
+  toggleItem._t = window.setTimeout(
+    () => setLastAdded(null),
+    1800
+  );
+
+
+}, []);
+
   const removeItem = useCallback((productId) => {
     setItems((prev) => prev.filter((i) => i.productId !== productId));
   }, []);
@@ -50,6 +93,7 @@ export function WishlistProvider({ children }) {
   const value = {
     items,
     addItem,
+    toggleItem,
     removeItem,
     updateQty,
     isInWishlist,
