@@ -26,13 +26,17 @@ export function SiteDataProvider({ children }) {
   const [db, setDb] = useState(null);
   const [firebaseLoaded, setFirebaseLoaded] = useState(false);
   const [loading, setLoading] = useState(true);
-  const [initialLoadComplete, setInitialLoadComplete] = useState(false);
 
 
+
+  // ---------------- FIREBASE SAVE ----------------
 
   const saveSiteDataToFirebase = async (data) => {
 
-    if (!db || !firebaseLoaded) return;
+    if (!data) {
+      console.warn("Skipped Firebase save: no data");
+      return;
+    }
 
     try {
 
@@ -44,12 +48,12 @@ export function SiteDataProvider({ children }) {
 
 
       await setDoc(
-       ref,
-       data
+        ref,
+        data
       );
 
 
-      console.log("Saved to Firebase");
+      console.log("Firebase saved successfully");
 
 
     } catch(error) {
@@ -63,6 +67,8 @@ export function SiteDataProvider({ children }) {
   };
 
 
+
+  // ---------------- FIREBASE LOAD ----------------
 
   const loadSiteDataFromFirebase = async () => {
 
@@ -83,20 +89,18 @@ export function SiteDataProvider({ children }) {
 
 
         console.log(
-          "Loaded site data from Firebase"
+          "Loaded data from Firebase"
         );
 
 
-        setDb(
-          snapshot.data()
-        );
+        setDb(snapshot.data());
 
 
       } else {
 
 
         console.log(
-          "Firebase empty. Uploading seed data"
+          "No Firebase data found. Creating seed data"
         );
 
 
@@ -112,12 +116,11 @@ export function SiteDataProvider({ children }) {
 
 
       setFirebaseLoaded(true);
-      setInitialLoadComplete(true);
       setLoading(false);
 
 
-
     } catch(error) {
+
 
       console.error(
         "Firebase load failed:",
@@ -136,129 +139,420 @@ export function SiteDataProvider({ children }) {
 
   }, []);
 
-  useEffect(() => {
 
-  if (
-    initialLoadComplete &&
-    firebaseLoaded &&
-    db
-  ) {
 
-    saveSiteDataToFirebase();
+  // ---------------- UPDATE DATABASE HELPER ----------------
 
-  }
+  const updateDatabase = useCallback((updatedData) => {
 
-}, [db]);
 
-  // ---------- Settings ----------
-   const updateSettings = useCallback((patch) => {
+    setDb(updatedData);
 
-  setDb((prev) => {
 
-    const updated = {
-      ...prev,
-      settings:{
-        ...prev.settings,
-        ...patch
+    if(firebaseLoaded) {
+
+      saveSiteDataToFirebase(updatedData);
+
+    }
+
+
+  }, [firebaseLoaded]);
+
+
+
+
+
+  // ---------------- SETTINGS ----------------
+
+  const updateSettings = useCallback((patch) => {
+
+
+    setDb((prev)=>{
+
+      const updated = {
+        ...prev,
+        settings:{
+          ...prev.settings,
+          ...patch
+        }
+      };
+
+
+      if(firebaseLoaded){
+        saveSiteDataToFirebase(updated);
       }
-    };
 
-    saveSiteDataToFirebase(updated);
 
-    return updated;
+      return updated;
 
-  });
+    });
 
-}, []);
 
-  // ---------- Categories ----------
-  const addCategory = useCallback((category) => {
-    setDb((prev) => ({
-      ...prev,
-      categories: [...prev.categories, { ...category, id: uid("cat") }],
-    }));
-  }, []);
-  const updateCategory = useCallback((id, patch) => {
-    setDb((prev) => ({
-      ...prev,
-      categories: prev.categories.map((c) => (c.id === id ? { ...c, ...patch } : c)),
-    }));
-  }, []);
-  const deleteCategory = useCallback((id) => {
-    setDb((prev) => ({
-      ...prev,
-      categories: prev.categories.filter((c) => c.id !== id),
-    }));
-  }, []);
+  }, [firebaseLoaded]);
 
-  // ---------- Products ----------
-  const addProduct = useCallback((product) => {
-    setDb((prev) => ({
-      ...prev,
-      products: [...prev.products, { ...product, id: uid("prod") }],
-    }));
-  }, []);
-  const updateProduct = useCallback((id, patch) => {
-    setDb((prev) => ({
-      ...prev,
-      products: prev.products.map((p) => (p.id === id ? { ...p, ...patch } : p)),
-    }));
-  }, []);
-  const deleteProduct = useCallback((id) => {
-    setDb((prev) => ({
-      ...prev,
-      products: prev.products.filter((p) => p.id !== id),
-    }));
-  }, []);
 
-  // ---------- Founder ----------
-  const updateFounder = useCallback((patch) => {
-    setDb((prev) => ({ ...prev, founder: { ...prev.founder, ...patch } }));
-  }, []);
 
-  // ---------- Gallery ----------
-  const addGalleryImage = useCallback((item) => {
-    setDb((prev) => ({ ...prev, gallery: [...prev.gallery, { ...item, id: uid("gal") }] }));
-  }, []);
-  const deleteGalleryImage = useCallback((id) => {
-    setDb((prev) => ({ ...prev, gallery: prev.gallery.filter((g) => g.id !== id) }));
-  }, []);
+  // ---------------- CATEGORIES ----------------
 
-  // ---------- Testimonials ----------
-  const addTestimonial = useCallback((item) => {
-    setDb((prev) => ({ ...prev, testimonials: [...prev.testimonials, { ...item, id: uid("test") }] }));
-  }, []);
-  const updateTestimonial = useCallback((id, patch) => {
-    setDb((prev) => ({
-      ...prev,
-      testimonials: prev.testimonials.map((t) => (t.id === id ? { ...t, ...patch } : t)),
-    }));
-  }, []);
-  const deleteTestimonial = useCallback((id) => {
-    setDb((prev) => ({ ...prev, testimonials: prev.testimonials.filter((t) => t.id !== id) }));
-  }, []);
+  const addCategory = useCallback((category)=>{
 
-  // ---------- FAQs ----------
-  const addFaq = useCallback((item) => {
-    setDb((prev) => ({ ...prev, faqs: [...prev.faqs, { ...item, id: uid("faq") }] }));
-  }, []);
-  const updateFaq = useCallback((id, patch) => {
-    setDb((prev) => ({ ...prev, faqs: prev.faqs.map((f) => (f.id === id ? { ...f, ...patch } : f)) }));
-  }, []);
-  const deleteFaq = useCallback((id) => {
-    setDb((prev) => ({ ...prev, faqs: prev.faqs.filter((f) => f.id !== id) }));
-  }, []);
+    setDb(prev=>{
 
-  // ---------- Reset ----------
-  const resetToDefaults = useCallback(() => {
+      const updated = {
+        ...prev,
+        categories:[
+          ...prev.categories,
+          {
+            ...category,
+            id:uid("cat")
+          }
+        ]
+      };
 
-  saveSiteDataToFirebase(seedDatabase);
+      saveSiteDataToFirebase(updated);
 
-  setDb(seedDatabase);
+      return updated;
 
-}, []);
+    });
 
-  const value = {
+  },[]);
+
+
+
+  const updateCategory = useCallback((id,patch)=>{
+
+    setDb(prev=>{
+
+      const updated={
+        ...prev,
+        categories:prev.categories.map(c =>
+          c.id===id ? {...c,...patch}:c
+        )
+      };
+
+      saveSiteDataToFirebase(updated);
+
+      return updated;
+
+    });
+
+  },[]);
+
+
+
+  const deleteCategory = useCallback((id)=>{
+
+    setDb(prev=>{
+
+      const updated={
+        ...prev,
+        categories:prev.categories.filter(c=>c.id!==id)
+      };
+
+      saveSiteDataToFirebase(updated);
+
+      return updated;
+
+    });
+
+  },[]);
+
+
+
+
+
+  // ---------------- PRODUCTS ----------------
+
+  const addProduct = useCallback((product)=>{
+
+    setDb(prev=>{
+
+      const updated={
+        ...prev,
+        products:[
+          ...prev.products,
+          {
+            ...product,
+            id:uid("prod")
+          }
+        ]
+      };
+
+      saveSiteDataToFirebase(updated);
+
+      return updated;
+
+    });
+
+  },[]);
+
+
+
+  const updateProduct = useCallback((id,patch)=>{
+
+    setDb(prev=>{
+
+      const updated={
+        ...prev,
+        products:prev.products.map(p =>
+          p.id===id ? {...p,...patch}:p
+        )
+      };
+
+      saveSiteDataToFirebase(updated);
+
+      return updated;
+
+    });
+
+  },[]);
+
+
+
+  const deleteProduct = useCallback((id)=>{
+
+    setDb(prev=>{
+
+      const updated={
+        ...prev,
+        products:prev.products.filter(p=>p.id!==id)
+      };
+
+      saveSiteDataToFirebase(updated);
+
+      return updated;
+
+    });
+
+  },[]);
+
+
+
+
+
+  // ---------------- FOUNDER ----------------
+
+  const updateFounder = useCallback((patch)=>{
+
+    setDb(prev=>{
+
+      const updated={
+        ...prev,
+        founder:{
+          ...prev.founder,
+          ...patch
+        }
+      };
+
+      saveSiteDataToFirebase(updated);
+
+      return updated;
+
+    });
+
+  },[]);
+
+
+
+
+
+  // ---------------- GALLERY ----------------
+
+  const addGalleryImage = useCallback((item)=>{
+
+    setDb(prev=>{
+
+      const updated={
+        ...prev,
+        gallery:[
+          ...prev.gallery,
+          {
+            ...item,
+            id:uid("gal")
+          }
+        ]
+      };
+
+      saveSiteDataToFirebase(updated);
+
+      return updated;
+
+    });
+
+  },[]);
+
+
+
+  const deleteGalleryImage = useCallback((id)=>{
+
+    setDb(prev=>{
+
+      const updated={
+        ...prev,
+        gallery:prev.gallery.filter(g=>g.id!==id)
+      };
+
+      saveSiteDataToFirebase(updated);
+
+      return updated;
+
+    });
+
+  },[]);
+
+
+
+
+
+  // ---------------- TESTIMONIALS ----------------
+
+  const addTestimonial = useCallback((item)=>{
+
+    setDb(prev=>{
+
+      const updated={
+        ...prev,
+        testimonials:[
+          ...prev.testimonials,
+          {
+            ...item,
+            id:uid("test")
+          }
+        ]
+      };
+
+      saveSiteDataToFirebase(updated);
+
+      return updated;
+
+    });
+
+  },[]);
+
+
+
+  const updateTestimonial = useCallback((id,patch)=>{
+
+    setDb(prev=>{
+
+      const updated={
+        ...prev,
+        testimonials:prev.testimonials.map(t =>
+          t.id===id ? {...t,...patch}:t
+        )
+      };
+
+      saveSiteDataToFirebase(updated);
+
+      return updated;
+
+    });
+
+  },[]);
+
+
+
+  const deleteTestimonial = useCallback((id)=>{
+
+    setDb(prev=>{
+
+      const updated={
+        ...prev,
+        testimonials:prev.testimonials.filter(t=>t.id!==id)
+      };
+
+      saveSiteDataToFirebase(updated);
+
+      return updated;
+
+    });
+
+  },[]);
+
+
+
+
+
+  // ---------------- FAQ ----------------
+
+  const addFaq = useCallback((item)=>{
+
+    setDb(prev=>{
+
+      const updated={
+        ...prev,
+        faqs:[
+          ...prev.faqs,
+          {
+            ...item,
+            id:uid("faq")
+          }
+        ]
+      };
+
+      saveSiteDataToFirebase(updated);
+
+      return updated;
+
+    });
+
+  },[]);
+
+
+
+  const updateFaq = useCallback((id,patch)=>{
+
+    setDb(prev=>{
+
+      const updated={
+        ...prev,
+        faqs:prev.faqs.map(f =>
+          f.id===id ? {...f,...patch}:f
+        )
+      };
+
+      saveSiteDataToFirebase(updated);
+
+      return updated;
+
+    });
+
+  },[]);
+
+
+
+  const deleteFaq = useCallback((id)=>{
+
+    setDb(prev=>{
+
+      const updated={
+        ...prev,
+        faqs:prev.faqs.filter(f=>f.id!==id)
+      };
+
+      saveSiteDataToFirebase(updated);
+
+      return updated;
+
+    });
+
+  },[]);
+
+
+
+
+
+  const resetToDefaults = useCallback(()=>{
+
+    setDb(seedDatabase);
+
+    saveSiteDataToFirebase(seedDatabase);
+
+  },[]);
+
+
+
+  const value={
     ...(db || {}),
     updateSettings,
     addCategory,
@@ -276,18 +570,37 @@ export function SiteDataProvider({ children }) {
     addFaq,
     updateFaq,
     deleteFaq,
-    resetToDefaults,
+    resetToDefaults
   };
 
-  if (loading) {
-  return null;
+
+
+  if(loading){
+    return null;
+  }
+
+
+
+  return (
+    <SiteDataContext.Provider value={value}>
+      {children}
+    </SiteDataContext.Provider>
+  );
+
 }
 
-  return <SiteDataContext.Provider value={value}>{children}</SiteDataContext.Provider>;
-}
 
-export function useSiteData() {
-  const ctx = useContext(SiteDataContext);
-  if (!ctx) throw new Error("useSiteData must be used within a SiteDataProvider");
+
+export function useSiteData(){
+
+  const ctx=useContext(SiteDataContext);
+
+  if(!ctx){
+    throw new Error(
+      "useSiteData must be used within SiteDataProvider"
+    );
+  }
+
   return ctx;
+
 }
