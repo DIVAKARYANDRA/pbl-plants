@@ -78,7 +78,14 @@ export default function ContactSection() {
                   {ICONS.pin}
                 </span>
                 <p className="font-display text-lg text-forest-800">Google Map</p>
-                <p className="text-sm text-forest-700/60 mt-1 max-w-xs">{settings.mapNote}</p>
+                <iframe
+                    src={settings.mapNote}
+                    width="60%"
+                    height="350"
+                    style={{ border:0 }}
+                    loading="lazy"
+                    allowFullScreen
+                  />
               </div>
             </div>
           </Reveal>
