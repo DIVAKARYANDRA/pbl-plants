@@ -111,7 +111,7 @@ export default function AdminSettings() {
             <Field label="Address">
               <input className={inputClass} value={form.address} onChange={set("address")} />
             </Field>
-            <Field label="Map Note" hint="Shown until a real map embed is added">
+            <Field label="Google Map Embed URL" hint="Paste only the Google Maps embed URL">
               <input className={inputClass} value={form.mapNote} onChange={set("mapNote")} />
             </Field>
           </div>
