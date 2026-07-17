@@ -2,6 +2,7 @@ import { useState } from "react";
 import { useSiteData } from "../context/SiteDataContext";
 import { Field, inputClass, Modal, PageHeader, EmptyState } from "./components/AdminUI";
 import { StarRating } from "../components/UI";
+import ImageUploader from "./components/ImageUploader";
 
 const EMPTY = { name: "", location: "", rating: 5, text: "", image: "" };
 
@@ -27,6 +28,10 @@ export default function AdminTestimonials() {
   const handleSubmit = (e) => {
     e.preventDefault();
     const payload = { ...form, rating: Number(form.rating) };
+    if (payload.rating < 1 || payload.rating > 5) {
+      alert("Rating must be between 1 and 5.");
+      return;
+    }
     if (editing) updateTestimonial(editing.id, payload);
     else addTestimonial(payload);
     setModalOpen(false);
@@ -89,8 +94,16 @@ export default function AdminTestimonials() {
             <Field label="Testimonial Text">
               <textarea required rows={3} className={inputClass} value={form.text} onChange={set("text")} />
             </Field>
-            <Field label="Customer Photo URL">
-              <input className={inputClass} value={form.image} onChange={set("image")} />
+            <Field label="Customer Photo">
+              <ImageUploader
+                value={form.image}
+                onChange={(url) =>
+                  setForm((f) => ({
+                    ...f,
+                    image: url,
+                  }))
+                }
+              />
             </Field>
             <div className="flex gap-3 mt-2">
               <button type="submit" className="btn-primary flex-1">{editing ? "Save Changes" : "Add Testimonial"}</button>
