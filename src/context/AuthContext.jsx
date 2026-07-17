@@ -1,7 +1,8 @@
-import { createContext, useContext, useState, useCallback } from "react";
+import { createContext, useContext, useState, useCallback, useEffect } from "react";
 import {
   signInWithEmailAndPassword,
-  signOut
+  signOut,
+  onAuthStateChanged
 } from "firebase/auth";
 
 import { auth } from "../utils/firebaseConfig";
@@ -15,6 +16,28 @@ export function AuthProvider({ children }) {
   );
 
   const [error, setError] = useState("");
+
+  const [loading, setLoading] = useState(true);
+
+useEffect(() => {
+
+  const unsubscribe = onAuthStateChanged(
+    auth,
+    (user) => {
+
+      if (user) {
+        setIsAuthenticated(true);
+      } else {
+        setIsAuthenticated(false);
+      }
+
+      setLoading(false);
+    }
+  );
+
+  return unsubscribe;
+
+}, []);
 
   const login = useCallback(async (email, password) => {
 
@@ -65,6 +88,10 @@ export function AuthProvider({ children }) {
     );
 
   }, []);
+
+  if (loading) {
+  return null;
+}
 
 
   return (
