@@ -157,7 +157,7 @@ export default function Home() {
               <img src={founder.image} alt={founder.name} className="w-full h-full object-cover" />
             </div>
             <div className="absolute -bottom-6 -right-2 sm:right-6 bg-gold-500 text-forest-900 rounded-xl2 px-5 py-4 shadow-soft max-w-[180px] hidden sm:block">
-              <p className="font-display text-lg leading-none">10+ yrs</p>
+              <p className="font-display text-lg leading-none">2+ yrs</p>
               <p className="text-xs mt-1">of nursery experience</p>
             </div>
           </Reveal>
