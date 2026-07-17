@@ -1,6 +1,7 @@
 import { useState } from "react";
 import { useSiteData } from "../context/SiteDataContext";
 import { Field, inputClass, PageHeader } from "./components/AdminUI";
+import ImageUploader from "./components/ImageUploader";
 
 export default function AdminSettings() {
   const { settings, updateSettings } = useSiteData();
@@ -65,11 +66,31 @@ export default function AdminSettings() {
               <textarea rows={3} className={inputClass} value={form.heroSubtitle} onChange={set("heroSubtitle")} />
             </Field>
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-              <Field label="Hero Banner Image URL" hint="Full-bleed background image for the homepage">
-                <input className={inputClass} value={form.heroImage} onChange={set("heroImage")} />
+              <Field label="Hero Banner Image">
+
+                <ImageUploader
+                  value={form.heroImage}
+                  onChange={(url) =>
+                    setForm((f) => ({
+                      ...f,
+                      heroImage: url,
+                    }))
+                  }
+                />
+              
               </Field>
-              <Field label="Secondary Banner Image URL">
-                <input className={inputClass} value={form.bannerImage} onChange={set("bannerImage")} />
+              <Field label="Secondary Banner Image">
+
+                <ImageUploader
+                  value={form.bannerImage}
+                  onChange={(url) =>
+                    setForm((f) => ({
+                      ...f,
+                      bannerImage: url,
+                    }))
+                  }
+                />
+              
               </Field>
             </div>
           </div>
