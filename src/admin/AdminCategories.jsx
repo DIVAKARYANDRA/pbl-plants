@@ -1,6 +1,7 @@
 import { useState } from "react";
 import { useSiteData } from "../context/SiteDataContext";
 import { Field, inputClass, Modal, PageHeader, EmptyState } from "./components/AdminUI";
+import { uploadImage } from "../utils/cloudinary";
 
 const EMPTY = { name: "", slug: "", image: "", description: "" };
 
@@ -17,6 +18,7 @@ export default function AdminCategories() {
   const [modalOpen, setModalOpen] = useState(false);
   const [editing, setEditing] = useState(null);
   const [form, setForm] = useState(EMPTY);
+  const [uploading, setUploading] = useState(false);
 
   const openAdd = () => {
     setEditing(null);
@@ -33,6 +35,38 @@ export default function AdminCategories() {
     const value = e.target.value;
     setForm((f) => ({ ...f, [key]: value, ...(key === "name" && !editing ? { slug: slugify(value) } : {}) }));
   };
+
+  const handleImageUpload = async (e) => {
+
+  const file = e.target.files[0];
+
+  if (!file) return;
+
+
+  try {
+
+    setUploading(true);
+
+    const url = await uploadImage(file);
+
+    setForm((f) => ({
+      ...f,
+      image: url
+    }));
+
+
+  } catch(error) {
+
+    console.error("Category image upload failed:", error);
+    alert("Image upload failed");
+
+  } finally {
+
+    setUploading(false);
+
+  }
+
+};
 
   const handleSubmit = (e) => {
     e.preventDefault();
@@ -103,14 +137,33 @@ export default function AdminCategories() {
             <Field label="Slug" hint="Used in the shop URL, auto-generated from the name">
               <input required className={inputClass} value={form.slug} onChange={set("slug")} />
             </Field>
-            <Field label="Image URL">
-              <input required className={inputClass} value={form.image} onChange={set("image")} />
-            </Field>
+            <Field label="Category Image">
+
+                <input
+                  type="file"
+                  accept="image/*"
+                  className={inputClass}
+                  onChange={handleImageUpload}
+                />
+              
+                {form.image && (
+                  <img
+                    src={form.image}
+                    alt="Category preview"
+                    className="mt-3 h-32 w-full object-cover rounded-lg"
+                  />
+                )}
+              
+              </Field>
             <Field label="Description">
               <textarea rows={3} className={inputClass} value={form.description} onChange={set("description")} />
             </Field>
             <div className="flex gap-3 mt-2">
-              <button type="submit" className="btn-primary flex-1">
+              <button
+                  type="submit"
+                  disabled={uploading}
+                  className="btn-primary flex-1 disabled:opacity-50"
+                >
                 {editing ? "Save Changes" : "Add Category"}
               </button>
               <button type="button" onClick={() => setModalOpen(false)} className="btn-secondary flex-1">
