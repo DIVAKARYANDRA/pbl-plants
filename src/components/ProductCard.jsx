@@ -4,7 +4,8 @@ import { useSiteData } from "../context/SiteDataContext";
 import { Badge, PriceTag } from "./UI";
 
 export default function ProductCard({ product }) {
-  const { addItem, isInWishlist, lastAdded } = useWishlist();
+  // const { addItem, isInWishlist, lastAdded } = useWishlist();
+  const { toggleItem, isInWishlist, lastAdded } = useWishlist();
   const { categories } = useSiteData();
   const category = categories.find((c) => c.id === product.categoryId);
   const inWishlist = isInWishlist(product.id);
@@ -41,7 +42,7 @@ export default function ProductCard({ product }) {
         <div className="mt-auto pt-3 flex items-center justify-between gap-2">
           <PriceTag price={product.price} discountPrice={product.discountPrice} />
           <button
-            onClick={() => addItem(product.id)}
+            onClick={() => toggleItem(product.id)}
             disabled={product.stock === "Out of Stock"}
             aria-label={`Add ${product.name} to wishlist`}
             className={`relative flex items-center justify-center h-10 w-10 rounded-full border transition-all duration-300 disabled:opacity-40 disabled:cursor-not-allowed ${
