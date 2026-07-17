@@ -16,11 +16,11 @@ export const defaultSettings = {
   email: "hello@pblplants.com",
   address: "12 Green Lane, Garden District, Bengaluru, Karnataka 560001",
   mapNote: "Google Map placeholder — add an embed link from the admin dashboard.",
-  socials: {
-    instagram: "https://instagram.com",
-    facebook: "https://facebook.com",
-    pinterest: "https://pinterest.com",
-  },
+  socials:{
+   instagram:"https://instagram.com",
+   facebook:"https://facebook.com",
+   youtube:""
+  }
   whyChooseUs: [
     {
       title: "Nursery-Fresh Quality",
