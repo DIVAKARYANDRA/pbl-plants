@@ -24,21 +24,24 @@ function uid(prefix) {
 
 export function SiteDataProvider({ children }) {
   // const [db, setDb] = useState(() => loadFromStorage(STORAGE_KEY, seedDatabase));
-  const [db, setDb] = useState(seedDatabase);
+  const [db, setDb] = useState(null);
   const [firebaseLoaded, setFirebaseLoaded] = useState(false);
+  const [loading, setLoading] = useState(true);
    
 
   useEffect(() => {
   loadSiteDataFromFirebase();
 }, []);
   
-  useEffect(() => {
+   useEffect(() => {
 
-  if(firebaseLoaded){
+  if(firebaseLoaded && db){
+
     saveSiteDataToFirebase();
+
   }
 
-},[db]);
+}, [db, firebaseLoaded]);
 
 
   const saveSiteDataToFirebase = async () => {
@@ -71,7 +74,9 @@ export function SiteDataProvider({ children }) {
 };
   
   const loadSiteDataFromFirebase = async () => {
+
   try {
+
     const ref = doc(
       firestoreDb,
       "siteData",
@@ -80,20 +85,38 @@ export function SiteDataProvider({ children }) {
 
     const snapshot = await getDoc(ref);
 
+
     if (snapshot.exists()) {
 
       setDb(snapshot.data());
-      setFirebaseLoaded(true);
 
       console.log("Loaded site data from Firebase");
 
+    } else {
+
+      await setDoc(
+        ref,
+        seedDatabase
+      );
+
+      setDb(seedDatabase);
+
+      console.log("Seed data uploaded to Firebase");
+
     }
 
+
+    setFirebaseLoaded(true);
+    setLoading(false);
+
+
   } catch(error) {
+
     console.error(
       "Firebase load failed:",
       error
     );
+
   }
 };
   
@@ -231,6 +254,10 @@ export function SiteDataProvider({ children }) {
     deleteFaq,
     resetToDefaults,
   };
+
+  if (loading) {
+  return null;
+}
 
   return <SiteDataContext.Provider value={value}>{children}</SiteDataContext.Provider>;
 }
