@@ -1,6 +1,7 @@
 import { useState } from "react";
 import { useSiteData } from "../context/SiteDataContext";
 import { Field, inputClass, Modal, PageHeader, EmptyState } from "./components/AdminUI";
+import ImageUploader from "./components/ImageUploader";
 
 const EMPTY = { image: "", caption: "", category: "Store" };
 
@@ -12,11 +13,18 @@ export default function AdminGallery() {
   const set = (key) => (e) => setForm((f) => ({ ...f, [key]: e.target.value }));
 
   const handleSubmit = (e) => {
-    e.preventDefault();
-    addGalleryImage(form);
-    setForm(EMPTY);
-    setModalOpen(false);
-  };
+  e.preventDefault();
+
+  if (!form.image) {
+    alert("Please upload an image");
+    return;
+  }
+
+  addGalleryImage(form);
+
+  setForm(EMPTY);
+  setModalOpen(false);
+};
 
   const handleDelete = (item) => {
     if (confirm("Remove this image from the gallery?")) deleteGalleryImage(item.id);
@@ -62,8 +70,18 @@ export default function AdminGallery() {
       {modalOpen && (
         <Modal title="Upload Gallery Image" onClose={() => setModalOpen(false)}>
           <form onSubmit={handleSubmit} className="flex flex-col gap-4">
-            <Field label="Image URL">
-              <input required className={inputClass} value={form.image} onChange={set("image")} />
+            <Field label="Gallery Image">
+
+              <ImageUploader
+                value={form.image}
+                onChange={(url) =>
+                  setForm((f) => ({
+                    ...f,
+                    image: url
+                  }))
+                }
+              />
+            
             </Field>
             <Field label="Caption">
               <input required className={inputClass} value={form.caption} onChange={set("caption")} />
