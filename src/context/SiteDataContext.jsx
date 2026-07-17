@@ -26,6 +26,7 @@ export function SiteDataProvider({ children }) {
   const [db, setDb] = useState(null);
   const [firebaseLoaded, setFirebaseLoaded] = useState(false);
   const [loading, setLoading] = useState(true);
+  const [initialLoadComplete, setInitialLoadComplete] = useState(false);
 
 
 
@@ -111,6 +112,7 @@ export function SiteDataProvider({ children }) {
 
 
       setFirebaseLoaded(true);
+      setInitialLoadComplete(true);
       setLoading(false);
 
 
@@ -133,6 +135,20 @@ export function SiteDataProvider({ children }) {
     loadSiteDataFromFirebase();
 
   }, []);
+
+  useEffect(() => {
+
+  if (
+    initialLoadComplete &&
+    firebaseLoaded &&
+    db
+  ) {
+
+    saveSiteDataToFirebase();
+
+  }
+
+}, [db]);
 
   // ---------- Settings ----------
    const updateSettings = useCallback((patch) => {
