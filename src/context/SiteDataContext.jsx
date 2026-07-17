@@ -1,150 +1,153 @@
 import { createContext, useContext, useEffect, useState, useCallback } from "react";
 import { seedDatabase } from "../data/seedData";
-// import { loadFromStorage, saveToStorage } from "../utils/storage";
+
 import {
-  collection,
   getDoc,
-  addDoc,
-  updateDoc,
-  deleteDoc,
   setDoc,
   doc
 } from "firebase/firestore";
 
 import { db as firestoreDb } from "../utils/firebaseConfig";
 
-const STORAGE_KEY = "pbl-plants:database:v1";
+
 const FIRESTORE_COLLECTION = "siteData";
 const FIRESTORE_DOCUMENT = "main";
+
 const SiteDataContext = createContext(null);
+
 
 function uid(prefix) {
   return `${prefix}-${Date.now().toString(36)}-${Math.random().toString(36).slice(2, 7)}`;
 }
 
+
 export function SiteDataProvider({ children }) {
-  // const [db, setDb] = useState(() => loadFromStorage(STORAGE_KEY, seedDatabase));
+
   const [db, setDb] = useState(null);
   const [firebaseLoaded, setFirebaseLoaded] = useState(false);
   const [loading, setLoading] = useState(true);
-   
 
-  useEffect(() => {
-  loadSiteDataFromFirebase();
-}, []);
-  
-   useEffect(() => {
-
-  if(firebaseLoaded && db){
-
-    saveSiteDataToFirebase();
-
-  }
-
-}, [db, firebaseLoaded]);
 
 
   const saveSiteDataToFirebase = async () => {
 
-  if (!firebaseLoaded) return;
+    if (!db || !firebaseLoaded) return;
 
-  try {
+    try {
 
-    const ref = doc(
-      firestoreDb,
-      "siteData",
-      "main"
-    );
+      const ref = doc(
+        firestoreDb,
+        FIRESTORE_COLLECTION,
+        FIRESTORE_DOCUMENT
+      );
 
-    await setDoc(
-      ref,
-      db
-    );
-
-    console.log("Saved to Firebase");
-
-  } catch(error){
-
-    console.error(
-      "Firebase save failed:",
-      error
-    );
-
-  }
-};
-  
-  const loadSiteDataFromFirebase = async () => {
-
-  try {
-
-    const ref = doc(
-      firestoreDb,
-      "siteData",
-      "main"
-    );
-
-    const snapshot = await getDoc(ref);
-
-
-    if (snapshot.exists()) {
-
-      setDb(snapshot.data());
-
-      console.log("Loaded site data from Firebase");
-
-    } else {
 
       await setDoc(
         ref,
-        seedDatabase
+        db
       );
 
-      setDb(seedDatabase);
 
-      console.log("Seed data uploaded to Firebase");
+      console.log("Saved to Firebase");
+
+
+    } catch(error) {
+
+      console.error(
+        "Firebase save failed:",
+        error
+      );
+
+    }
+  };
+
+
+
+  const loadSiteDataFromFirebase = async () => {
+
+    try {
+
+      const ref = doc(
+        firestoreDb,
+        FIRESTORE_COLLECTION,
+        FIRESTORE_DOCUMENT
+      );
+
+
+      const snapshot = await getDoc(ref);
+
+
+
+      if(snapshot.exists()) {
+
+
+        console.log(
+          "Loaded site data from Firebase"
+        );
+
+
+        setDb(
+          snapshot.data()
+        );
+
+
+      } else {
+
+
+        console.log(
+          "Firebase empty. Uploading seed data"
+        );
+
+
+        await setDoc(
+          ref,
+          seedDatabase
+        );
+
+
+        setDb(seedDatabase);
+
+      }
+
+
+      setFirebaseLoaded(true);
+      setLoading(false);
+
+
+
+    } catch(error) {
+
+      console.error(
+        "Firebase load failed:",
+        error
+      );
 
     }
 
-
-    setFirebaseLoaded(true);
-    setLoading(false);
+  };
 
 
-  } catch(error) {
 
-    console.error(
-      "Firebase load failed:",
-      error
-    );
+  useEffect(() => {
 
-  }
-};
-  
-//  const initializeFirebaseData = async () => {
-//   try {
-//     const ref = doc(
-//       firestoreDb,
-//       FIRESTORE_COLLECTION,
-//       FIRESTORE_DOCUMENT
-//     );
+    loadSiteDataFromFirebase();
 
-//     const snapshot = await getDoc(ref);
+  }, []);
 
-//     if (!snapshot.exists() || Object.keys(snapshot.data()).length === 0) {
-//       await setDoc(ref, seedDatabase);
 
-//       console.log("Seed data uploaded to Firebase");
-//     } else {
-//       console.log("Firebase already has data");
-//     }
 
-//   } catch (error) {
-//     console.error(
-//       "Failed initializing Firebase data:",
-//       error
-//     );
-//   }
-// };
+  useEffect(() => {
+
+    if(firebaseLoaded && db){
+
+      saveSiteDataToFirebase();
+
+    }
+
+  }, [db, firebaseLoaded]);
+
+
+
 
   // ---------- Settings ----------
   const updateSettings = useCallback((patch) => {
@@ -235,7 +238,7 @@ export function SiteDataProvider({ children }) {
   }, []);
 
   const value = {
-    ...db,
+    ...(db || {}),
     updateSettings,
     addCategory,
     updateCategory,
