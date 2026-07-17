@@ -165,6 +165,9 @@ export function SiteDataProvider({ children }) {
   // ---------------- SETTINGS ----------------
 
   const updateSettings = useCallback((patch) => {
+    console.log("updateSettings called");
+    console.log(patch);
+
 
 
     setDb((prev)=>{
@@ -176,6 +179,8 @@ export function SiteDataProvider({ children }) {
           ...patch
         }
       };
+
+      console.log(updated);
 
 
       if(firebaseLoaded){
