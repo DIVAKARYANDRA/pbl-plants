@@ -20,7 +20,7 @@ export const defaultSettings = {
    instagram:"https://instagram.com",
    facebook:"https://facebook.com",
    youtube:""
-  }
+  },
   whyChooseUs: [
     {
       title: "Nursery-Fresh Quality",
