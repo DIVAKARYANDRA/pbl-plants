@@ -1,21 +1,20 @@
 import { useState } from "react";
 import { Navigate, useNavigate } from "react-router-dom";
 import { useAuth } from "../context/AuthContext";
-import { useSiteData } from "../context/SiteDataContext";
 import { inputClass } from "./components/AdminUI";
 
 export default function AdminLogin() {
   const { isAuthenticated, login, error } = useAuth();
-  const { settings, adminCredentials } = useSiteData();
+  const { settings } = useSiteData();
   const navigate = useNavigate();
-  const [username, setUsername] = useState("");
+  const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
 
   if (isAuthenticated) return <Navigate to="/admin" replace />;
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
-    if (login(username, password)) {
+    if (await login(email, password)) {
       navigate("/admin", { replace: true });
     }
   };
@@ -31,12 +30,12 @@ export default function AdminLogin() {
 
         <form onSubmit={handleSubmit} className="flex flex-col gap-4">
           <label className="flex flex-col gap-1.5">
-            <span className="text-sm font-medium text-forest-800">Username</span>
+            <span className="text-sm font-medium text-forest-800">Email</span>
             <input
               className={inputClass}
-              value={username}
-              onChange={(e) => setUsername(e.target.value)}
-              placeholder="admin"
+              value={email}
+              onChange={(e) => setEmail(e.target.value)}
+              placeholder="admin@example.com"
               autoFocus
               required
             />
@@ -60,9 +59,7 @@ export default function AdminLogin() {
           </button>
         </form>
 
-        <p className="text-xs text-forest-700/45 text-center mt-6">
-          Demo credentials — Username: <b>{adminCredentials.username}</b> · Password: <b>{adminCredentials.password}</b>
-        </p>
+       
       </div>
     </div>
   );
