@@ -14,7 +14,7 @@ export default function Footer() {
             {[
               { href: settings.socials.instagram, label: "Instagram" },
               { href: settings.socials.facebook, label: "Facebook" },
-              { href: settings.socials.pinterest, label: "Pinterest" },
+              { href: settings.socials.youtube, label: "YouTube" },
             ].map((s) => (
               <a
                 key={s.label}
