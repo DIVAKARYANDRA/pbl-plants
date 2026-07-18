@@ -2,11 +2,15 @@ import { useState } from "react";
 import { useSiteData } from "../context/SiteDataContext";
 import { Field, inputClass, PageHeader } from "./components/AdminUI";
 import ImageUploader from "./components/ImageUploader";
+import { useAuth } from "../context/AuthContext";
 
 export default function AdminFounder() {
   const { founder, updateFounder } = useSiteData();
   const [form, setForm] = useState(founder);
   const [saved, setSaved] = useState(false);
+  const { role } = useAuth();
+
+  const canEdit = role === "admin";
 
   const set = (key) => (e) => setForm((f) => ({ ...f, [key]: e.target.value }));
 
@@ -23,10 +27,16 @@ export default function AdminFounder() {
         title="Founder Section"
         subtitle="Shown on the Home and About pages."
         action={
-          <button form="founder-form" type="submit" className="btn-primary text-sm">
-            Save Changes
-          </button>
-        }
+ canEdit && (
+  <button 
+   form="founder-form"
+   type="submit"
+   className="btn-primary text-sm"
+  >
+   Save Changes
+  </button>
+ )
+}
       />
 
       {saved && (
@@ -56,20 +66,20 @@ export default function AdminFounder() {
           </Field>
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
             <Field label="Founder Name">
-              <input className={inputClass} value={form.name} onChange={set("name")} />
+              <input className={inputClass} disabled={!canEdit} value={form.name} onChange={set("name")} />
             </Field>
             <Field label="Title">
-              <input className={inputClass} value={form.title} onChange={set("title")} />
+              <input className={inputClass} disabled={!canEdit} value={form.title} onChange={set("title")} />
             </Field>
           </div>
           <Field label="Founder Message" hint="Shown as a quote on the site">
-            <textarea rows={4} className={inputClass} value={form.message} onChange={set("message")} />
+            <textarea rows={4} className={inputClass} disabled={!canEdit} value={form.message} onChange={set("message")} />
           </Field>
           <Field label="Vision Statement">
-            <textarea rows={2} className={inputClass} value={form.vision} onChange={set("vision")} />
+            <textarea rows={2} className={inputClass} disabled={!canEdit} value={form.vision} onChange={set("vision")} />
           </Field>
           <Field label="Mission Statement">
-            <textarea rows={2} className={inputClass} value={form.mission} onChange={set("mission")} />
+            <textarea rows={2} className={inputClass} disabled={!canEdit} value={form.mission} onChange={set("mission")} />
           </Field>
         </div>
       </form>
