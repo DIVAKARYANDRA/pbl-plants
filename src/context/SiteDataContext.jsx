@@ -586,7 +586,7 @@ export function SiteDataProvider({ children }) {
     addCategory,
     updateCategory,
     deleteCategory,
-    offers,
+    offers: db?.offers || [],
     addOffer,
     updateOffer,
     deleteOffer,
