@@ -15,6 +15,9 @@ export default function AdminFounder() {
   const set = (key) => (e) => setForm((f) => ({ ...f, [key]: e.target.value }));
 
   const handleSubmit = (e) => {
+ if(!canEdit){
+   return;
+ }
     e.preventDefault();
     updateFounder(form);
     setSaved(true);
