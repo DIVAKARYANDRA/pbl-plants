@@ -61,8 +61,23 @@ export default function ContactSection() {
                 {ICONS.pin}
               </span>
               <div>
-                <p className="font-semibold text-forest-800">Visit the Nursery</p>
+                <p className="font-semibold text-forest-800">Visit the Store</p>
                 <p className="text-sm text-forest-700/60 mt-1">{settings.address}</p>
+              </div>
+            </div>
+            <div className="card-surface rounded-xl2 p-6 flex items-start gap-4">
+              <span className="h-11 w-11 rounded-full bg-forest-700/10 text-forest-700 flex items-center justify-center flex-shrink-0">
+                {ICONS.pin}
+              </span>
+            
+              <div>
+                <p className="font-semibold text-forest-800">
+                  Sale Point
+                </p>
+            
+                <p className="text-sm text-forest-700/60 mt-1">
+                  Near Barista, Aqua Sports, R.K beach road, Visakhapatnam, Andhra Pradesh 530016
+                </p>
               </div>
             </div>
             <a href={link} target="_blank" rel="noreferrer" className="btn-gold w-full mt-1">
