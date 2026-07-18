@@ -1,6 +1,5 @@
 import { Link } from "react-router-dom";
 import { useSiteData } from "../context/SiteDataContext";
-import { FaInstagram, FaFacebookF, FaYoutube } from "react-icons/fa";
 
 export default function Footer() {
   const { settings, categories } = useSiteData();
