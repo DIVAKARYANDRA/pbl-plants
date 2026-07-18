@@ -6,7 +6,7 @@ import { formatPrice, buildWishlistMessage, buildWhatsAppLink } from "../utils/w
 
 export default function WishlistDrawer() {
   const { items, removeItem, updateQty, isOpen, closeDrawer, clear } = useWishlist();
-  const { products, settings } = useSiteData();
+  const { products, settings, offers } = useSiteData();
 
   useEffect(() => {
     document.body.style.overflow = isOpen ? "hidden" : "";
@@ -19,10 +19,51 @@ export default function WishlistDrawer() {
     .map((item) => ({ ...item, product: products.find((p) => p.id === item.productId) }))
     .filter((i) => i.product);
 
-  const total = detailedItems.reduce(
-    (sum, i) => sum + (i.product.discountPrice ?? i.product.price) * i.qty,
-    0
+  const subtotal = detailedItems.reduce(
+  (sum, i) =>
+    sum + (i.product.discountPrice ?? i.product.price) * i.qty,
+  0
+);
+
+  const applicableOffers = (offers || [])
+  .filter(
+    (offer) =>
+      offer.enabled &&
+      subtotal >= offer.minimumCartValue
+  )
+  .sort(
+    (a,b)=>a.priority-b.priority
   );
+
+
+const activeOffer = applicableOffers[0];
+
+
+let discount = 0;
+
+
+if(activeOffer){
+
+  if(activeOffer.type==="percentage"){
+
+    discount =
+      (subtotal * activeOffer.value) / 100;
+
+  }
+
+
+  else if(activeOffer.type==="flat"){
+
+    discount =
+      activeOffer.value;
+
+  }
+
+}
+
+
+const finalTotal =
+  Math.max(subtotal - discount,0);
 
   const handleSend = () => {
     const message = buildWishlistMessage({ businessName: settings.businessName, items, products });
@@ -132,10 +173,59 @@ export default function WishlistDrawer() {
 
         {detailedItems.length > 0 && (
           <div className="px-5 sm:px-6 py-5 border-t border-forest-700/10 flex flex-col gap-3">
-            <div className="flex items-center justify-between text-forest-800">
-              <span className="font-medium">Estimated Total</span>
-              <span className="font-display text-xl font-semibold">{formatPrice(total)}</span>
-            </div>
+            <div className="flex flex-col gap-2 text-forest-800">
+
+
+<div className="flex justify-between">
+<span>
+Subtotal
+</span>
+
+<span>
+{formatPrice(subtotal)}
+</span>
+
+</div>
+
+
+{
+activeOffer && discount > 0 && (
+
+<div className="flex justify-between text-green-700">
+
+<span>
+{activeOffer.title}
+</span>
+
+<span>
+-{formatPrice(discount)}
+</span>
+
+</div>
+
+)
+
+}
+
+
+<div className="border-t border-forest-700/10 pt-2 flex justify-between">
+
+<span className="font-medium">
+Estimated Total
+</span>
+
+
+<span className="font-display text-xl font-semibold">
+
+{formatPrice(finalTotal)}
+
+</span>
+
+
+</div>
+
+
+</div>
             <button onClick={handleSend} className="btn-gold w-full">
               <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor">
                 <path d="M12.04 2c-5.5 0-9.96 4.46-9.96 9.96 0 1.76.46 3.44 1.34 4.94L2 22l5.25-1.38a9.9 9.9 0 0 0 4.79 1.22h.01c5.5 0 9.96-4.46 9.96-9.96S17.54 2 12.04 2zm5.8 14.1c-.24.68-1.4 1.3-1.93 1.36-.5.06-1.05.29-3.5-.73-2.95-1.22-4.8-4.2-4.94-4.4-.14-.2-1.18-1.57-1.18-3 0-1.42.75-2.12 1.02-2.41.27-.29.58-.36.78-.36.2 0 .39 0 .56.01.18.01.42-.07.65.5.24.58.82 2 .9 2.15.07.14.12.31.02.5-.1.19-.15.31-.3.48-.15.17-.32.38-.45.51-.15.15-.31.31-.13.6.17.29.77 1.28 1.66 2.07 1.14 1.02 2.1 1.34 2.4 1.49.29.15.46.13.63-.08.17-.2.72-.83.91-1.12.19-.29.38-.24.63-.14.26.1 1.63.77 1.91.91.29.14.48.21.55.33.07.12.07.7-.17 1.38z" />
