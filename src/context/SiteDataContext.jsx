@@ -584,26 +584,63 @@ export function SiteDataProvider({ children }) {
   },[]);
 
   const addOffer = useCallback((offer) => {
-  setDb((prev) => ({
-    ...prev,
-    offers: [...prev.offers, offer],
-  }));
+
+  setDb(prev => {
+
+    const updated = {
+      ...prev,
+      offers: [
+        ...prev.offers,
+        offer
+      ]
+    };
+
+    saveSiteDataToFirebase(updated);
+
+    return updated;
+
+  });
+
 }, []);
 
   const updateOffer = useCallback((updatedOffer) => {
-  setDb((prev) => ({
-    ...prev,
-    offers: prev.offers.map((offer) =>
-      offer.id === updatedOffer.id ? updatedOffer : offer
-    ),
-  }));
+
+  setDb(prev => {
+
+    const updated = {
+      ...prev,
+      offers: prev.offers.map(offer =>
+        offer.id === updatedOffer.id
+          ? updatedOffer
+          : offer
+      )
+    };
+
+    saveSiteDataToFirebase(updated);
+
+    return updated;
+
+  });
+
 }, []);
 
   const deleteOffer = useCallback((offerId) => {
-  setDb((prev) => ({
-    ...prev,
-    offers: prev.offers.filter((offer) => offer.id !== offerId),
-  }));
+
+  setDb(prev => {
+
+    const updated = {
+      ...prev,
+      offers: prev.offers.filter(
+        offer => offer.id !== offerId
+      )
+    };
+
+    saveSiteDataToFirebase(updated);
+
+    return updated;
+
+  });
+
 }, []);
 
 
