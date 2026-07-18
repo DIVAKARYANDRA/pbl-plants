@@ -411,6 +411,7 @@ export const defaultOffers = [
       type: "percentage",
       enabled: true,
       minimumCartValue: 3000,
+      priority:1,
       value: 10,
       message: "Get 10% OFF on orders above ₹3000"
     },
@@ -421,6 +422,7 @@ export const defaultOffers = [
       type: "free_delivery",
       enabled: false,
       minimumCartValue: 2000,
+      priority:2,
       value: 0,
       message: "Free delivery on orders above ₹2000"
     },
@@ -431,6 +433,7 @@ export const defaultOffers = [
       type: "festival",
       enabled: false,
       minimumCartValue: 0,
+      priority:3,
       value: 15,
       message: "Festival Special - 15% OFF"
     }
