@@ -2,7 +2,7 @@ import { BrowserRouter, Routes, Route } from "react-router-dom";
 import { SiteDataProvider } from "./context/SiteDataContext";
 import { WishlistProvider } from "./context/WishlistContext";
 import { AuthProvider } from "./context/AuthContext";
-
+import AdminOffers from "./admin/AdminOffers";
 import CustomerLayout from "./components/CustomerLayout";
 import Home from "./pages/Home";
 import Categories from "./pages/Categories";
@@ -61,6 +61,10 @@ export default function App() {
               <Route path="categories" element={<AdminCategories />} />
               <Route path="founder" element={<AdminFounder />} />
               <Route path="gallery" element={<AdminGallery />} />
+              <Route 
+                path="offers" 
+                element={<AdminOffers />} 
+              />
               <Route path="testimonials" element={<AdminTestimonials />} />
               <Route path="faqs" element={<AdminFAQ />} />
             </Route>
