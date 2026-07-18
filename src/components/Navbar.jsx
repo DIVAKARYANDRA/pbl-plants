@@ -44,7 +44,7 @@ export default function Navbar() {
           <img
             src="/pbl-logo.jpg"
             alt="PBL Plants Logo"
-            className="h-10 w-10 object-contain"
+            className="h-10 w-10 object-cover rounded-full"
           />
         
           <span className={scrolled ? "text-forest-800" : "text-cream-50"}>
