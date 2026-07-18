@@ -2,6 +2,7 @@ import { useState } from "react";
 import { useSiteData } from "../context/SiteDataContext";
 import { Field, inputClass, Modal, PageHeader, EmptyState } from "./components/AdminUI";
 import { uploadImage } from "../utils/cloudinary";
+import { useAuth } from "../context/AuthContext";
 
 const EMPTY = { name: "", slug: "", image: "", description: "" };
 
@@ -19,6 +20,9 @@ export default function AdminCategories() {
   const [editing, setEditing] = useState(null);
   const [form, setForm] = useState(EMPTY);
   const [uploading, setUploading] = useState(false);
+  const { role } = useAuth();
+
+const canEdit = role === "admin";
 
   const openAdd = () => {
     setEditing(null);
@@ -69,12 +73,24 @@ export default function AdminCategories() {
 };
 
   const handleSubmit = (e) => {
-    e.preventDefault();
-    const payload = { ...form, slug: form.slug || slugify(form.name) };
-    if (editing) updateCategory(editing.id, payload);
-    else addCategory(payload);
-    setModalOpen(false);
+
+  e.preventDefault();
+
+  if (!canEdit) return;
+
+  const payload = {
+    ...form,
+    slug: form.slug || slugify(form.name)
   };
+
+  if (editing) {
+    updateCategory(editing.id, payload);
+  } else {
+    addCategory(payload);
+  }
+
+  setModalOpen(false);
+};
 
   const handleDelete = (cat) => {
     const inUse = products.some((p) => p.categoryId === cat.id);
@@ -91,10 +107,12 @@ export default function AdminCategories() {
         title="Category Management"
         subtitle="Categories power both the customer navigation and product filters."
         action={
-          <button onClick={openAdd} className="btn-primary text-sm">
-            + Add Category
-          </button>
-        }
+  canEdit && (
+    <button onClick={openAdd} className="btn-primary text-sm">
+      + Add Category
+    </button>
+  )
+}
       />
 
       {categories.length === 0 ? (
@@ -112,6 +130,8 @@ export default function AdminCategories() {
                   {products.filter((p) => p.categoryId === cat.id).length} products
                 </p>
                 <div className="flex gap-2 mt-4">
+                  {canEdit && (
+  <>
                   <button onClick={() => openEdit(cat)} className="btn-secondary text-xs py-2 px-3 flex-1">
                     Edit
                   </button>
@@ -121,6 +141,8 @@ export default function AdminCategories() {
                   >
                     Delete
                   </button>
+    </>
+)}
                 </div>
               </div>
             </div>
@@ -132,10 +154,10 @@ export default function AdminCategories() {
         <Modal title={editing ? "Edit Category" : "Add Category"} onClose={() => setModalOpen(false)}>
           <form onSubmit={handleSubmit} className="flex flex-col gap-4">
             <Field label="Category Name">
-              <input required className={inputClass} value={form.name} onChange={set("name")} />
+              <input required className={inputClass} disabled={!canEdit} value={form.name} onChange={set("name")} />
             </Field>
             <Field label="Slug" hint="Used in the shop URL, auto-generated from the name">
-              <input required className={inputClass} value={form.slug} onChange={set("slug")} />
+              <input required className={inputClass} disabled={!canEdit} value={form.slug} onChange={set("slug")} />
             </Field>
             <Field label="Category Image">
 
@@ -143,6 +165,7 @@ export default function AdminCategories() {
                   type="file"
                   accept="image/*"
                   className={inputClass}
+                  disabled={!canEdit}
                   onChange={handleImageUpload}
                 />
               
@@ -156,16 +179,18 @@ export default function AdminCategories() {
               
               </Field>
             <Field label="Description">
-              <textarea rows={3} className={inputClass} value={form.description} onChange={set("description")} />
+              <textarea rows={3} className={inputClass} disabled={!canEdit} value={form.description} onChange={set("description")} />
             </Field>
             <div className="flex gap-3 mt-2">
+              {canEdit && (
               <button
                   type="submit"
                   disabled={uploading}
                   className="btn-primary flex-1 disabled:opacity-50"
-                >
-                {editing ? "Save Changes" : "Add Category"}
+              >
+                  {editing ? "Save Changes" : "Add Category"}
               </button>
+            )}
               <button type="button" onClick={() => setModalOpen(false)} className="btn-secondary flex-1">
                 Cancel
               </button>
