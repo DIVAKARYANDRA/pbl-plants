@@ -45,6 +45,8 @@ export function AuthProvider({ children }) {
 
     const snapshot = await getDocs(q);
 
+    console.log("Current Firebase user:", auth.currentUser);
+
 
     if(!snapshot.empty){
 
