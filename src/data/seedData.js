@@ -404,6 +404,38 @@ export const defaultAdminCredentials = {
   password: "pblplants123",
 };
 
+export const defaultOffers = [
+    {
+      id: "offer-1",
+      title: "10% OFF on orders above ₹3000",
+      type: "percentage",
+      enabled: true,
+      minimumCartValue: 3000,
+      value: 10,
+      message: "Get 10% OFF on orders above ₹3000"
+    },
+
+    {
+      id: "offer-2",
+      title: "Free Delivery above ₹2000",
+      type: "free_delivery",
+      enabled: false,
+      minimumCartValue: 2000,
+      value: 0,
+      message: "Free delivery on orders above ₹2000"
+    },
+
+    {
+      id: "offer-3",
+      title: "Festival Special Offer",
+      type: "festival",
+      enabled: false,
+      minimumCartValue: 0,
+      value: 15,
+      message: "Festival Special - 15% OFF"
+    }
+  ];
+
 export const seedDatabase = {
   settings: defaultSettings,
   categories: defaultCategories,
@@ -413,4 +445,5 @@ export const seedDatabase = {
   faqs: defaultFaqs,
   gallery: defaultGallery,
   adminCredentials: defaultAdminCredentials,
+  offers: defaultOffers
 };
