@@ -1,5 +1,6 @@
 import { Link } from "react-router-dom";
 import { useSiteData } from "../context/SiteDataContext";
+import { FaInstagram, FaFacebookF, FaYoutube } from "react-icons/fa";
 
 export default function Footer() {
   const { settings, categories } = useSiteData();
@@ -11,23 +12,35 @@ export default function Footer() {
           <h3 className="font-display text-2xl text-cream-50 mb-3">{settings.logoText}</h3>
           <p className="text-sm text-cream-100/60 leading-relaxed max-w-xs">{settings.tagline}</p>
           <div className="flex items-center gap-3 mt-5">
-            {[
-              { href: settings.socials.instagram, label: "Instagram" },
-              { href: settings.socials.facebook, label: "Facebook" },
-              { href: settings.socials.youtube, label: "YouTube" },
-            ].map((s) => (
-              <a
-                key={s.label}
-                href={s.href}
-                target="_blank"
-                rel="noreferrer"
-                aria-label={s.label}
-                className="h-9 w-9 rounded-full border border-cream-100/20 flex items-center justify-center hover:bg-gold-500 hover:text-forest-900 hover:border-gold-500 transition-colors duration-300"
-              >
-                <span className="text-xs">{s.label[0]}</span>
-              </a>
-            ))}
-          </div>
+          {[
+            {
+              href: settings.socials.instagram,
+              label: "Instagram",
+              icon: <FaInstagram size={18} />,
+            },
+            {
+              href: settings.socials.facebook,
+              label: "Facebook",
+              icon: <FaFacebookF size={16} />,
+            },
+            {
+              href: settings.socials.youtube,
+              label: "YouTube",
+              icon: <FaYoutube size={18} />,
+            },
+          ].map((s) => (
+            <a
+              key={s.label}
+              href={s.href}
+              target="_blank"
+              rel="noreferrer"
+              aria-label={s.label}
+              className="h-10 w-10 rounded-full border border-cream-100/20 flex items-center justify-center hover:bg-gold-500 hover:text-forest-900 hover:border-gold-500 transition-all duration-300"
+            >
+              {s.icon}
+            </a>
+          ))}
+        </div>
         </div>
 
         <div>
