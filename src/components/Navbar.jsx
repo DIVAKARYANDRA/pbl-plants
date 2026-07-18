@@ -37,8 +37,19 @@ export default function Navbar() {
       }`}
     >
       <div className="max-w-7xl mx-auto px-5 sm:px-8 flex items-center justify-between">
-        <NavLink to="/" className="flex items-center gap-2 font-display text-xl sm:text-2xl">
-          <span className={scrolled ? "text-forest-800" : "text-cream-50"}>{settings.logoText}</span>
+        <NavLink 
+          to="/" 
+          className="flex items-center gap-2 font-display text-xl sm:text-2xl"
+        >
+          <img
+            src="/pbl-logo.png"
+            alt="PBL Plants Logo"
+            className="h-10 w-10 object-contain"
+          />
+        
+          <span className={scrolled ? "text-forest-800" : "text-cream-50"}>
+            {settings.logoText}
+          </span>
         </NavLink>
 
         <nav className="hidden lg:flex items-center gap-8">
