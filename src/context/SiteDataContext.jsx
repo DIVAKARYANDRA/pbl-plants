@@ -88,15 +88,38 @@ export function SiteDataProvider({ children }) {
       if(snapshot.exists()) {
 
 
-        console.log(
-          "Loaded data from Firebase"
-        );
+  let firebaseData = snapshot.data();
 
 
-        setDb(snapshot.data());
+  // ---------- Data Migration ----------
+  const migratedData = {
+    ...seedDatabase,
+    ...firebaseData,
+
+    offers:
+      firebaseData.offers ??
+      seedDatabase.offers
+  };
 
 
-      } else {
+  // Save migrated structure back to Firebase
+  await setDoc(
+    ref,
+    migratedData
+  );
+
+
+  setDb(
+    migratedData
+  );
+
+
+  console.log(
+    "Loaded data from Firebase with migration"
+  );
+
+
+} else {
 
 
         console.log(
