@@ -1,7 +1,6 @@
 import { useState } from "react";
 import { useSiteData } from "../context/SiteDataContext";
 import { Field, inputClass, Modal, PageHeader, EmptyState } from "./components/AdminUI";
-import { useAuth } from "../context/AuthContext";
 
 const EMPTY = { question: "", answer: "" };
 
@@ -10,9 +9,6 @@ export default function AdminFAQ() {
   const [modalOpen, setModalOpen] = useState(false);
   const [editing, setEditing] = useState(null);
   const [form, setForm] = useState(EMPTY);
-  const { role } = useAuth();
-
-const canEdit = role === "admin";
 
   const openAdd = () => {
     setEditing(null);
@@ -28,9 +24,7 @@ const canEdit = role === "admin";
   const set = (key) => (e) => setForm((f) => ({ ...f, [key]: e.target.value }));
 
   const handleSubmit = (e) => {
-    if(!canEdit){
-   return;
- }
+    
     e.preventDefault();
     if (editing) updateFaq(editing.id, form);
     else addFaq(form);
@@ -46,13 +40,12 @@ const canEdit = role === "admin";
       <PageHeader
         title="FAQ Management"
         subtitle="Answer the questions customers ask most, shown on the homepage."
-        {
-  canEdit && (
-    <button onClick={openAdd} className="btn-primary text-sm">
+        
+       action = { <button onClick={openAdd} className="btn-primary text-sm">
       + Add Category
-    </button>
-  )
-}
+        </button>
+       }
+  
       />
 
       {faqs.length === 0 ? (
@@ -82,10 +75,10 @@ const canEdit = role === "admin";
         <Modal title={editing ? "Edit FAQ" : "Add FAQ"} onClose={() => setModalOpen(false)}>
           <form onSubmit={handleSubmit} className="flex flex-col gap-4">
             <Field label="Question">
-              <input required className={inputClass} disabled={!canEdit} value={form.question} onChange={set("question")} />
+              <input required className={inputClass} value={form.question} onChange={set("question")} />
             </Field>
             <Field label="Answer">
-              <textarea required rows={4} className={inputClass} disabled={!canEdit} value={form.answer} onChange={set("answer")} />
+              <textarea required rows={4} className={inputClass} value={form.answer} onChange={set("answer")} />
             </Field>
             <div className="flex gap-3 mt-2">
               <button type="submit" className="btn-primary flex-1">{editing ? "Save Changes" : "Add FAQ"}</button>
