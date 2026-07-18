@@ -2,9 +2,12 @@ import { useState } from "react";
 import { useSiteData } from "../context/SiteDataContext";
 import { Field, inputClass, PageHeader } from "./components/AdminUI";
 import ImageUploader from "./components/ImageUploader";
+import { useAuth } from "../context/AuthContext";
 
 export default function AdminSettings() {
   const { settings, updateSettings } = useSiteData();
+  const { role } = useAuth();
+  const canEdit = role === "admin";
   const [form, setForm] = useState(settings);
   const [saved, setSaved] = useState(false);
 
@@ -13,6 +16,10 @@ export default function AdminSettings() {
     setForm((f) => ({ ...f, socials: { ...f.socials, [key]: e.target.value } }));
 
   const handleSubmit = (e) => {
+
+    if(!canEdit){
+    return;
+  }
     e.preventDefault();
     updateSettings(form);
     setSaved(true);
@@ -42,16 +49,16 @@ export default function AdminSettings() {
           <h2 className="font-display text-lg text-forest-800 mb-4">Branding</h2>
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
             <Field label="Company Name">
-              <input className={inputClass} value={form.businessName} onChange={set("businessName")} />
+              <input className={inputClass} disabled={!canEdit} value={form.businessName} onChange={set("businessName")} />
             </Field>
             <Field label="Logo Text">
-              <input className={inputClass} value={form.logoText} onChange={set("logoText")} />
+              <input className={inputClass} disabled={!canEdit} value={form.logoText} onChange={set("logoText")} />
             </Field>
             <Field label="Tagline">
-              <input className={inputClass} value={form.tagline} onChange={set("tagline")} />
+              <input className={inputClass} disabled={!canEdit} value={form.tagline} onChange={set("tagline")} />
             </Field>
             <Field label="Favicon URL">
-              <input className={inputClass} value={form.favicon} onChange={set("favicon")} />
+              <input className={inputClass} disabled={!canEdit} value={form.favicon} onChange={set("favicon")} />
             </Field>
           </div>
         </section>
@@ -60,13 +67,13 @@ export default function AdminSettings() {
           <h2 className="font-display text-lg text-forest-800 mb-4">Homepage Hero</h2>
           <div className="grid grid-cols-1 gap-4">
             <Field label="Hero Title">
-              <input className={inputClass} value={form.heroTitle} onChange={set("heroTitle")} />
+              <input className={inputClass} disabled={!canEdit} value={form.heroTitle} onChange={set("heroTitle")} />
             </Field>
             <Field label="Hero Description">
-              <textarea rows={3} className={inputClass} value={form.heroSubtitle} onChange={set("heroSubtitle")} />
+              <textarea rows={3} className={inputClass} disabled={!canEdit} value={form.heroSubtitle} onChange={set("heroSubtitle")} />
             </Field>
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-              <Field label="Hero Banner Image">
+              <Field disabled={!canEdit} label="Hero Banner Image">
 
                 <ImageUploader
                   value={form.heroImage}
@@ -79,7 +86,7 @@ export default function AdminSettings() {
                 />
               
               </Field>
-              <Field label="Secondary Banner Image">
+              <Field disabled={!canEdit} label="Secondary Banner Image">
 
                 <ImageUploader
                   value={form.bannerImage}
@@ -100,19 +107,19 @@ export default function AdminSettings() {
           <h2 className="font-display text-lg text-forest-800 mb-4">Contact Details</h2>
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
             <Field label="WhatsApp Number" hint="Include country code, digits only, e.g. 919876543210">
-              <input className={inputClass} value={form.whatsappNumber} onChange={set("whatsappNumber")} />
+              <input className={inputClass} disabled={!canEdit} value={form.whatsappNumber} onChange={set("whatsappNumber")} />
             </Field>
             <Field label="Phone Number">
-              <input className={inputClass} value={form.phone} onChange={set("phone")} />
+              <input className={inputClass} disabled={!canEdit} value={form.phone} onChange={set("phone")} />
             </Field>
             <Field label="Email">
-              <input className={inputClass} value={form.email} onChange={set("email")} />
+              <input className={inputClass} disabled={!canEdit} value={form.email} onChange={set("email")} />
             </Field>
             <Field label="Address">
-              <input className={inputClass} value={form.address} onChange={set("address")} />
+              <input className={inputClass} disabled={!canEdit} value={form.address} onChange={set("address")} />
             </Field>
             <Field label="Google Map Embed URL" hint="Paste only the Google Maps embed URL">
-              <input className={inputClass} value={form.mapNote} onChange={set("mapNote")} />
+              <input className={inputClass} disabled={!canEdit} value={form.mapNote} onChange={set("mapNote")} />
             </Field>
           </div>
         </section>
@@ -121,14 +128,14 @@ export default function AdminSettings() {
           <h2 className="font-display text-lg text-forest-800 mb-4">Social Links</h2>
           <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
             <Field label="Instagram URL">
-              <input className={inputClass} value={form.socials.instagram} onChange={setSocial("instagram")} />
+              <input className={inputClass} disabled={!canEdit} value={form.socials.instagram} onChange={setSocial("instagram")} />
             </Field>
             <Field label="Facebook URL">
-              <input className={inputClass} value={form.socials.facebook} onChange={setSocial("facebook")} />
+              <input className={inputClass} disabled={!canEdit} value={form.socials.facebook} onChange={setSocial("facebook")} />
             </Field>
             <Field label="YouTube URL">
               <input 
-                className={inputClass} 
+                className={inputClass} disabled={!canEdit}
                 value={form.socials.youtube || ""}
                 onChange={setSocial("youtube")} 
               />
@@ -137,7 +144,17 @@ export default function AdminSettings() {
         </section>
 
         <div className="sm:hidden">
-          <button type="submit" className="btn-primary w-full">Save Changes</button>
+          {
+            canEdit && (
+            <button 
+             form="settings-form"
+             type="submit"
+             className="btn-primary text-sm"
+            >
+             Save Changes
+            </button>
+            )
+            }
         </div>
       </form>
     </div>
