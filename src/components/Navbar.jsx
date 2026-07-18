@@ -42,7 +42,7 @@ export default function Navbar() {
           className="flex items-center gap-2 font-display text-xl sm:text-2xl"
         >
           <img
-            src="/pbl-logo.png"
+            src="/pbl-logo.jpg"
             alt="PBL Plants Logo"
             className="h-10 w-10 object-contain"
           />
