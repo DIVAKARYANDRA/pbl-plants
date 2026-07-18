@@ -88,7 +88,7 @@ const finalTotal =
   Math.max(subtotal - discount, 0);
 
   const handleSend = () => {
-    const message = buildWishlistMessage({ businessName: settings.businessName, items, products });
+    const message = buildWishlistMessage({ businessName: settings.businessName, items, products, subtotal, discount, finalTotal, discountOffer, deliveryOffer });
     const link = buildWhatsAppLink(settings.whatsappNumber, message);
     window.open(link, "_blank", "noopener,noreferrer");
     try {
