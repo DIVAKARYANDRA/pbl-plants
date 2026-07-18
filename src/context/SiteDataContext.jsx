@@ -555,6 +555,29 @@ export function SiteDataProvider({ children }) {
 
   },[]);
 
+  const addOffer = useCallback((offer) => {
+  setDb((prev) => ({
+    ...prev,
+    offers: [...prev.offers, offer],
+  }));
+}, []);
+
+  const updateOffer = useCallback((updatedOffer) => {
+  setDb((prev) => ({
+    ...prev,
+    offers: prev.offers.map((offer) =>
+      offer.id === updatedOffer.id ? updatedOffer : offer
+    ),
+  }));
+}, []);
+
+  const deleteOffer = useCallback((offerId) => {
+  setDb((prev) => ({
+    ...prev,
+    offers: prev.offers.filter((offer) => offer.id !== offerId),
+  }));
+}, []);
+
 
 
   const value={
@@ -563,6 +586,10 @@ export function SiteDataProvider({ children }) {
     addCategory,
     updateCategory,
     deleteCategory,
+    offers,
+    addOffer,
+    updateOffer,
+    deleteOffer,
     addProduct,
     updateProduct,
     deleteProduct,
