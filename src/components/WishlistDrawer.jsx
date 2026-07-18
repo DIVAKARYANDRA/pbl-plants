@@ -119,6 +119,8 @@ const finalTotal =
       >
         <div className="flex items-center justify-between px-5 sm:px-6 py-5 border-b border-forest-700/10">
           <h2 className="font-display text-2xl text-forest-800">Your Wishlist</h2>
+          <p className="text-forest-700/60">Distance-based delivery charges will be applied.</p>
+          
           <button
             onClick={closeDrawer}
             aria-label="Close wishlist"
