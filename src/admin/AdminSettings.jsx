@@ -32,9 +32,15 @@ export default function AdminSettings() {
         title="Website Settings"
         subtitle="Update branding and contact details shown across the customer website."
         action={
-          <button form="settings-form" type="submit" className="btn-primary text-sm">
-            Save Changes
-          </button>
+          canEdit && (
+            <button 
+              form="settings-form" 
+              type="submit" 
+              className="btn-primary text-sm"
+            >
+              Save Changes
+            </button>
+          )
         }
       />
 
