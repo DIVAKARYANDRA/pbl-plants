@@ -25,15 +25,28 @@ export default function WishlistDrawer() {
   0
 );
 
-  const applicableOffers = (offers || [])
+ const applicableOffers = (offers || [])
   .filter(
     (offer) =>
       offer.enabled &&
       subtotal >= offer.minimumCartValue
   )
-  .sort(
-    (a,b)=>a.priority-b.priority
-  );
+  .sort((a, b) => a.priority - b.priority);
+
+
+// Monetary offers
+const discountOffer = applicableOffers.find(
+  (offer) =>
+    offer.type === "percentage" ||
+    offer.type === "flat" ||
+    offer.type === "festival"
+);
+
+
+// Free delivery
+const deliveryOffer = applicableOffers.find(
+  (offer) => offer.type === "free_delivery"
+);
 
 
 const activeOffer = applicableOffers[0];
@@ -41,29 +54,38 @@ const activeOffer = applicableOffers[0];
 
 let discount = 0;
 
+if (discountOffer) {
 
-if(activeOffer){
-
-  if(activeOffer.type==="percentage"){
+  if (discountOffer.type === "percentage") {
 
     discount =
-      (subtotal * activeOffer.value) / 100;
+      subtotal *
+      discountOffer.value /
+      100;
 
   }
 
-
-  else if(activeOffer.type==="flat"){
+  else if (discountOffer.type === "flat") {
 
     discount =
-      activeOffer.value;
+      discountOffer.value;
+
+  }
+
+  else if (discountOffer.type === "festival") {
+
+    // Festival behaves like a percentage discount
+    discount =
+      subtotal *
+      discountOffer.value /
+      100;
 
   }
 
 }
 
-
 const finalTotal =
-  Math.max(subtotal - discount,0);
+  Math.max(subtotal - discount, 0);
 
   const handleSend = () => {
     const message = buildWishlistMessage({ businessName: settings.businessName, items, products });
@@ -189,12 +211,12 @@ Subtotal
 
 
 {
-activeOffer && discount > 0 && (
+discountOffer && discount > 0 && (
 
 <div className="flex justify-between text-green-700">
 
 <span>
-{activeOffer.title}
+{discountOffer.title}
 </span>
 
 <span>
@@ -205,6 +227,24 @@ activeOffer && discount > 0 && (
 
 )
 
+}
+
+              {
+deliveryOffer && (
+
+<div className="flex justify-between text-blue-700">
+
+<span>
+🚚 Free Delivery
+</span>
+
+<span>
+Applied
+</span>
+
+</div>
+
+)
 }
 
 
