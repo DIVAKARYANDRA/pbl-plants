@@ -5,7 +5,14 @@ import {
   onAuthStateChanged
 } from "firebase/auth";
 
-import { auth } from "../utils/firebaseConfig";
+import {
+  collection,
+  query,
+  where,
+  getDocs
+} from "firebase/firestore";
+
+import { auth, db } from "../utils/firebaseConfig";
 
 const AuthContext = createContext(null);
 
@@ -16,8 +23,63 @@ export function AuthProvider({ children }) {
   );
 
   const [error, setError] = useState("");
-
+  const [role, setRole] = useState(null);
   const [loading, setLoading] = useState(true);
+
+
+  const fetchUserRole = async (email) => {
+
+  try {
+
+    const usersRef = collection(
+      db,
+      "Users"
+    );
+
+
+    const q = query(
+      usersRef,
+      where("email", "==", email)
+    );
+
+
+    const snapshot = await getDocs(q);
+
+
+    if(!snapshot.empty){
+
+      const userData = snapshot.docs[0].data();
+
+      console.log(
+        "Logged user role:",
+        userData.role
+      );
+
+
+      setRole(
+        userData.role
+      );
+
+    }
+    else {
+
+      console.error(
+        "User role not found"
+      );
+
+    }
+
+
+  } catch(error){
+
+    console.error(
+      "Fetching role failed:",
+      error
+    );
+
+  }
+
+};
 
 useEffect(() => {
 
@@ -27,8 +89,12 @@ useEffect(() => {
 
       if (user) {
         setIsAuthenticated(true);
+        await fetchUserRole(
+          user.email
+        );
       } else {
         setIsAuthenticated(false);
+        setRole(null);
       }
 
       setLoading(false);
@@ -82,6 +148,7 @@ useEffect(() => {
     await signOut(auth);
 
     setIsAuthenticated(false);
+    setRole(null);
 
     sessionStorage.removeItem(
       "pbl-admin-auth"
@@ -98,6 +165,7 @@ useEffect(() => {
     <AuthContext.Provider
       value={{
         isAuthenticated,
+        role,
         login,
         logout,
         error,
