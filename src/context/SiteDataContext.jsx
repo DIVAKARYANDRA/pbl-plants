@@ -102,7 +102,7 @@ export function SiteDataProvider({ children }) {
 ).map((offer,index)=>({
  ...offer,
  priority: offer.priority ?? index+1
-}))
+}));
 
 
   // Save migrated structure back to Firebase
