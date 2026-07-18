@@ -85,7 +85,7 @@ useEffect(() => {
 
   const unsubscribe = onAuthStateChanged(
     auth,
-    (user) => {
+    async (user) => {
 
       if (user) {
         setIsAuthenticated(true);
