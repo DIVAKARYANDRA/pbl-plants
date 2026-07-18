@@ -9,6 +9,7 @@ const EMPTY = {
   type: "percentage",
   enabled: true,
   minimumCartValue: 3000,
+  priority:1,
   value: 10,
   message: "",
 };
@@ -84,7 +85,8 @@ export default function AdminOffers(){
     const payload={
       ...form,
       minimumCartValue:Number(form.minimumCartValue),
-      value:Number(form.value)
+      value:Number(form.value),
+      priority:Number(form.priority)
     };
 
 
@@ -322,6 +324,17 @@ type="number"
 className={inputClass}
 value={form.value}
 onChange={set("value")}
+/>
+
+</Field>
+
+  <Field label="Priority">
+
+<input
+type="number"
+className={inputClass}
+value={form.priority}
+onChange={set("priority")}
 />
 
 </Field>
