@@ -33,7 +33,7 @@ export function AuthProvider({ children }) {
 
     const usersRef = collection(
       db,
-      "Users"
+      "users"
     );
 
 
