@@ -108,16 +108,18 @@ export function SiteDataProvider({ children }) {
 
 
   // Save migrated structure back to Firebase
-  await setDoc(
-    ref,
-    migratedData
-  );
+  // await setDoc(
+  //   ref,
+  //   migratedData
+  // );
 
 
-  setDb(
-    migratedData
-  );
+  // setDb(
+  //   migratedData
+  // );
 
+  // Do not write during public website loading
+  setDb(migratedData);
 
   console.log(
     "Loaded data from Firebase with migration"
@@ -132,10 +134,10 @@ export function SiteDataProvider({ children }) {
         );
 
 
-        await setDoc(
-          ref,
-          seedDatabase
-        );
+        // await setDoc(
+        //   ref,
+        //   seedDatabase
+        // );
 
 
         setDb(seedDatabase);
