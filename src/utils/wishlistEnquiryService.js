@@ -4,6 +4,7 @@ import {
   getDocs,
   orderBy,
   query,
+  where,
   serverTimestamp,
   doc,
   updateDoc,
@@ -102,5 +103,25 @@ export async function assignTrackingId(enquiryId) {
   });
 
   return trackingId;
+
+}
+
+export async function getEnquiryByTrackingId(trackingId) {
+
+  const q = query(
+    collection(db, COLLECTION),
+    where("trackingId", "==", trackingId)
+  );
+
+  const snapshot = await getDocs(q);
+
+  if (snapshot.empty) {
+    return null;
+  }
+
+  return {
+    id: snapshot.docs[0].id,
+    ...snapshot.docs[0].data(),
+  };
 
 }
