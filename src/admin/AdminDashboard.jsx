@@ -1,11 +1,22 @@
 import { Link } from "react-router-dom";
 import { useSiteData } from "../context/SiteDataContext";
 import { PageHeader } from "./components/AdminUI";
+import { useEffect, useState } from "react";
+import { getWishlistEnquiryCount } from "../utils/wishlistEnquiryService";
 
 export default function AdminDashboard() {
   const { products, categories, testimonials, faqs, gallery } = useSiteData();
   const featuredCount = products.filter((p) => p.featured).length;
-  const wishlistInquiries = Number(window.localStorage.getItem("pbl-plants:wishlist-inquiries") || 0);
+  const [wishlistInquiries, setWishlistInquiries] = useState(0);
+
+      useEffect(() => {
+        async function load() {
+          const count = await getWishlistEnquiryCount();
+          setWishlistInquiries(count);
+        }
+      
+        load();
+      }, []);
 
   const stats = [
     { label: "Total Products", value: products.length, to: "/admin/products", icon: "leaf" },
