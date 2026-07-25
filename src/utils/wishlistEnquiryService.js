@@ -8,6 +8,7 @@ import {
   doc,
   updateDoc,
   deleteDoc,
+  getDoc,
 } from "firebase/firestore";
 
 import { db } from "./firebaseConfig";
@@ -55,4 +56,51 @@ export async function deleteWishlistEnquiry(id) {
   await deleteDoc(
     doc(db, COLLECTION, id)
   );
+}
+
+
+// Generate a readable tracking id
+export function generateTrackingId() {
+
+  const now = new Date();
+
+  const yy = String(now.getFullYear()).slice(-2);
+  const mm = String(now.getMonth() + 1).padStart(2, "0");
+  const dd = String(now.getDate()).padStart(2, "0");
+
+  const random = Math.random()
+    .toString(36)
+    .substring(2, 6)
+    .toUpperCase();
+
+  return `PBL-${yy}${mm}${dd}-${random}`;
+}
+
+
+// Generate and save tracking id for an enquiry
+export async function assignTrackingId(enquiryId) {
+
+  const ref = doc(db, COLLECTION, enquiryId);
+
+  const snap = await getDoc(ref);
+
+  if (!snap.exists()) {
+    throw new Error("Enquiry not found");
+  }
+
+  const data = snap.data();
+
+  // Already generated
+  if (data.trackingId) {
+    return data.trackingId;
+  }
+
+  const trackingId = generateTrackingId();
+
+  await updateDoc(ref, {
+    trackingId,
+  });
+
+  return trackingId;
+
 }
