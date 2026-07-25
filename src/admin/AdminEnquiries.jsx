@@ -67,20 +67,29 @@ export default function AdminEnquiries() {
       font-semibold
 
       ${
-        e.status === "New"
-          ? "bg-green-100 text-green-700"
+e.status === "New"
+? "bg-green-100 text-green-700"
 
-          : e.status === "Contacted"
-          ? "bg-yellow-100 text-yellow-700"
+: e.status === "Customer Responded"
+? "bg-yellow-100 text-yellow-700"
 
-          : e.status === "Quotation Sent"
-          ? "bg-blue-100 text-blue-700"
+: e.status === "Payment Pending"
+? "bg-orange-100 text-orange-700"
 
-          : e.status === "Order Confirmed"
-          ? "bg-purple-100 text-purple-700"
+: e.status === "Payment Received"
+? "bg-sky-100 text-sky-700"
 
-          : "bg-gray-100 text-gray-700"
-      }
+: e.status === "Order Confirmed"
+? "bg-purple-100 text-purple-700"
+
+: e.status === "Out for Delivery"
+? "bg-indigo-100 text-indigo-700"
+
+: e.status === "Delivered"
+? "bg-emerald-100 text-emerald-700"
+
+: "bg-red-100 text-red-700"
+}
     `}
   >
     {e.status}
@@ -121,18 +130,54 @@ export default function AdminEnquiries() {
 
                 <div className="flex flex-col sm:flex-row gap-2">
 
-                  <button
-                    onClick={async () => {
-                      await updateWishlistStatus(
-                        e.id,
-                        "Contacted"
-                      );
-                      load();
-                    }}
-                    className="btn-secondary text-sm"
-                  >
-                    Update Status
-                  </button>
+                  <select
+  value={e.status}
+  onChange={async (event) => {
+
+    await updateWishlistStatus(
+      e.id,
+      event.target.value
+    );
+
+    load();
+
+  }}
+  className="border rounded-lg px-3 py-2 text-sm bg-white"
+>
+
+  <option value="New">
+    🟢 New
+  </option>
+
+  <option value="Customer Responded">
+    🟡 Customer Responded
+  </option>
+
+  <option value="Payment Pending">
+    🟠 Payment Pending
+  </option>
+
+  <option value="Payment Received">
+    🔵 Payment Received
+  </option>
+
+  <option value="Order Confirmed">
+    🟣 Order Confirmed
+  </option>
+
+  <option value="Out for Delivery">
+    🚚 Out for Delivery
+  </option>
+
+  <option value="Delivered">
+    ✅ Delivered
+  </option>
+
+  <option value="Cancelled">
+    ❌ Cancelled
+  </option>
+
+</select>
 
                   <button
                     onClick={async () => {
