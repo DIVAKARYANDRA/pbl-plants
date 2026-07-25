@@ -15,14 +15,11 @@ import { db } from "./firebaseConfig";
 const COLLECTION = "wishlistEnquiries";
 
 export async function createWishlistEnquiry(data) {
-  return addDoc(
-    collection(db, COLLECTION),
-    {
-      ...data,
-      createdAt: serverTimestamp(),
-      status: "New",
-    }
-  );
+  return addDoc(collection(db, COLLECTION), {
+    ...data,
+    createdAt: serverTimestamp(),
+    status: "New",
+  });
 }
 
 export async function getWishlistEnquiries() {
@@ -37,6 +34,14 @@ export async function getWishlistEnquiries() {
     id: doc.id,
     ...doc.data(),
   }));
+}
+
+export async function getWishlistEnquiryCount() {
+  const snapshot = await getDocs(
+    collection(db, COLLECTION)
+  );
+
+  return snapshot.size;
 }
 
 export async function updateWishlistStatus(id, status) {
