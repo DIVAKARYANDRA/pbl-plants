@@ -74,9 +74,9 @@ export default function AdminEnquiries() {
           {enquiries.map((e) => (
             <div
               key={e.id}
-              className="bg-white rounded-xl2 shadow-card p-6"
+              className="bg-white rounded-xl2 shadow-card p-5 sm:p-6"
             >
-              <div className="flex justify-between items-start">
+              <div className="flex flex-col lg:flex-row lg:justify-between lg:items-start gap-5">
 
                 <div>
 
@@ -165,7 +165,7 @@ e.status === "New"
 </div>
                 </div>
 
-                <div className="flex flex-col sm:flex-row gap-2">
+                <div className="flex flex-col sm:flex-row gap-3 w-full lg:w-auto">
 
                   <select
   value={e.status}
@@ -179,7 +179,7 @@ e.status === "New"
     load();
 
   }}
-  className="border rounded-lg px-3 py-2 text-sm bg-white"
+  className="border rounded-lg px-3 py-2 text-sm bg-white w-full sm:w-auto"
 >
 
   <option value="New">
@@ -218,7 +218,7 @@ e.status === "New"
 
                   <button
   onClick={() => handleTrackingLink(e)}
-  className="btn-secondary text-sm"
+  className="btn-secondary text-sm w-full sm:w-auto"
 >
   {e.trackingId
     ? "📋 Copy Tracking Link"
@@ -240,7 +240,7 @@ e.status === "New"
                       load();
 
                     }}
-                    className="px-3 py-2 rounded-lg border border-red-200 text-red-600 hover:bg-red-50 text-sm"
+                    className="text-red-600 text-sm border border-red-200 rounded-full px-4 py-2 w-full sm:w-auto"
                   >
                     🗑 Delete
                   </button>
