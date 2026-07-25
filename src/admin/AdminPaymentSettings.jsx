@@ -1,7 +1,7 @@
 import { useState, useEffect } from "react";
 import { useSiteData } from "../context/SiteDataContext";
 import { PageHeader, Field, inputClass } from "./components/AdminUI";
-import ImageUploader from "./ImageUploader";
+import ImageUploader from "./components/ImageUploader";
 
 export default function AdminPaymentSettings() {
 
