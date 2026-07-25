@@ -58,7 +58,7 @@ export default function TrackOrder() {
           🌿
         </div>
 
-        <h1 className="text-3xl font-bold mt-6 text-green-800">
+        <h1 className="mt-6 font-display text-5xl md:text-6xl text-white drop-shadow-[0_0_25px_rgba(255,255,255,.25)]">
           Order Not Found
         </h1>
 
@@ -160,23 +160,25 @@ const currentStep =
 
   </div>
 
-  <h1 className="mt-6 font-display text-5xl md:text-6xl text-forest-800">
+  <h1 className="mt-6 font-display text-5xl md:text-6xl text-white drop-shadow-[0_0_25px_rgba(255,255,255,.25)]">
+
+    
 
     Track Your Order
 
   </h1>
 
-  <p className="mt-5 text-xl text-forest-700 max-w-xl mx-auto">
+  <p className="mt-5 text-xl text-green-100 max-w-xl mx-auto">
 
     Your plants are carefully nurtured before reaching their new home.
 
   </p>
 
-  <div className="mt-10 inline-flex items-center gap-3 px-6 py-3 rounded-full bg-white shadow-xl">
+  <div className="mt-10 inline-flex items-center gap-3 px-6 py-3 rounded-full bg-white/10 backdrop-blur-lg border border-white/20 shadow-2xl">
 
     <span className="h-3 w-3 rounded-full bg-green-500 animate-ping"/>
 
-    <span className="font-semibold">
+    <span className="font-semibold text-white">
 
       Live Order Tracking
 
@@ -194,10 +196,12 @@ const currentStep =
 
     {/* Progress Line */}
 
-    <div className="absolute top-7 left-0 w-full h-2 rounded-full bg-green-100">
+    <div className="absolute top-7 left-0 w-full h-2 rounded-full bg-green-100 bg-white/10">
 
       <div
-        className="h-2 rounded-full bg-green-600 transition-all duration-1000"
+        className="h-2 rounded-full bg-gradient-to-r
+from-green-400
+to-emerald-300 transition-all duration-1000"
         style={{
           width: `${(currentStep/(ORDER_STEPS.length-1))*100}%`
         }}
@@ -235,8 +239,15 @@ const currentStep =
           <div
             className={`h-14 w-14 rounded-full flex items-center justify-center text-2xl transition-all duration-700 ${
               currentStep >= index*2
-              ? "bg-green-600 text-white scale-110 shadow-lg"
-              : "bg-white border-2 border-green-200"
+              ? "bg-gradient-to-br
+from-green-400
+to-emerald-500
+text-white
+shadow-[0_0_25px_rgba(34,197,94,.45)] scale-110 shadow-lg"
+              : "bg-white/10
+border
+border-white/20
+text-white"
             }`}
           >
 
@@ -262,17 +273,22 @@ const currentStep =
 
 
 
-        <div className="mt-12 bg-white rounded-xl2 shadow-card p-8">
+        <div className="mt-12 bg-white/10
+backdrop-blur-xl
+border border-white/20
+rounded-xl2
+shadow-2xl
+p-8">
 
           <div className="grid md:grid-cols-2 gap-8">
 
             <div>
 
-              <p className="text-sm text-gray-500">
+              <p className="text-sm text-green-200/80">
                 Tracking ID
               </p>
 
-              <h2 className="text-xl font-semibold mt-1">
+              <h2 className="text-xl font-semibold text-white mt-1">
 
                 {order.trackingId}
 
@@ -280,7 +296,7 @@ const currentStep =
 
 
 
-              <p className="text-sm text-gray-500 mt-6">
+              <p className="text-sm text-green-200/80 mt-6">
 
                 Customer
 
@@ -294,13 +310,16 @@ const currentStep =
 
 
 
-              <p className="text-sm text-gray-500 mt-6">
+              <p className="text-sm text-green-200/80 mt-6">
 
                 Current Status
 
               </p>
 
-              <div className="inline-block mt-2 px-4 py-2 rounded-full bg-green-100 text-green-700 font-semibold">
+              <div className="inline-block mt-2 px-4 py-2 rounded-full bg-green-500/20
+text-green-300
+border
+border-green-400/30 font-semibold text-white">
 
                 {order.status}
 
@@ -312,7 +331,7 @@ const currentStep =
 
             <div>
 
-              <p className="text-sm text-gray-500">
+              <p className="text-sm text-green-200/80">
 
                 Ordered Plants
 
@@ -324,7 +343,7 @@ const currentStep =
 
                   <div
                     key={item.productId}
-                    className="flex justify-between border-b pb-2"
+                    className="flex justify-between border-b border-white/10 pb-2"
                   >
 
                     <span>
