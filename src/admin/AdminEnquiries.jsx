@@ -5,6 +5,7 @@ import {
   updateWishlistStatus,
 } from "../utils/wishlistEnquiryService";
 import { PageHeader } from "./components/AdminUI";
+import { buildWhatsAppMessage } from "../utils/whatsappTemplates";
 
 export default function AdminEnquiries() {
   const [enquiries, setEnquiries] = useState([]);
@@ -360,8 +361,8 @@ selectedEnquiry.offerApplied && (
     onClick={() => {
 
       const message = encodeURIComponent(
-        selectedEnquiry.whatsappMessage || ""
-      );
+  buildWhatsAppMessage(selectedEnquiry)
+);
 
       window.open(
         `https://wa.me/?text=${message}`,
