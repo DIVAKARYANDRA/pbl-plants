@@ -1,5 +1,5 @@
 import { Link } from "react-router-dom";
-import { useEffect } from "react";
+import { useEffect, useState  } from "react";
 import { useWishlist } from "../context/WishlistContext";
 import { useSiteData } from "../context/SiteDataContext";
 import { formatPrice, buildWishlistMessage, buildWhatsAppLink } from "../utils/whatsapp";
@@ -8,6 +8,14 @@ import { createWishlistEnquiry } from "../utils/wishlistEnquiryService";
 export default function WishlistDrawer() {
   const { items, removeItem, updateQty, isOpen, closeDrawer, clear } = useWishlist();
   const { products, settings, offers } = useSiteData();
+  const [showCustomerForm, setShowCustomerForm] = useState(false);
+
+const [customer, setCustomer] = useState({
+  name: "",
+  phone: "",
+  city: "",
+  notes: "",
+});
 
   useEffect(() => {
     document.body.style.overflow = isOpen ? "hidden" : "";
@@ -90,6 +98,16 @@ const finalTotal =
 
   const handleSend = async () => {
 
+     if (!customer.name.trim()) {
+    alert("Please enter your name.");
+    return;
+  }
+
+  if (!customer.phone.trim()) {
+    alert("Please enter your phone number.");
+    return;
+  }
+
   const message = buildWishlistMessage({
     businessName: settings.businessName,
     items,
@@ -105,27 +123,32 @@ const finalTotal =
 
     await createWishlistEnquiry({
 
-      items: detailedItems.map(i => ({
-        productId: i.product.id,
-        productName: i.product.name,
-        qty: i.qty,
-        unitPrice: i.product.discountPrice ?? i.product.price,
-        lineTotal:
-          (i.product.discountPrice ?? i.product.price) * i.qty,
-      })),
+  customerName: customer.name,
+  phone: customer.phone,
+  city: customer.city,
+  notes: customer.notes,
 
-      subtotal,
-      discount,
-      finalTotal,
+  items: detailedItems.map(i => ({
+    productId: i.product.id,
+    productName: i.product.name,
+    qty: i.qty,
+    unitPrice: i.product.discountPrice ?? i.product.price,
+    lineTotal:
+      (i.product.discountPrice ?? i.product.price) * i.qty,
+  })),
 
-      offerApplied:
-        discountOffer?.title ||
-        deliveryOffer?.title ||
-        "",
+  subtotal,
+  discount,
+  finalTotal,
 
-      whatsappMessage: message,
+  offerApplied:
+    discountOffer?.title ||
+    deliveryOffer?.title ||
+    "",
 
-    });
+  whatsappMessage: message,
+
+});
 
   } catch (err) {
 
@@ -143,6 +166,15 @@ const finalTotal =
     "_blank",
     "noopener,noreferrer"
   );
+
+    setShowCustomerForm(false);
+
+setCustomer({
+    name: "",
+    phone: "",
+    city: "",
+    notes: "",
+});
 
   try {
 
@@ -329,7 +361,10 @@ Estimated Total
 
 
 </div>
-            <button onClick={handleSend} className="btn-gold w-full">
+            <button
+    onClick={() => setShowCustomerForm(true)}
+    className="btn-gold w-full"
+>
               <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor">
                 <path d="M12.04 2c-5.5 0-9.96 4.46-9.96 9.96 0 1.76.46 3.44 1.34 4.94L2 22l5.25-1.38a9.9 9.9 0 0 0 4.79 1.22h.01c5.5 0 9.96-4.46 9.96-9.96S17.54 2 12.04 2zm5.8 14.1c-.24.68-1.4 1.3-1.93 1.36-.5.06-1.05.29-3.5-.73-2.95-1.22-4.8-4.2-4.94-4.4-.14-.2-1.18-1.57-1.18-3 0-1.42.75-2.12 1.02-2.41.27-.29.58-.36.78-.36.2 0 .39 0 .56.01.18.01.42-.07.65.5.24.58.82 2 .9 2.15.07.14.12.31.02.5-.1.19-.15.31-.3.48-.15.17-.32.38-.45.51-.15.15-.31.31-.13.6.17.29.77 1.28 1.66 2.07 1.14 1.02 2.1 1.34 2.4 1.49.29.15.46.13.63-.08.17-.2.72-.83.91-1.12.19-.29.38-.24.63-.14.26.1 1.63.77 1.91.91.29.14.48.21.55.33.07.12.07.7-.17 1.38z" />
               </svg>
@@ -341,6 +376,102 @@ Estimated Total
           </div>
         )}
       </aside>
+
+
+      {
+showCustomerForm && (
+
+<div className="fixed inset-0 z-[60] bg-black/50 flex items-center justify-center p-5">
+
+<div className="bg-white rounded-xl w-full max-w-md p-6">
+
+<h2 className="font-display text-2xl mb-5">
+
+Complete Your Enquiry
+
+</h2>
+
+<div className="space-y-4">
+
+<input
+placeholder="Full Name *"
+value={customer.name}
+onChange={(e)=>
+setCustomer({
+...customer,
+name:e.target.value
+})
+}
+className="w-full border rounded-lg p-3"
+/>
+
+<input
+placeholder="Phone Number *"
+value={customer.phone}
+onChange={(e)=>
+setCustomer({
+...customer,
+phone:e.target.value
+})
+}
+className="w-full border rounded-lg p-3"
+/>
+
+<input
+placeholder="City"
+value={customer.city}
+onChange={(e)=>
+setCustomer({
+...customer,
+city:e.target.value
+})
+}
+className="w-full border rounded-lg p-3"
+/>
+
+<textarea
+placeholder="Additional Notes"
+rows={3}
+value={customer.notes}
+onChange={(e)=>
+setCustomer({
+...customer,
+notes:e.target.value
+})
+}
+className="w-full border rounded-lg p-3"
+/>
+
+<div className="flex gap-3">
+
+<button
+onClick={()=>setShowCustomerForm(false)}
+className="flex-1 border rounded-lg py-3"
+>
+
+Cancel
+
+</button>
+
+<button
+onClick={handleSend}
+className="flex-1 btn-gold"
+>
+
+Continue to WhatsApp
+
+</button>
+
+</div>
+
+</div>
+
+</div>
+
+</div>
+
+)
+}
     </>
   );
 }
