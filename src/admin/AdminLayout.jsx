@@ -19,6 +19,11 @@ const NAV = [
     label: "Payment Settings",
     icon: "wallet"
   },
+  {
+    to: "/admin/analytics",
+    label: "Order Analytics",
+    icon: "chart"
+  },
 ];
 
 const ICONS = {
@@ -37,6 +42,8 @@ const ICONS = {
   wallet: (
       <path d="M3 7a2 2 0 012-2h13a2 2 0 012 2v10a2 2 0 01-2 2H5a2 2 0 01-2-2V7zm14 5h3m-3 0a2 2 0 100 4h3v-4h-3z" />
     ),
+  chart:
+<path d="M5 17V9m7 8V5m7 12v-6M3 21h18"/>
 };
 
 function Icon({ name }) {
