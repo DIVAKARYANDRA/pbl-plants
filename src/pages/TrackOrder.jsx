@@ -95,7 +95,10 @@ const currentStep =
     0
   );
 
-  const leaves = Array.from({ length: 12 });
+  const leaves = [
+  5, 12, 20, 28, 36, 45,
+  55, 64, 73, 82, 90, 96
+];
 
 
 
@@ -127,23 +130,23 @@ const currentStep =
 
   {/* Floating Leaves */}
 
-  {leaves.map((_, i) => (
+  {leaves.map((left, i) => (
 
-    <div
-      key={i}
-      className="absolute text-green-500 opacity-20 animate-[leaf_20s_linear_infinite]"
-      style={{
-        left: `${Math.random() * 100}%`,
-        animationDelay: `${i * 2}s`,
-        fontSize: `${18 + Math.random() * 16}px`
-      }}
-    >
+  <div
+    key={i}
+    className="absolute text-green-500 opacity-20 animate-[leaf_18s_linear_infinite]"
+    style={{
+      left: `${left}%`,
+      top: "-60px",
+      animationDelay: `${i * 1.4}s`,
+      animationDuration: `${14 + i}s`,
+      fontSize: `${22 + (i % 4) * 6}px`
+    }}
+  >
+    🍃
+  </div>
 
-      🍃
-
-    </div>
-
-  ))}
+))}
 
 </div>
 
