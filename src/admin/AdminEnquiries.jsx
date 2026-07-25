@@ -9,6 +9,7 @@ import { PageHeader } from "./components/AdminUI";
 export default function AdminEnquiries() {
   const [enquiries, setEnquiries] = useState([]);
   const [loading, setLoading] = useState(true);
+  const [selectedEnquiry, setSelectedEnquiry] = useState(null);
 
   async function load() {
     setLoading(true);
@@ -157,30 +158,20 @@ export default function AdminEnquiries() {
 
               </div>
 
-              <div className="mt-5 border-t pt-4">
+              <div className="mt-5 border-t pt-4 flex justify-between items-center">
 
-                {e.items?.map((item) => (
+  <span className="text-sm text-forest-700">
+    {e.items?.length || 0} Products
+  </span>
 
-                  <div
-                    key={item.productId}
-                    className="flex justify-between py-1"
-                  >
+  <button
+    onClick={() => setSelectedEnquiry(e)}
+    className="btn-secondary text-sm"
+  >
+    View Details
+  </button>
 
-                    <span>
-
-                      {item.productName}
-
-                      × {item.qty}
-
-                    </span>
-
-                    <span>
-
-                      ₹{item.lineTotal}
-
-                    </span>
-
-                  </div>
+</div>
 
                 ))}
 
@@ -190,6 +181,145 @@ export default function AdminEnquiries() {
           ))}
         </div>
       )}
+
+      {selectedEnquiry && (
+
+<div className="fixed inset-0 bg-black/50 z-50 flex items-center justify-center p-5">
+
+<div className="bg-white rounded-xl2 w-full max-w-2xl max-h-[90vh] overflow-y-auto">
+
+<div className="flex justify-between items-center p-6 border-b">
+
+<h2 className="font-display text-2xl text-forest-800">
+Customer Enquiry
+</h2>
+
+<button
+onClick={()=>setSelectedEnquiry(null)}
+className="text-2xl"
+>
+×
+</button>
+
+</div>
+
+<div className="p-6 space-y-6">
+
+<div>
+
+<h3 className="font-semibold text-lg">
+{selectedEnquiry.customerName}
+</h3>
+
+<p>📞 {selectedEnquiry.phone}</p>
+
+<p>📍 {selectedEnquiry.city}</p>
+
+{
+selectedEnquiry.notes && (
+<p className="mt-2">
+📝 {selectedEnquiry.notes}
+</p>
+)
+}
+
+</div>
+
+<hr/>
+
+<div>
+
+<h3 className="font-semibold mb-3">
+Products
+</h3>
+
+{selectedEnquiry.items?.map(item=>(
+
+<div
+key={item.productId}
+className="flex justify-between py-2 border-b"
+>
+
+<div>
+
+<div className="font-medium">
+{item.productName}
+</div>
+
+<div className="text-sm text-gray-500">
+Qty : {item.qty}
+</div>
+
+</div>
+
+<div>
+₹{item.lineTotal}
+</div>
+
+</div>
+
+))}
+
+</div>
+
+<hr/>
+
+<div className="space-y-2">
+
+<div className="flex justify-between">
+
+<span>Subtotal</span>
+
+<span>
+₹{selectedEnquiry.subtotal}
+</span>
+
+</div>
+
+<div className="flex justify-between">
+
+<span>Discount</span>
+
+<span>
+₹{selectedEnquiry.discount}
+</span>
+
+</div>
+
+<div className="flex justify-between font-bold text-lg">
+
+<span>Final Total</span>
+
+<span>
+₹{selectedEnquiry.finalTotal}
+</span>
+
+</div>
+
+</div>
+
+{
+selectedEnquiry.offerApplied && (
+
+<div>
+
+🎁 Offer Applied :
+<strong className="ml-2">
+{selectedEnquiry.offerApplied}
+</strong>
+
+</div>
+
+)
+}
+
+</div>
+
+</div>
+
+</div>
+
+)}
     </div>
   );
 }
