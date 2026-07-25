@@ -15,7 +15,6 @@ export default function AdminPaymentSettings() {
     ifsc: "",
     gpayNumber: "",
     phonePeNumber: "",
-    qrCode: ""
   });
 
   useEffect(() => {
@@ -184,17 +183,6 @@ export default function AdminPaymentSettings() {
 
         </Field>
 
-
-
-        <ImageUploader
-
-          label="Payment QR Code"
-
-          value={payment.qrCode}
-
-          onChange={(url)=>updateField("qrCode",url)}
-
-        />
 
 
 
