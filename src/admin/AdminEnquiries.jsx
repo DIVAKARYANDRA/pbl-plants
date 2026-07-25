@@ -6,11 +6,13 @@ import {
 } from "../utils/wishlistEnquiryService";
 import { PageHeader } from "./components/AdminUI";
 import { buildWhatsAppMessage } from "../utils/whatsappTemplates";
+import { useSiteData } from "../context/SiteDataContext";
 
 export default function AdminEnquiries() {
   const [enquiries, setEnquiries] = useState([]);
   const [loading, setLoading] = useState(true);
   const [selectedEnquiry, setSelectedEnquiry] = useState(null);
+  const { settings } = useSiteData();
 
   async function load() {
     setLoading(true);
@@ -371,8 +373,11 @@ selectedEnquiry.offerApplied && (
   }
 
   const message = encodeURIComponent(
-    buildWhatsAppMessage(selectedEnquiry)
-  );
+  buildWhatsAppMessage(
+    selectedEnquiry,
+    settings.paymentSettings
+  )
+);
 
   window.open(
     `https://wa.me/${phone}?text=${message}`,
