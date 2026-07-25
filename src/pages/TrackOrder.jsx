@@ -239,10 +239,7 @@ to-emerald-300 transition-all duration-1000"
           <div
             className={`h-14 w-14 rounded-full flex items-center justify-center text-2xl transition-all duration-700 ${
               currentStep >= index*2
-              ? "bg-gradient-to-br
-from-green-400
-to-emerald-500
-text-white
+              ? "bg-gradient-to-br from-green-400 to-emerald-500 text-white
 shadow-[0_0_25px_rgba(34,197,94,.45)] scale-110 shadow-lg"
               : "bg-white/10
 border
