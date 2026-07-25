@@ -69,3 +69,33 @@ h1, h2, h3, h4, .font-display {
     scroll-behavior: auto !important;
   }
 }
+
+@keyframes cloud {
+
+  from{
+    transform:translateX(-250px);
+  }
+
+  to{
+    transform:translateX(calc(100vw + 250px));
+  }
+
+}
+
+@keyframes leaf{
+
+  0%{
+    transform:translateY(-80px) rotate(0deg);
+    opacity:0;
+  }
+
+  20%{
+    opacity:.2;
+  }
+
+  100%{
+    transform:translateY(120vh) rotate(360deg);
+    opacity:0;
+  }
+
+}
