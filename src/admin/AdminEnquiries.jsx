@@ -49,31 +49,76 @@ export default function AdminEnquiries() {
 
                 <div>
 
-                  <h2 className="font-display text-xl text-forest-800">
-                    {e.customerName || "Guest Customer"}
-                  </h2>
+                 <h2 className="font-display text-2xl text-forest-800">
+  {e.customerName || "Guest Customer"}
+</h2>
 
-                  <p className="text-sm text-forest-700/60 mt-1">
-                    {e.items?.length || 0} Products
-                  </p>
+                  <div className="mt-3">
 
-                  <p className="text-sm mt-2">
-                    Status:
-                    <strong className="ml-2">
-                      {e.status}
-                    </strong>
-                  </p>
+  <span
+    className={`
+      inline-flex
+      items-center
+      rounded-full
+      px-3
+      py-1
+      text-xs
+      font-semibold
 
-                  <p className="text-sm mt-1">
-                    Total:
-                    <strong className="ml-2">
-                      ₹{e.finalTotal}
-                    </strong>
-                  </p>
+      ${
+        e.status === "New"
+          ? "bg-green-100 text-green-700"
 
+          : e.status === "Contacted"
+          ? "bg-yellow-100 text-yellow-700"
+
+          : e.status === "Quotation Sent"
+          ? "bg-blue-100 text-blue-700"
+
+          : e.status === "Order Confirmed"
+          ? "bg-purple-100 text-purple-700"
+
+          : "bg-gray-100 text-gray-700"
+      }
+    `}
+  >
+    {e.status}
+  </span>
+
+</div>
+
+<div className="space-y-1 mt-3 text-sm text-forest-700">
+
+  <p>
+    📞 {e.phone || "-"}
+  </p>
+
+  <p>
+    📍 {e.city || "-"}
+  </p>
+
+  <p>
+    🛒 {e.items?.length || 0} Products
+  </p>
+
+  <p>
+    💰 ₹{e.finalTotal}
+  </p>
+
+  <p>
+    📅 {
+      e.createdAt?.seconds
+        ? new Date(
+            e.createdAt.seconds * 1000
+          ).toLocaleString("en-IN")
+        : "-"
+    }
+  </p>
+
+</div>
                 </div>
 
-                <div className="flex gap-2">
+                <div className="flex flex-col sm:flex-row gap-2">
 
                   <button
                     onClick={async () => {
@@ -85,7 +130,7 @@ export default function AdminEnquiries() {
                     }}
                     className="btn-secondary text-sm"
                   >
-                    Contacted
+                    Update Status
                   </button>
 
                   <button
@@ -103,9 +148,9 @@ export default function AdminEnquiries() {
                       load();
 
                     }}
-                    className="text-red-600 text-sm"
+                    className="px-3 py-2 rounded-lg border border-red-200 text-red-600 hover:bg-red-50 text-sm"
                   >
-                    Delete
+                    🗑 Delete
                   </button>
 
                 </div>
