@@ -3,6 +3,7 @@ import { useEffect } from "react";
 import { useWishlist } from "../context/WishlistContext";
 import { useSiteData } from "../context/SiteDataContext";
 import { formatPrice, buildWishlistMessage, buildWhatsAppLink } from "../utils/whatsapp";
+import { createWishlistEnquiry } from "../utils/wishlistEnquiryService";
 
 export default function WishlistDrawer() {
   const { items, removeItem, updateQty, isOpen, closeDrawer, clear } = useWishlist();
@@ -87,18 +88,78 @@ if (discountOffer) {
 const finalTotal =
   Math.max(subtotal - discount, 0);
 
-  const handleSend = () => {
-    const message = buildWishlistMessage({ businessName: settings.businessName, items, products, subtotal, discount, finalTotal, discountOffer, deliveryOffer });
-    const link = buildWhatsAppLink(settings.whatsappNumber, message);
-    window.open(link, "_blank", "noopener,noreferrer");
-    try {
-      const key = "pbl-plants:wishlist-inquiries";
-      const current = Number(window.localStorage.getItem(key) || 0);
-      window.localStorage.setItem(key, String(current + 1));
-    } catch (e) {
-      // ignore storage errors
-    }
-  };
+  const handleSend = async () => {
+
+  const message = buildWishlistMessage({
+    businessName: settings.businessName,
+    items,
+    products,
+    subtotal,
+    discount,
+    finalTotal,
+    discountOffer,
+    deliveryOffer,
+  });
+
+  try {
+
+    await createWishlistEnquiry({
+
+      items: detailedItems.map(i => ({
+        productId: i.product.id,
+        productName: i.product.name,
+        qty: i.qty,
+        unitPrice: i.product.discountPrice ?? i.product.price,
+        lineTotal:
+          (i.product.discountPrice ?? i.product.price) * i.qty,
+      })),
+
+      subtotal,
+      discount,
+      finalTotal,
+
+      offerApplied:
+        discountOffer?.title ||
+        deliveryOffer?.title ||
+        "",
+
+      whatsappMessage: message,
+
+    });
+
+  } catch (err) {
+
+    console.error("Failed to save enquiry", err);
+
+  }
+
+  const link = buildWhatsAppLink(
+    settings.whatsappNumber,
+    message
+  );
+
+  window.open(
+    link,
+    "_blank",
+    "noopener,noreferrer"
+  );
+
+  try {
+
+    const key = "pbl-plants:wishlist-inquiries";
+
+    const current = Number(
+      window.localStorage.getItem(key) || 0
+    );
+
+    window.localStorage.setItem(
+      key,
+      String(current + 1)
+    );
+
+  } catch {}
+
+};
 
   return (
     <>
