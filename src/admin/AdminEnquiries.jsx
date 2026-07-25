@@ -173,10 +173,6 @@ export default function AdminEnquiries() {
 
 </div>
 
-                ))}
-
-              </div>
-
             </div>
           ))}
         </div>
