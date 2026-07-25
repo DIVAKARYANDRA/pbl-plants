@@ -217,9 +217,7 @@ export default function AdminOrderAnalytics() {
 
       </div>
 
-    </div>
-
-    <div className="mt-10 bg-white rounded-xl2 shadow-card p-6">
+       <div className="mt-10 bg-white rounded-xl2 shadow-card p-6">
 
 <h2 className="font-display text-2xl text-forest-800 mb-6">
 
@@ -257,6 +255,8 @@ className="font-bold text-lg"
 </div>
 
 </div>
+
+    </div>
 
   );
 
