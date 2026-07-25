@@ -95,33 +95,95 @@ const currentStep =
     0
   );
 
+  const leaves = Array.from({ length: 12 });
+
 
 
   return (
 
-    <div className="min-h-screen bg-gradient-to-b from-green-50 via-white to-green-50">
+    <div className="relative min-h-screen overflow-hidden bg-gradient-to-b from-[#eef8ec] via-white to-[#f8fff8]">
+
+      {/* Floating Background */}
+
+<div className="absolute inset-0 overflow-hidden pointer-events-none">
+
+  {/* Sun */}
+
+  <div className="absolute top-16 right-20 h-40 w-40 rounded-full bg-yellow-200 blur-3xl opacity-30 animate-pulse"/>
+
+  {/* Clouds */}
+
+  <div className="absolute top-24 left-[-200px] animate-[cloud_35s_linear_infinite]">
+
+    <div className="w-40 h-12 rounded-full bg-white shadow-lg opacity-70"/>
+
+  </div>
+
+  <div className="absolute top-44 left-[-260px] animate-[cloud_48s_linear_infinite]">
+
+    <div className="w-56 h-14 rounded-full bg-white shadow-lg opacity-60"/>
+
+  </div>
+
+  {/* Floating Leaves */}
+
+  {leaves.map((_, i) => (
+
+    <div
+      key={i}
+      className="absolute text-green-500 opacity-20 animate-[leaf_20s_linear_infinite]"
+      style={{
+        left: `${Math.random() * 100}%`,
+        animationDelay: `${i * 2}s`,
+        fontSize: `${18 + Math.random() * 16}px`
+      }}
+    >
+
+      🍃
+
+    </div>
+
+  ))}
+
+</div>
 
       <div className="max-w-5xl mx-auto px-6 py-14">
 
-        <div className="text-center">
+        <div className="text-center pt-10">
 
-          <div className="text-6xl">
-            🌿
-          </div>
+  <div className="text-7xl animate-bounce">
 
-          <h1 className="mt-5 text-4xl font-display text-forest-800">
+    🌿
 
-            Track Your Order
+  </div>
 
-          </h1>
+  <h1 className="mt-6 font-display text-5xl md:text-6xl text-forest-800">
 
-          <p className="mt-3 text-forest-700/70">
+    Track Your Order
 
-            Your plants are getting ready for their new home.
+  </h1>
 
-          </p>
+  <p className="mt-5 text-xl text-forest-700 max-w-xl mx-auto">
 
-        </div>
+    Your plants are carefully nurtured before reaching their new home.
+
+  </p>
+
+  <div className="mt-10 inline-flex items-center gap-3 px-6 py-3 rounded-full bg-white shadow-xl">
+
+    <span className="h-3 w-3 rounded-full bg-green-500 animate-ping"/>
+
+    <span className="font-semibold">
+
+      Live Order Tracking
+
+    </span>
+
+  </div>
+
+</div>
+
+       
 
         <div className="mt-16">
 
