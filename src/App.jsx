@@ -26,6 +26,8 @@ import AdminTestimonials from "./admin/AdminTestimonials";
 import AdminFAQ from "./admin/AdminFAQ";
 import AdminEnquiries from "./admin/AdminEnquiries";
 
+import AdminPaymentSettings from "./admin/AdminPaymentSettings";
+
 function Providers({ children }) {
   return (
     <SiteDataProvider>
@@ -66,6 +68,10 @@ export default function App() {
                 path="offers" 
                 element={<AdminOffers />} 
               />
+              <Route
+  path="payment-settings"
+  element={<AdminPaymentSettings />}
+/>
               <Route path="testimonials" element={<AdminTestimonials />} />
               <Route path="faqs" element={<AdminFAQ />} />
                <Route
