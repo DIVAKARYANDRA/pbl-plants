@@ -79,6 +79,22 @@ export default function TrackOrder() {
 
   }
 
+  const ORDER_STEPS = [
+  "New",
+  "Customer Responded",
+  "Payment Pending",
+  "Payment Received",
+  "Order Confirmed",
+  "Out for Delivery",
+  "Delivered",
+];
+
+const currentStep =
+  Math.max(
+    ORDER_STEPS.indexOf(order.status),
+    0
+  );
+
 
 
   return (
@@ -106,6 +122,78 @@ export default function TrackOrder() {
           </p>
 
         </div>
+
+        <div className="mt-16">
+
+  <div className="relative">
+
+    {/* Progress Line */}
+
+    <div className="absolute top-7 left-0 w-full h-2 rounded-full bg-green-100">
+
+      <div
+        className="h-2 rounded-full bg-green-600 transition-all duration-1000"
+        style={{
+          width: `${(currentStep/(ORDER_STEPS.length-1))*100}%`
+        }}
+      />
+
+    </div>
+
+
+    <div className="relative flex justify-between">
+
+      {[
+        {
+          icon:"🌱",
+          label:"Received"
+        },
+        {
+          icon:"📦",
+          label:"Packed"
+        },
+        {
+          icon:"🚚",
+          label:"Delivery"
+        },
+        {
+          icon:"🏡",
+          label:"Delivered"
+        }
+      ].map((step,index)=>(
+
+        <div
+          key={index}
+          className="flex flex-col items-center"
+        >
+
+          <div
+            className={`h-14 w-14 rounded-full flex items-center justify-center text-2xl transition-all duration-700 ${
+              currentStep >= index*2
+              ? "bg-green-600 text-white scale-110 shadow-lg"
+              : "bg-white border-2 border-green-200"
+            }`}
+          >
+
+            {step.icon}
+
+          </div>
+
+          <span className="text-sm mt-3">
+
+            {step.label}
+
+          </span>
+
+        </div>
+
+      ))}
+
+    </div>
+
+  </div>
+
+</div>
 
 
 
