@@ -309,6 +309,28 @@ selectedEnquiry.offerApplied && (
 )
 }
 
+  <div className="flex justify-end pt-6">
+
+  <button
+    onClick={() => {
+
+      const message = encodeURIComponent(
+        selectedEnquiry.whatsappMessage || ""
+      );
+
+      window.open(
+        `https://wa.me/?text=${message}`,
+        "_blank"
+      );
+
+    }}
+    className="btn-primary"
+  >
+    📲 Open WhatsApp
+  </button>
+
+</div>
+
 </div>
 
 </div>
