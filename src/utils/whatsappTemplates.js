@@ -1,5 +1,5 @@
-export function buildWhatsAppMessage(enquiry) {
-
+export function buildWhatsAppMessage(enquiry, paymentSettings = {}) {
+  
   const items = enquiry.items
     .map(
       (i) =>
@@ -50,14 +50,40 @@ PBL Plants 🌿`;
 
     case "Payment Pending":
 
-      return `Hi ${enquiry.customerName},
+return `Hi ${enquiry.customerName},
 
-Your order is ready for confirmation.
+Your quotation is ready.
 
-Kindly complete your payment.
+🌿 Plants Selected
 
-Once payment is received,
-we'll confirm your order immediately.
+${items}
+
+--------------------------------
+
+Estimated Total
+
+₹${enquiry.finalTotal}
+
+--------------------------------
+
+Kindly complete your payment using any one of the below methods.
+
+💳 UPI ID
+${paymentSettings.upiId || "-"}
+
+🏦 Bank
+${paymentSettings.bankName || "-"}
+
+👤 Account Holder
+${paymentSettings.accountHolder || "-"}
+
+🔢 Account Number
+${paymentSettings.accountNumber || "-"}
+
+🏛 IFSC
+${paymentSettings.ifsc || "-"}
+
+After payment, kindly send the payment screenshot here.
 
 Thank you.
 
