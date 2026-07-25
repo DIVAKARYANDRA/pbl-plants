@@ -14,6 +14,11 @@ const NAV = [
   { to: "/admin/testimonials", label: "Testimonials", icon: "star" },
   { to: "/admin/faqs", label: "FAQs", icon: "help" },
   { to: "/admin/enquiries", label: "Customer Enquiries", icon: "mail" },
+  {
+    to: "/admin/payment-settings",
+    label: "Payment Settings",
+    icon: "wallet"
+  },
 ];
 
 const ICONS = {
@@ -28,6 +33,9 @@ const ICONS = {
   help: <path d="M12 22a10 10 0 100-20 10 10 0 000 20zM9.5 9a2.5 2.5 0 015 .5c0 1.5-2 1.8-2 3.5m0 3h.01" />,
   mail: (
       <path d="M4 6h16v12H4V6zm0 0l8 6 8-6" />
+    ),
+  wallet: (
+      <path d="M3 7a2 2 0 012-2h13a2 2 0 012 2v10a2 2 0 01-2 2H5a2 2 0 01-2-2V7zm14 5h3m-3 0a2 2 0 100 4h3v-4h-3z" />
     ),
 };
 
