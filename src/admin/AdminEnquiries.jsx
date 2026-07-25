@@ -3,6 +3,7 @@ import {
   getWishlistEnquiries,
   deleteWishlistEnquiry,
   updateWishlistStatus,
+  assignTrackingId,
 } from "../utils/wishlistEnquiryService";
 import { PageHeader } from "./components/AdminUI";
 import { buildWhatsAppMessage } from "../utils/whatsappTemplates";
@@ -30,6 +31,32 @@ export default function AdminEnquiries() {
   useEffect(() => {
     load();
   }, []);
+
+  async function handleTrackingLink(enquiry) {
+
+  try {
+
+    const trackingId =
+      await assignTrackingId(enquiry.id);
+
+    const url =
+      `${window.location.origin}/track/${trackingId}`;
+
+    await navigator.clipboard.writeText(url);
+
+    alert("Tracking link copied to clipboard.");
+
+    load();
+
+  } catch (err) {
+
+    console.error(err);
+
+    alert("Unable to generate tracking link.");
+
+  }
+
+}
 
   return (
     <div>
@@ -119,6 +146,13 @@ e.status === "New"
   </p>
 
   <p>
+  🔗 Tracking ID:
+  <strong className="ml-2">
+    {e.trackingId || "Not Generated"}
+  </strong>
+</p>
+
+  <p>
     📅 {
       e.createdAt?.seconds
         ? new Date(
@@ -181,6 +215,15 @@ e.status === "New"
   </option>
 
 </select>
+
+                  <button
+  onClick={() => handleTrackingLink(e)}
+  className="btn-secondary text-sm"
+>
+  {e.trackingId
+    ? "📋 Copy Tracking Link"
+    : "🔗 Generate Tracking Link"}
+</button>
 
                   <button
                     onClick={async () => {
