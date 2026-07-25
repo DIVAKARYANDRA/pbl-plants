@@ -42,6 +42,17 @@ export default function AdminOrderAnalytics() {
 
   const analytics = useMemo(() => {
 
+    const statusCounts = {
+      "New": 0,
+      "Customer Responded": 0,
+      "Payment Pending": 0,
+      "Payment Received": 0,
+      "Order Confirmed": 0,
+      "Out for Delivery": 0,
+      "Delivered": 0,
+      "Cancelled": 0,
+    };
+
     let revenue = 0;
 
     let delivered = 0;
@@ -57,6 +68,8 @@ export default function AdminOrderAnalytics() {
     let totalOrderValue = 0;
 
     orders.forEach(order => {
+      statusCounts[order.status] =
+  (statusCounts[order.status] || 0) + 1;
 
       totalOrderValue +=
         Number(order.finalTotal || 0);
@@ -111,6 +124,8 @@ export default function AdminOrderAnalytics() {
       totalOrders: orders.length,
 
       revenue,
+
+      statusCounts,
 
       delivered,
 
@@ -203,6 +218,45 @@ export default function AdminOrderAnalytics() {
       </div>
 
     </div>
+
+    <div className="mt-10 bg-white rounded-xl2 shadow-card p-6">
+
+<h2 className="font-display text-2xl text-forest-800 mb-6">
+
+Order Status Breakdown
+
+</h2>
+
+<div className="space-y-4">
+
+{Object.entries(analytics.statusCounts).map(([status,count])=>(
+
+<div
+key={status}
+className="flex justify-between items-center border-b pb-3"
+>
+
+<span>
+
+{status}
+
+</span>
+
+<span
+className="font-bold text-lg"
+>
+
+{count}
+
+</span>
+
+</div>
+
+))}
+
+</div>
+
+</div>
 
   );
 
