@@ -24,6 +24,7 @@ import AdminFounder from "./admin/AdminFounder";
 import AdminGallery from "./admin/AdminGallery";
 import AdminTestimonials from "./admin/AdminTestimonials";
 import AdminFAQ from "./admin/AdminFAQ";
+import AdminEnquiries from "./admin/AdminEnquiries";
 
 function Providers({ children }) {
   return (
@@ -67,8 +68,13 @@ export default function App() {
               />
               <Route path="testimonials" element={<AdminTestimonials />} />
               <Route path="faqs" element={<AdminFAQ />} />
+               <Route
+                    path="enquiries"
+                    element={<AdminEnquiries />}
+                />
             </Route>
           </Route>
+         
 
           <Route path="*" element={<NotFound />} />
         </Routes>
