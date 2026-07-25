@@ -415,10 +415,16 @@ selectedEnquiry.offerApplied && (
     phone = "91" + phone;
   }
 
-  const message = encodeURIComponent(
+  const trackingLink =
+  selectedEnquiry.trackingId
+    ? `${window.location.origin}/track/${selectedEnquiry.trackingId}`
+    : "";
+
+const message = encodeURIComponent(
   buildWhatsAppMessage(
     selectedEnquiry,
-    settings.paymentSettings
+    settings.paymentSettings,
+    trackingLink
   )
 );
 
