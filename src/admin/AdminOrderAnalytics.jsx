@@ -1,6 +1,10 @@
 import { useEffect, useMemo, useState } from "react";
 import { PageHeader } from "./components/AdminUI";
 import { getWishlistEnquiries } from "../utils/wishlistEnquiryService";
+import {
+  RevenueChart,
+  OrdersChart,
+} from "./components/AnalyticsChart";
 
 function StatCard({ title, value, color }) {
   return (
@@ -119,6 +123,60 @@ export default function AdminOrderAnalytics() {
 
     });
 
+    const monthlyMap = {};
+
+orders.forEach(order => {
+
+  if (!order.createdAt?.seconds) return;
+
+  const date = new Date(
+    order.createdAt.seconds * 1000
+  );
+
+  const month = date.toLocaleString(
+    "en-IN",
+    {
+      month: "short"
+    }
+  );
+
+  if (!monthlyMap[month]) {
+
+    monthlyMap[month] = {
+
+      month,
+
+      revenue: 0,
+
+      orders: 0
+
+    };
+
+  }
+
+  monthlyMap[month].orders++;
+
+  if (
+
+    order.status === "Order Confirmed" ||
+
+    order.status === "Out for Delivery" ||
+
+    order.status === "Delivered"
+
+  ) {
+
+    monthlyMap[month].revenue +=
+
+      Number(order.finalTotal || 0);
+
+  }
+
+});
+
+const monthlyData =
+  Object.values(monthlyMap);
+
     return {
 
       totalOrders: orders.length,
@@ -128,6 +186,7 @@ export default function AdminOrderAnalytics() {
       statusCounts,
 
       delivered,
+      monthlyData,
 
       pendingPayments,
 
@@ -253,6 +312,18 @@ className="font-bold text-lg"
 ))}
 
 </div>
+
+</div>
+
+      <div className="mt-10 grid lg:grid-cols-2 gap-6">
+
+  <RevenueChart
+    data={analytics.monthlyData}
+  />
+
+  <OrdersChart
+    data={analytics.monthlyData}
+  />
 
 </div>
 
