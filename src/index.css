@@ -82,20 +82,32 @@ h1, h2, h3, h4, .font-display {
 
 }
 
-@keyframes leaf{
+@keyframes leaf {
 
-  0%{
-    transform:translateY(-80px) rotate(0deg);
-    opacity:0;
+  0% {
+    transform: translateY(-80px) translateX(0px) rotate(0deg);
+    opacity: 0;
   }
 
-  20%{
-    opacity:.2;
+  10% {
+    opacity: .25;
   }
 
-  100%{
-    transform:translateY(120vh) rotate(360deg);
-    opacity:0;
+  25% {
+    transform: translateY(25vh) translateX(-18px) rotate(90deg);
+  }
+
+  50% {
+    transform: translateY(55vh) translateX(22px) rotate(180deg);
+  }
+
+  75% {
+    transform: translateY(85vh) translateX(-16px) rotate(270deg);
+  }
+
+  100% {
+    transform: translateY(115vh) translateX(18px) rotate(360deg);
+    opacity: 0;
   }
 
 }
