@@ -1,4 +1,8 @@
-export function buildWhatsAppMessage(enquiry, paymentSettings = {}) {
+export function buildWhatsAppMessage(
+  enquiry,
+  paymentSettings = {},
+  trackingLink = ""
+) {
   
   const items = enquiry.items
     .map(
@@ -107,47 +111,89 @@ Your order is now being processed.
 
     case "Order Confirmed":
 
-      return `Hi ${enquiry.customerName},
+return `Hi ${enquiry.customerName},
 
-Great news!
+🌿 Great News!
 
-Your order has been confirmed.
+Your order has been confirmed successfully.
 
-Items:
+━━━━━━━━━━━━━━━━━━
+
+📦 Order ID
+${enquiry.trackingId}
+
+━━━━━━━━━━━━━━━━━━
+
+Plants Ordered
 
 ${items}
 
-Total Paid : ₹${enquiry.finalTotal}
+━━━━━━━━━━━━━━━━━━
 
-We'll notify you once the order is dispatched.
+Amount Paid
 
-Thank you 🌿`;
+₹${enquiry.finalTotal}
 
+━━━━━━━━━━━━━━━━━━
+
+🔎 Track your order anytime:
+
+${trackingLink}
+
+We'll keep updating the order status as it progresses.
+
+Thank you for choosing PBL Plants 🌿`;
 
 
     case "Out for Delivery":
 
-      return `Hi ${enquiry.customerName},
+return `Hi ${enquiry.customerName},
 
-Your order is out for delivery 🚚
+🚚 Your plants are on the way!
 
-It should reach you shortly.
+Our delivery team has dispatched your order.
 
-Thank you for shopping with PBL Plants 🌿`;
+━━━━━━━━━━━━━━━━━━
+
+📦 Order ID
+
+${enquiry.trackingId}
+
+━━━━━━━━━━━━━━━━━━
+
+Track your delivery here:
+
+${trackingLink}
+
+We hope your beautiful plants reach you soon.
+
+🌿 PBL Plants`;
 
 
 
     case "Delivered":
 
-      return `Hi ${enquiry.customerName},
+return `Hi ${enquiry.customerName},
 
-Your order has been delivered successfully.
+🎉 Your order has been delivered successfully!
 
-Thank you for choosing PBL Plants 🌿
+We hope your new plants brighten your home.
 
-We'd love to hear your feedback.
+━━━━━━━━━━━━━━━━━━
 
-Have a wonderful day!`;
+📦 Order ID
+
+${enquiry.trackingId}
+
+━━━━━━━━━━━━━━━━━━
+
+You can still view your order here:
+
+${trackingLink}
+
+Thank you for supporting PBL Plants 🌿
+
+We'd love to serve you again.`;
 
 
 
