@@ -27,6 +27,7 @@ import AdminFAQ from "./admin/AdminFAQ";
 import AdminEnquiries from "./admin/AdminEnquiries";
 import TrackOrder from "./pages/TrackOrder";
 import AdminPaymentSettings from "./admin/AdminPaymentSettings";
+import AdminOrderAnalytics from "./admin/AdminOrderAnalytics";
 
 function Providers({ children }) {
   return (
@@ -75,6 +76,11 @@ export default function App() {
               <Route
   path="payment-settings"
   element={<AdminPaymentSettings />}
+/>
+
+              <Route
+  path="analytics"
+  element={<AdminOrderAnalytics />}
 />
               <Route path="testimonials" element={<AdminTestimonials />} />
               <Route path="faqs" element={<AdminFAQ />} />
