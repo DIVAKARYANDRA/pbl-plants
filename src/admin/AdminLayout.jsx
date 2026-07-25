@@ -13,6 +13,7 @@ const NAV = [
   { to: "/admin/offers", label: "Offers", icon: "tag" },
   { to: "/admin/testimonials", label: "Testimonials", icon: "star" },
   { to: "/admin/faqs", label: "FAQs", icon: "help" },
+  { to: "/admin/enquiries", label: "Customer Enquiries", icon: "mail" },
 ];
 
 const ICONS = {
@@ -25,6 +26,9 @@ const ICONS = {
   star: <path d="M12 2.5l2.9 6.1 6.6.7-4.9 4.6 1.3 6.6-5.9-3.3-5.9 3.3 1.3-6.6-4.9-4.6 6.6-.7L12 2.5z" />,
   tag: <path d="M20 12l-8 8-8-8V4h8l8 8zM8 8h.01" />,
   help: <path d="M12 22a10 10 0 100-20 10 10 0 000 20zM9.5 9a2.5 2.5 0 015 .5c0 1.5-2 1.8-2 3.5m0 3h.01" />,
+  mail: (
+      <path d="M4 6h16v12H4V6zm0 0l8 6 8-6" />
+    ),
 };
 
 function Icon({ name }) {
