@@ -104,7 +104,7 @@ const currentStep =
 
   return (
 
-    <div className="relative min-h-screen overflow-hidden bg-gradient-to-br from-[#193c2d] via-[#29543f] to-[#4f8a61] text-white">
+    <div className="relative min-h-screen overflow-hidden bg-gradient-to-br from-[#0f2f20] via-[#1f4d35] to-[#2f6b4b] text-white">
 
       {/* Floating Background */}
 
