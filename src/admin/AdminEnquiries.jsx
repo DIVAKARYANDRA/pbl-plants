@@ -360,16 +360,26 @@ selectedEnquiry.offerApplied && (
   <button
     onClick={() => {
 
-      const message = encodeURIComponent(
-  buildWhatsAppMessage(selectedEnquiry)
-);
+  let phone = selectedEnquiry.phone || "";
 
-      window.open(
-        `https://wa.me/?text=${message}`,
-        "_blank"
-      );
+  // Keep only digits
+  phone = phone.replace(/\D/g, "");
 
-    }}
+  // If user entered 10 digits, add India code
+  if (phone.length === 10) {
+    phone = "91" + phone;
+  }
+
+  const message = encodeURIComponent(
+    buildWhatsAppMessage(selectedEnquiry)
+  );
+
+  window.open(
+    `https://wa.me/${phone}?text=${message}`,
+    "_blank"
+  );
+
+}}
     className="btn-primary"
   >
     📲 Open WhatsApp
