@@ -25,7 +25,7 @@ import AdminGallery from "./admin/AdminGallery";
 import AdminTestimonials from "./admin/AdminTestimonials";
 import AdminFAQ from "./admin/AdminFAQ";
 import AdminEnquiries from "./admin/AdminEnquiries";
-
+import TrackOrder from "./pages/TrackOrder";
 import AdminPaymentSettings from "./admin/AdminPaymentSettings";
 
 function Providers({ children }) {
@@ -52,6 +52,10 @@ export default function App() {
             <Route path="/about" element={<About />} />
             <Route path="/gallery" element={<Gallery />} />
             <Route path="/contact" element={<Contact />} />
+            <Route
+              path="/track/:trackingId"
+              element={<TrackOrder />}
+            />
           </Route>
 
           {/* Admin */}
@@ -80,6 +84,8 @@ export default function App() {
                 />
             </Route>
           </Route>
+
+          
          
 
           <Route path="*" element={<NotFound />} />
