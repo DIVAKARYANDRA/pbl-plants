@@ -11,7 +11,6 @@ import {
   updateQuotation
 } from "../utils/quotationService";
 
-import { useNavigate } from "react-router-dom";
 
 export default function AdminQuotationHistory() {
 
@@ -46,6 +45,80 @@ export default function AdminQuotationHistory() {
     );
 
   }, [quotations, search]);
+
+  async function handleConvert(q) {
+
+  const ok = window.confirm(
+    `Convert quotation ${q.quotationNo} to a Sales Bill?`
+  );
+
+  if (!ok) return;
+
+  try {
+
+    const now = new Date();
+
+    const date =
+      `${now.getFullYear()}${String(now.getMonth() + 1).padStart(2, "0")}${String(now.getDate()).padStart(2, "0")}`;
+
+    const billNo =
+      `PBL-${date}-${String(Date.now()).slice(-4)}`;
+
+    // 1. Create Sale
+    await createSale({
+
+      billNo,
+
+      customerName: q.customerName,
+
+      phone: q.phone,
+
+      paymentMode: "Pending",
+
+      items: q.items,
+
+      subtotal: q.subtotal,
+
+      discount: q.discount,
+
+      finalTotal: q.finalTotal
+
+    });
+
+    // 2. Reduce Stock
+    for (const item of q.items) {
+
+      await reduceStock(
+        item.id,
+        item.qty
+      );
+
+    }
+
+    // 3. Update Quotation
+    await updateQuotation(
+      q.id,
+      {
+        status: "Converted",
+        billNo
+      }
+    );
+
+    alert("Quotation converted successfully.");
+
+    load();
+
+    navigate(`/admin/receipt/${billNo}`);
+
+  } catch (err) {
+
+    console.error(err);
+
+    alert("Unable to convert quotation.");
+
+  }
+
+}
 
   return (
 

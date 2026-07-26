@@ -45,14 +45,6 @@ export async function getQuotations() {
 
 }
 
-export async function updateQuotation(id, patch) {
-
-  return updateDoc(
-    doc(db, COLLECTION, id),
-    patch
-  );
-
-}
 
 export async function deleteQuotation(id) {
 
