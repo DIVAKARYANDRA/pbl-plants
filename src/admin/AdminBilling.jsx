@@ -1,7 +1,9 @@
 import { useMemo, useState } from "react";
 import { PageHeader } from "./components/AdminUI";
 import { useSiteData } from "../context/SiteDataContext";
-
+import { createSale } from "../utils/salesService";
+import { reduceStock } from "../utils/wishlistEnquiryService";
+import AdminBillPrint from "./AdminBillPrint";
 
 export default function AdminBilling() {
 
@@ -12,6 +14,7 @@ export default function AdminBilling() {
   const [phone, setPhone] = useState("");
 
   const [search, setSearch] = useState("");
+  const [generatedSale, setGeneratedSale] = useState(null);
 
   const [paymentMode, setPaymentMode] = useState("Cash");
 
@@ -370,13 +373,99 @@ export default function AdminBilling() {
           </select>
 
           <button
-            disabled={cart.length === 0}
-            className="btn-primary w-full mt-6 disabled:opacity-50 disabled:cursor-not-allowed"
-            >
 
-            🧾 Generate Bill
+disabled={cart.length===0}
 
-            </button>
+className="btn-primary w-full mt-6 disabled:opacity-50"
+
+onClick={async()=>{
+
+try{
+
+const billNo=
+`PBL-${Date.now()}`;
+
+await createSale({
+
+billNo,
+
+customerName,
+
+phone,
+
+paymentMode,
+
+items:cart,
+
+subtotal,
+
+discount:Number(discount),
+
+finalTotal
+
+});
+
+const sale = {
+
+    billNo,
+
+    customerName,
+
+    phone,
+
+    paymentMode,
+
+    items: cart,
+
+    subtotal,
+
+    discount,
+
+    finalTotal
+
+};
+
+setGeneratedSale(sale);
+
+for(const item of cart){
+
+await reduceStock(
+item.id,
+item.qty
+);
+
+}
+
+alert(
+`Bill ${billNo} generated successfully`
+);
+
+setCart([]);
+
+setCustomerName("");
+
+setPhone("");
+
+setDiscount(0);
+
+}
+catch(err){
+
+console.error(err);
+
+alert(
+"Unable to generate bill."
+);
+
+}
+
+}}
+
+>
+
+🧾 Generate Bill
+
+</button>
 
         </div>
 
@@ -386,4 +475,32 @@ export default function AdminBilling() {
 
   );
 
+}
+
+{
+generatedSale && (
+
+<div className="mt-10">
+
+<AdminBillPrint
+sale={generatedSale}
+/>
+
+<button
+
+className="btn-primary mt-6"
+
+onClick={()=>
+window.print()
+}
+
+>
+
+🖨 Print Bill
+
+</button>
+
+</div>
+
+)
 }

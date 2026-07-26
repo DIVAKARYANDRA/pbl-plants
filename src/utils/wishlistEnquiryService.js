@@ -125,3 +125,45 @@ export async function getEnquiryByTrackingId(trackingId) {
   };
 
 }
+
+
+export async function reduceStock(productId, qty) {
+
+  const ref = doc(
+    db,
+    "siteData",
+    "main"
+  );
+
+  const snap = await getDoc(ref);
+
+  const data = snap.data();
+
+  const products =
+    data.products || [];
+
+  const updated = products.map(product => {
+
+    if (product.id !== productId)
+      return product;
+
+    return {
+
+      ...product,
+
+      stockQuantity: Math.max(
+        0,
+        Number(product.stockQuantity || 0) - qty
+      )
+
+    };
+
+  });
+
+  await updateDoc(ref, {
+
+    products: updated
+
+  });
+
+}
