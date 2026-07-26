@@ -3,7 +3,7 @@ import { PageHeader } from "./components/AdminUI";
 import { useSiteData } from "../context/SiteDataContext";
 import { createSale } from "../utils/salesService";
 import { reduceStock } from "../utils/wishlistEnquiryService";
-import AdminBillPrint from "./AdminBillPrint";
+import { printBill } from "../utils/printBill";
 
 export default function AdminBilling() {
 
@@ -14,8 +14,6 @@ export default function AdminBilling() {
   const [phone, setPhone] = useState("");
 
   const [search, setSearch] = useState("");
-  const [generatedSale, setGeneratedSale] = useState(null);
-
   const [paymentMode, setPaymentMode] = useState("Cash");
 
   const [cart, setCart] = useState([]);
@@ -382,8 +380,13 @@ onClick={async()=>{
 
 try{
 
-const billNo=
-`PBL-${Date.now()}`;
+const now = new Date();
+
+const date =
+`${now.getFullYear()}${String(now.getMonth()+1).padStart(2,"0")}${String(now.getDate()).padStart(2,"0")}`;
+
+const billNo =
+`PBL-${date}-${String(Date.now()).slice(-4)}`;
 
 await createSale({
 
@@ -405,6 +408,17 @@ finalTotal
 
 });
 
+
+
+for(const item of cart){
+
+await reduceStock(
+item.id,
+item.qty
+);
+
+}
+
 const sale = {
 
     billNo,
@@ -425,16 +439,7 @@ const sale = {
 
 };
 
-setGeneratedSale(sale);
-
-for(const item of cart){
-
-await reduceStock(
-item.id,
-item.qty
-);
-
-}
+printBill(sale);
 
 alert(
 `Bill ${billNo} generated successfully`
@@ -471,36 +476,6 @@ alert(
 
 
       </div>
-
-
-      
-{
-generatedSale && (
-
-<div className="mt-10">
-
-<AdminBillPrint
-sale={generatedSale}
-/>
-
-<button
-
-className="btn-primary mt-6"
-
-onClick={()=>
-window.print()
-}
-
->
-
-🖨 Print Bill
-
-</button>
-
-</div>
-
-)
-}
 
     </div>
 
