@@ -348,8 +348,6 @@ Authorized Signature
 
 </div>
 
-</div>
-
 );
 
 }
