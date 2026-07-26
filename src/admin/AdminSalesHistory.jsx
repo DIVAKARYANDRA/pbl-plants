@@ -52,21 +52,15 @@ export default function AdminSalesHistory() {
         subtitle="View all offline bills."
       />
 
-      const today = new Date().toDateString();
+     const today = new Date().toDateString();
 
 const todaysSales = filtered.filter(sale => {
-
   if (!sale.createdAt?.seconds) return false;
-
-  return new Date(
-    sale.createdAt.seconds * 1000
-  ).toDateString() === today;
-
+  return new Date(sale.createdAt.seconds * 1000).toDateString() === today;
 });
 
 const totalRevenue = filtered.reduce(
-  (sum, sale) => sum + Number(sale.finalTotal || 0),
-  0
+  (sum, sale) => sum + Number(sale.finalTotal || 0), 0
 );
 
 const todaysRevenue = todaysSales.reduce(
@@ -77,8 +71,8 @@ const todaysRevenue = todaysSales.reduce(
 const totalPlants = filtered.reduce(
   (sum, sale) =>
     sum +
-    sale.items.reduce(
-      (qty, item) => qty + Number(item.qty),
+    (sale.items || []).reduce(
+      (qty, item) => qty + (Number(item?.qty || 0) || 0),
       0
     ),
   0
