@@ -12,7 +12,7 @@ import About from "./pages/About";
 import Gallery from "./pages/Gallery";
 import Contact from "./pages/Contact";
 import NotFound from "./pages/NotFound";
-
+import AdminBilling from "./admin/AdminBilling";
 import AdminLogin from "./admin/AdminLogin";
 import AdminLayout from "./admin/AdminLayout";
 import ProtectedRoute from "./admin/ProtectedRoute";
@@ -74,14 +74,19 @@ export default function App() {
                 element={<AdminOffers />} 
               />
               <Route
-  path="payment-settings"
-  element={<AdminPaymentSettings />}
-/>
+                path="payment-settings"
+                element={<AdminPaymentSettings />}
+              />
 
               <Route
-  path="analytics"
-  element={<AdminOrderAnalytics />}
-/>
+                path="analytics"
+                element={<AdminOrderAnalytics />}
+              />
+
+              <Route
+                  path="billing"
+                  element={<AdminBilling />}
+                />
               <Route path="testimonials" element={<AdminTestimonials />} />
               <Route path="faqs" element={<AdminFAQ />} />
                <Route

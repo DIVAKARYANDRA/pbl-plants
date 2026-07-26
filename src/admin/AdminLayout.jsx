@@ -24,6 +24,11 @@ const NAV = [
     label: "Order Analytics",
     icon: "chart"
   },
+  {
+    to: "/admin/billing",
+    label: "Offline Billing",
+    icon: "receipt"
+  },
 ];
 
 const ICONS = {
@@ -44,6 +49,9 @@ const ICONS = {
     ),
   chart:
 <path d="M5 17V9m7 8V5m7 12v-6M3 21h18"/>
+    receipt: (
+    <path d="M6 2h12v20l-2-1-2 1-2-1-2 1-2-1-2 1V2zm3 5h6m-6 4h6m-6 4h4" />
+  ),
 };
 
 function Icon({ name }) {
