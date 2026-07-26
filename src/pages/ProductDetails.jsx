@@ -76,15 +76,20 @@ export default function ProductDetails() {
   const category = categories.find((c) => c.id === product.categoryId);
   const inWishlist = isInWishlist(product.id);
   const related = products
-  .filter(
-    (p) =>
+  .filter((p) => {
+
+    const availability = p.availability || "both";
+
+    return (
       p.id !== product.id &&
       p.categoryId === product.categoryId &&
       (
-        p.availability === "online" ||
-        p.availability === "both"
+        availability === "online" ||
+        availability === "both"
       )
-  )
+    );
+
+  })
   .slice(0, 4);
   const specs = SPECS.filter((s) => product[s.key] && product[s.key] !== "—");
 

@@ -11,16 +11,23 @@ import ContactSection from "../components/ContactSection";
 
 export default function Home() {
   const { settings, products, categories, founder, testimonials, faqs, gallery } = useSiteData();
-  const availability =
-    p.availability || "both";
+  
+  const featured = products
+  .filter((p) => {
 
-  return (
-    p.featured &&
-    (
-      availability === "online" ||
-      availability === "both"
-    )
-  );
+    const availability =
+      p.availability || "both";
+
+    return (
+      p.featured &&
+      (
+        availability === "online" ||
+        availability === "both"
+      )
+    );
+
+  })
+  .slice(0, 8);
 
 
   return (

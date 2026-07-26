@@ -145,12 +145,18 @@ export default function Products() {
                   All Products ({filtered.length})
                 </button>
                 {categories.map((cat) => {
-                  const cnt = products.filter(
-                    (p) =>
-                      (p.availability === "online" ||
-                        p.availability === "both") &&
-                      p.categoryId === cat.id
-                  ).length;
+                  const cnt = products.filter((p) => {
+
+                  const availability =
+                    p.availability || "both";
+
+                  return (
+                    (availability === "online" ||
+                      availability === "both") &&
+                    p.categoryId === cat.id
+                  );
+
+                }).length;
                   return (
                     <button
                       key={cat.id}
