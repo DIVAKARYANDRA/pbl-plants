@@ -2,6 +2,9 @@ import { useMemo, useState } from "react";
 import { PageHeader } from "./components/AdminUI";
 import { useSiteData } from "../context/SiteDataContext";
 import { getStockStatus } from "../utils/stockUtils";
+import {
+  addInventoryMovement
+} from "../utils/inventoryService";
 
 export default function AdminInventory() {
 
@@ -13,6 +16,13 @@ export default function AdminInventory() {
     const [search, setSearch] = useState("");
 
     const [inventoryActions, setInventoryActions] = useState({});
+    const [selectedProduct, setSelectedProduct] = useState(null);
+
+const [action, setAction] = useState("receive");
+
+const [quantity, setQuantity] = useState("");
+
+const [reason, setReason] = useState("Supplier Delivery");
 
     const filtered = useMemo(() => {
 
@@ -202,9 +212,6 @@ const inventoryValue = products.reduce(
                                 Status
                             </th>
 
-                            <th className="p-4">
-                                Stock Action
-                            </th>
 
                             <th className="p-4">
                                 Action
@@ -246,46 +253,104 @@ const inventoryValue = products.reduce(
 
                                     </td>
 
+                                    
+
                                     <td className="text-center">
 
-                                        <div className="flex flex-col gap-2 items-center">
+    <button
+        className="btn-primary"
+        onClick={() => {
+
+            setSelectedProduct(product);
+
+            setAction("receive");
+
+            setQuantity("");
+
+            setReason("Supplier Delivery");
+
+        }}
+    >
+
+        Manage
+
+    </button>
+
+</td>
+
+                                </tr>
+
+                            );
+
+                        })}
+
+                    </tbody>
+
+                </table>
+
+            </div>
+
+            {selectedProduct && (
+
+<div className="fixed inset-0 bg-black/40 flex items-center justify-center z-50">
+
+<div className="bg-white rounded-xl2 p-6 w-full max-w-md shadow-2xl">
+
+<h2 className="font-display text-2xl mb-6">
+
+Inventory Adjustment
+
+</h2>
+
+<div className="space-y-4">
+
+<div>
+
+<p className="text-sm text-gray-500">
+
+Product
+
+</p>
+
+<strong>
+
+{selectedProduct.name}
+
+</strong>
+
+</div>
+
+<div>
+
+<p className="text-sm text-gray-500">
+
+Current Stock
+
+</p>
+
+<strong>
+
+{selectedProduct.stockQuantity}
+
+</strong>
+
+</div>
 
 <select
-className="border rounded px-2 py-1"
-
-value={
-inventoryActions[product.id]?.action ||
-"receive"
-}
-
-onChange={(e)=>
-
-setInventoryActions(prev=>({
-
-...prev,
-
-[product.id]:{
-
-...(prev[product.id]||{}),
-
-action:e.target.value
-
-}
-
-}))
-
-}
+className="w-full border rounded-lg p-3"
+value={action}
+onChange={(e)=>setAction(e.target.value)}
 >
 
 <option value="receive">
 
-Receive
+Receive Stock
 
 </option>
 
 <option value="remove">
 
-Remove
+Remove Stock
 
 </option>
 
@@ -294,57 +359,16 @@ Remove
 <input
 type="number"
 min="1"
-placeholder="Qty"
-className="border rounded px-2 py-1 w-20 text-center"
-
-value={
-inventoryActions[product.id]?.quantity || ""
-}
-
-onChange={(e)=>
-
-setInventoryActions(prev=>({
-
-...prev,
-
-[product.id]:{
-
-...(prev[product.id]||{}),
-
-quantity:e.target.value
-
-}
-
-}))
-
-}
+placeholder="Quantity"
+className="w-full border rounded-lg p-3"
+value={quantity}
+onChange={(e)=>setQuantity(e.target.value)}
 />
 
 <select
-className="border rounded px-2 py-1"
-
-value={
-inventoryActions[product.id]?.reason ||
-"Supplier Delivery"
-}
-
-onChange={(e)=>
-
-setInventoryActions(prev=>({
-
-...prev,
-
-[product.id]:{
-
-...(prev[product.id]||{}),
-
-reason:e.target.value
-
-}
-
-}))
-
-}
+className="w-full border rounded-lg p-3"
+value={reason}
+onChange={(e)=>setReason(e.target.value)}
 >
 
 <option>
@@ -379,43 +403,115 @@ Other
 
 </select>
 
+<div className="flex justify-end gap-3 pt-4">
+
+<button
+className="btn-secondary"
+onClick={()=>
+setSelectedProduct(null)
+}
+>
+
+Cancel
+
+</button>
+
+<button
+className="btn-primary"
+onClick={()=>{
+
+const qty =
+Number(quantity);
+
+if(qty<=0){
+
+alert("Enter quantity.");
+
+return;
+
+}
+
+let newQty =
+Number(selectedProduct.stockQuantity);
+
+if(action==="receive"){
+
+newQty+=qty;
+
+}
+else{
+
+if(qty>newQty){
+
+alert(
+`Only ${newQty} items available`
+);
+
+return;
+
+}
+
+newQty-=qty;
+
+}
+
+updateProduct(
+selectedProduct.id,
+{
+stockQuantity:newQty
+}
+);
+
+
+await addInventoryMovement({
+
+    productId: selectedProduct.id,
+
+    productName: selectedProduct.name,
+
+    action,
+
+    quantity: qty,
+
+    reason,
+
+    previousStock: selectedProduct.stockQuantity,
+
+    newStock: newQty
+
+});
+
+setSelectedProduct(null);
+
+}}
+
+>
+
+{
+
+action==="receive"
+
+?
+
+"📦 Receive"
+
+:
+
+"➖ Remove"
+
+}
+
+</button>
+
 </div>
 
-                                    </td>
+</div>
 
-                                    <td className="text-center">
+</div>
 
-                                        <button
-                                            className="btn-primary"
-                                            onClick={() =>
-                                                updateStock(product)
-                                            }
-                                        >
+</div>
 
-                                            {
-                                                    inventoryActions[product.id]?.action === "remove"
-
-                                                    ? "➖ Remove"
-
-                                                    : "📦 Receive"
-
-                                            }
-
-                                        </button>
-
-                                    </td>
-
-                                </tr>
-
-                            );
-
-                        })}
-
-                    </tbody>
-
-                </table>
-
-            </div>
+)}
 
         </div>
 
