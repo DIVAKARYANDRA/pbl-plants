@@ -69,6 +69,10 @@ export default function App() {
               <Route index element={<AdminDashboard />} />
               <Route path="settings" element={<AdminSettings />} />
               <Route path="products" element={<AdminProducts />} />
+              <Route
+                  path="inventory"
+                  element={<AdminInventory />}
+              />
               <Route path="categories" element={<AdminCategories />} />
               <Route path="founder" element={<AdminFounder />} />
               <Route path="gallery" element={<AdminGallery />} />
@@ -110,10 +114,7 @@ export default function App() {
             element={<AdminReceipt />}
           />
 
-          <Route
-            path="inventory"
-            element={<AdminInventory />}
-        />
+          
         
           </Route>
 
