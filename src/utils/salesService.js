@@ -5,6 +5,7 @@ import {
   query,
   where,
   getDocs,
+  orderBy,
 } from "firebase/firestore";
 
 import { db } from "./firebaseConfig";
@@ -40,5 +41,21 @@ export async function getSaleByBillNo(billNo) {
     id: snapshot.docs[0].id,
     ...snapshot.docs[0].data(),
   };
+
+}
+
+export async function getAllSales() {
+
+  const q = query(
+    collection(db, COLLECTION),
+    orderBy("createdAt", "desc")
+  );
+
+  const snapshot = await getDocs(q);
+
+  return snapshot.docs.map(doc => ({
+    id: doc.id,
+    ...doc.data(),
+  }));
 
 }

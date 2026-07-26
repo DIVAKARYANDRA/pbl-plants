@@ -29,6 +29,11 @@ const NAV = [
     label: "Offline Billing",
     icon: "receipt"
   },
+  {
+    to: "/admin/sales",
+    label: "Sales History",
+    icon: "wallet"
+  },
 ];
 
 const ICONS = {

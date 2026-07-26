@@ -29,6 +29,7 @@ import TrackOrder from "./pages/TrackOrder";
 import AdminPaymentSettings from "./admin/AdminPaymentSettings";
 import AdminOrderAnalytics from "./admin/AdminOrderAnalytics";
 import AdminReceipt from "./admin/AdminReceipt";
+import AdminSalesHistory from "./admin/AdminSalesHistory";
 
 function Providers({ children }) {
   return (
@@ -87,6 +88,11 @@ export default function App() {
               <Route
                   path="billing"
                   element={<AdminBilling />}
+                />
+
+                <Route
+                  path="sales"
+                  element={<AdminSalesHistory />}
                 />
 
               
