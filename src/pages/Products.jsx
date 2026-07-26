@@ -35,7 +35,11 @@ export default function Products() {
   };
 
   const filtered = useMemo(() => {
-    let list = [...products];
+    let list = products.filter(
+  (product) =>
+    product.availability === "online" ||
+    product.availability === "both"
+);
 
     if (activeCategorySlug !== "all") {
       const cat = categories.find((c) => c.slug === activeCategorySlug);
@@ -132,10 +136,15 @@ export default function Products() {
                     activeCategorySlug === "all" ? "bg-forest-700 text-cream-50" : "text-forest-700/70 hover:bg-forest-700/5"
                   }`}
                 >
-                  All Products ({products.length})
+                  All Products ({filtered.length})
                 </button>
                 {categories.map((cat) => {
-                  const cnt = products.filter((p) => p.categoryId === cat.id).length;
+                  const cnt = products.filter(
+                    (p) =>
+                      (p.availability === "online" ||
+                        p.availability === "both") &&
+                      p.categoryId === cat.id
+                  ).length;
                   return (
                     <button
                       key={cat.id}
