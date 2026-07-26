@@ -1,6 +1,56 @@
+import { useMemo, useState } from "react";
 import { PageHeader } from "./components/AdminUI";
+import { useSiteData } from "../context/SiteDataContext";
+
 
 export default function AdminBilling() {
+
+  const { products } = useSiteData();
+
+  const [customerName, setCustomerName] = useState("");
+
+  const [phone, setPhone] = useState("");
+
+  const [search, setSearch] = useState("");
+
+  const [paymentMode, setPaymentMode] = useState("Cash");
+
+  const [cart, setCart] = useState([]);
+  const [discount, setDiscount] = useState(0);
+
+  const searchResults = useMemo(() => {
+
+    if (!search.trim()) return [];
+
+    return products
+      .filter((p) => {
+
+        const availability =
+          p.availability || "both";
+
+        return (
+          (availability === "offline" ||
+            availability === "both") &&
+          p.name
+            .toLowerCase()
+            .includes(search.toLowerCase())
+        );
+
+      })
+      .slice(0, 8);
+
+  }, [search, products]);
+
+  const subtotal = cart.reduce(
+    (sum, item) =>
+      sum + item.price * item.qty,
+    0
+  );
+
+  const finalTotal = Math.max(
+    subtotal - Number(discount || 0),
+    0
+    );
 
   return (
 
@@ -8,38 +58,327 @@ export default function AdminBilling() {
 
       <PageHeader
         title="Offline Billing"
-        subtitle="Generate walk-in customer bills and manage POS sales."
+        subtitle="Generate bills for walk-in customers."
       />
 
-      <div className="bg-white rounded-xl2 shadow-card p-8">
+      <div className="grid lg:grid-cols-2 gap-8">
 
-        <h2 className="font-display text-2xl text-forest-800">
+        <div className="bg-white rounded-xl2 shadow-card p-6 space-y-5">
 
-          🚧 Offline Billing Coming Soon
+          <input
+            placeholder="Customer Name"
+            value={customerName}
+            onChange={(e)=>setCustomerName(e.target.value)}
+            className="w-full border rounded-lg px-4 py-3"
+          />
 
-        </h2>
+          <input
+            placeholder="Phone Number"
+            value={phone}
+            onChange={(e)=>setPhone(e.target.value)}
+            className="w-full border rounded-lg px-4 py-3"
+          />
 
-        <p className="mt-4 text-forest-700/70">
+          <input
+            placeholder="Search Plant..."
+            value={search}
+            onChange={(e)=>setSearch(e.target.value)}
+            className="w-full border rounded-lg px-4 py-3"
+          />
 
-          This module will allow you to:
+          <div className="border rounded-xl overflow-hidden">
 
-        </p>
+            {searchResults.map((p)=>(
 
-        <ul className="mt-5 space-y-3 text-forest-700">
+              <button
+    key={p.id}
+    onClick={() => {
 
-          <li>✅ Search products</li>
+        setCart(prev => {
 
-          <li>✅ Add products to bill</li>
+            const existing = prev.find(
+                item => item.id === p.id
+            );
 
-          <li>✅ Auto reduce inventory</li>
+            if (existing) {
 
-          <li>✅ Generate printable receipt</li>
+                return prev.map(item =>
 
-          <li>✅ Save sales history</li>
+                    item.id === p.id
+                        ? {
+                            ...item,
+                            qty: item.qty + 1
+                        }
+                        : item
 
-          <li>✅ Dashboard analytics</li>
+                );
 
-        </ul>
+            }
+
+            return [
+
+                ...prev,
+
+                {
+                    id: p.id,
+                    name: p.name,
+                    price: p.discountPrice || p.price,
+                    qty: 1,
+                    stockQuantity: p.stockQuantity
+                }
+
+            ];
+
+        });
+
+        setSearch("");
+
+    }}
+    className="w-full flex justify-between p-4 hover:bg-sage-50 border-b"
+>
+
+                <div className="text-left">
+
+                  <div className="font-medium">
+
+                    {p.name}
+
+                  </div>
+
+                  <div className="text-sm text-gray-500">
+
+                    ₹{p.discountPrice || p.price}
+
+                  </div>
+
+                </div>
+
+                <div>
+
+                  Qty
+
+                  {" "}
+
+                  {p.stockQuantity}
+
+                </div>
+
+              </button>
+
+            ))}
+
+          </div>
+
+        </div>
+
+        <div className="bg-white rounded-xl2 shadow-card p-6">
+
+          <h2 className="font-display text-2xl">
+
+            Bill Summary
+
+          </h2>
+
+          {cart.length === 0 ? (
+
+    <div className="py-12 text-center text-gray-500">
+
+        No products added yet
+
+    </div>
+
+) : (
+
+    <div className="space-y-4">
+
+        {cart.map(item => (
+
+            <div
+                key={item.id}
+                className="border rounded-xl p-4"
+            >
+
+                <div className="font-semibold">
+
+                    {item.name}
+
+                </div>
+
+                <div className="flex items-center justify-between mt-3">
+
+                    <div className="flex items-center gap-3">
+
+                        <button
+                            onClick={() => {
+
+                                setCart(prev =>
+                                    prev
+                                        .map(i =>
+                                            i.id === item.id
+                                                ? {
+                                                    ...i,
+                                                    qty: i.qty - 1
+                                                }
+                                                : i
+                                        )
+                                        .filter(i => i.qty > 0)
+                                );
+
+                            }}
+                            className="h-8 w-8 rounded bg-gray-100"
+                        >
+
+                            −
+
+                        </button>
+
+                        <strong>
+
+                            {item.qty}
+
+                        </strong>
+
+                        <button
+                            onClick={() => {
+
+                                if (
+                                    item.qty >=
+                                    item.stockQuantity
+                                ) {
+
+                                    alert(
+                                        `Only ${item.stockQuantity} available in stock`
+                                    );
+
+                                    return;
+
+                                }
+
+                                setCart(prev =>
+                                    prev.map(i =>
+                                        i.id === item.id
+                                            ? {
+                                                ...i,
+                                                qty: i.qty + 1
+                                            }
+                                            : i
+                                    )
+                                );
+
+                            }}
+                            className="h-8 w-8 rounded bg-gray-100"
+                        >
+
+                            +
+
+                        </button>
+
+                    </div>
+
+                    <strong>
+
+                        ₹{item.price * item.qty}
+
+                    </strong>
+
+                </div>
+
+            </div>
+
+        ))}
+
+    </div>
+
+)}
+
+          <hr className="my-6" />
+
+                <div className="space-y-4">
+
+                <div className="flex justify-between">
+
+                    <span>
+                    Subtotal
+                    </span>
+
+                    <strong>
+                    ₹{subtotal}
+                    </strong>
+
+                </div>
+
+                <div className="flex items-center justify-between">
+
+                    <span>
+                    Discount
+                    </span>
+
+                    <input
+                    type="number"
+                    min="0"
+                    value={discount}
+                    onChange={(e) => setDiscount(e.target.value)}
+                    className="border rounded-lg px-3 py-2 w-28 text-right"
+                    />
+
+                </div>
+
+                <div className="border-t pt-4 flex justify-between text-xl font-bold text-forest-800">
+
+                    <span>
+                    Grand Total
+                    </span>
+
+                    <span>
+                    ₹{finalTotal}
+                    </span>
+
+                </div>
+
+                </div>
+
+        <select
+            className="mt-6 w-full border rounded-lg px-4 py-3"
+            value={paymentMode}
+            onChange={(e)=>setPaymentMode(e.target.value)}
+          >
+
+            <option>
+
+              Cash
+
+            </option>
+
+            <option>
+
+              UPI
+
+            </option>
+
+            <option>
+
+              Card
+
+            </option>
+
+            <option>
+
+              Bank Transfer
+
+            </option>
+
+          </select>
+
+          <button
+            disabled={cart.length === 0}
+            className="btn-primary w-full mt-6 disabled:opacity-50 disabled:cursor-not-allowed"
+            >
+
+            🧾 Generate Bill
+
+            </button>
+
+        </div>
 
       </div>
 
