@@ -44,6 +44,11 @@ const NAV = [
     label: "Inventory History",
     icon: "chart"
   },
+  {
+    to: "/admin/quotations",
+    label: "Quotations",
+    icon: "file"
+  },
 ];
 
 const ICONS = {
@@ -67,6 +72,8 @@ const ICONS = {
   receipt: (
     <path d="M6 2h12v20l-2-1-2 1-2-1-2 1-2-1-2 1V2zm3 5h6m-6 4h6m-6 4h4" />
   ),
+  file:
+<path d="M14 2H6a2 2 0 00-2 2v16a2 2 0 002 2h12a2 2 0 002-2V8zm0 0v6h6"/>,
 
 };
 

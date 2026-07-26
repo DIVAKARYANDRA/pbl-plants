@@ -32,6 +32,7 @@ import AdminReceipt from "./admin/AdminReceipt";
 import AdminSalesHistory from "./admin/AdminSalesHistory";
 import AdminInventory from "./admin/AdminInventory";
 import AdminInventoryHistory from "./admin/AdminInventoryHistory";
+import AdminQuotation from "./admin/AdminQuotation";
 
 function Providers({ children }) {
   return (
@@ -84,6 +85,11 @@ export default function App() {
               <Route
                 path="payment-settings"
                 element={<AdminPaymentSettings />}
+              />
+
+              <Route
+                  path="quotations"
+                  element={<AdminQuotation />}
               />
 
               <Route
