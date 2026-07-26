@@ -35,7 +35,7 @@ import AdminInventoryHistory from "./admin/AdminInventoryHistory";
 import AdminQuotation from "./admin/AdminQuotation";
 import AdminQuotationHistory from "./admin/AdminQuotationHistory";
 import AdminQuotationEditor from "./admin/AdminQuotationEditor";
-
+import QuotationView from "./pages/QuotationView";
 
 function Providers({ children }) {
   return (
@@ -64,6 +64,10 @@ export default function App() {
             <Route
               path="/track/:trackingId"
               element={<TrackOrder />}
+            />
+            <Route
+                path="/q/:quotationNo"
+                element={<QuotationView />}
             />
           </Route>
 
