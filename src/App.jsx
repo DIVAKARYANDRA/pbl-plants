@@ -28,6 +28,7 @@ import AdminEnquiries from "./admin/AdminEnquiries";
 import TrackOrder from "./pages/TrackOrder";
 import AdminPaymentSettings from "./admin/AdminPaymentSettings";
 import AdminOrderAnalytics from "./admin/AdminOrderAnalytics";
+import AdminReceipt from "./admin/AdminReceipt";
 
 function Providers({ children }) {
   return (
@@ -87,6 +88,11 @@ export default function App() {
                   path="billing"
                   element={<AdminBilling />}
                 />
+
+              <Route
+  path="receipt/:billNo"
+  element={<AdminReceipt />}
+/>
               <Route path="testimonials" element={<AdminTestimonials />} />
               <Route path="faqs" element={<AdminFAQ />} />
                <Route
@@ -94,6 +100,7 @@ export default function App() {
                     element={<AdminEnquiries />}
                 />
             </Route>
+        
           </Route>
 
           

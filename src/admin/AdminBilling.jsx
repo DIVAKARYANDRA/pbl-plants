@@ -3,9 +3,11 @@ import { PageHeader } from "./components/AdminUI";
 import { useSiteData } from "../context/SiteDataContext";
 import { createSale } from "../utils/salesService";
 import { reduceStock } from "../utils/wishlistEnquiryService";
-import { printBill } from "../utils/printBill";
+import { useNavigate } from "react-router-dom";
 
 export default function AdminBilling() {
+
+    const navigate = useNavigate();
 
   const { products } = useSiteData();
 
@@ -419,31 +421,6 @@ item.qty
 
 }
 
-const sale = {
-
-    billNo,
-
-    customerName,
-
-    phone,
-
-    paymentMode,
-
-    items: cart,
-
-    subtotal,
-
-    discount,
-
-    finalTotal
-
-};
-
-printBill(sale);
-
-alert(
-`Bill ${billNo} generated successfully`
-);
 
 setCart([]);
 
@@ -452,6 +429,9 @@ setCustomerName("");
 setPhone("");
 
 setDiscount(0);
+
+navigate(`/admin/receipt/${billNo}`);
+
 
 }
 catch(err){

@@ -1,7 +1,10 @@
 import {
   collection,
   addDoc,
-  serverTimestamp
+  serverTimestamp,
+  query,
+  where,
+  getDocs,
 } from "firebase/firestore";
 
 import { db } from "./firebaseConfig";
@@ -17,5 +20,25 @@ export async function createSale(data) {
       createdAt: serverTimestamp(),
     }
   );
+
+}
+
+export async function getSaleByBillNo(billNo) {
+
+  const q = query(
+    collection(db, COLLECTION),
+    where("billNo", "==", billNo)
+  );
+
+  const snapshot = await getDocs(q);
+
+  if (snapshot.empty) {
+    return null;
+  }
+
+  return {
+    id: snapshot.docs[0].id,
+    ...snapshot.docs[0].data(),
+  };
 
 }
