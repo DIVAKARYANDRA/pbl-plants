@@ -420,60 +420,80 @@ Cancel
 className="btn-primary"
 onClick={async () => {
 
-const qty =
-Number(quantity);
+    try {
 
-if(qty<=0){
+        const qty = Number(quantity);
 
-alert("Enter quantity.");
+        if (qty <= 0) {
 
-return;
+            alert("Enter quantity.");
 
-}
+            return;
 
-let newQty =
-Number(selectedProduct.stockQuantity);
+        }
 
-if(action==="receive"){
+        let newQty = Number(selectedProduct.stockQuantity);
 
-newQty+=qty;
+        if (action === "receive") {
 
-}
-else{
+            newQty += qty;
 
-if(qty>newQty){
+        } else {
 
-alert(
-`Only ${newQty} items available`
-);
+            if (qty > newQty) {
 
-return;
+                alert(`Only ${newQty} items available`);
 
-}
+                return;
 
-newQty-=qty;
+            }
 
-}
-updateProduct(
-    selectedProduct.id,
-    {
-        stockQuantity: newQty
+            newQty -= qty;
+
+        }
+
+        updateProduct(
+            selectedProduct.id,
+            {
+                stockQuantity: newQty
+            }
+        );
+
+        await addInventoryMovement({
+
+            productId: selectedProduct.id,
+
+            productName: selectedProduct.name,
+
+            action,
+
+            quantity: qty,
+
+            reason,
+
+            previousStock: selectedProduct.stockQuantity,
+
+            newStock: newQty
+
+        });
+
+        alert("Inventory updated successfully.");
+
+        setSelectedProduct(null);
+
+        setQuantity("");
+
+        setReason("Supplier Delivery");
+
+        setAction("receive");
+
+    } catch (err) {
+
+        console.error(err);
+
+        alert("Unable to update inventory.");
+
     }
-);
-
-await addInventoryMovement({
-    productId: selectedProduct.id,
-    productName: selectedProduct.name,
-    action,
-    quantity: qty,
-    reason,
-    previousStock: selectedProduct.stockQuantity,
-    newStock: newQty
-});
-
-setSelectedProduct(null);
-
-setSelectedProduct(null);
 
 }}
 
