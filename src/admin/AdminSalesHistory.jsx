@@ -43,6 +43,35 @@ export default function AdminSalesHistory() {
 
   }, [sales, search]);
 
+  const today = new Date().toDateString();
+
+    const todaysSales = filtered.filter((sale) => {
+    if (!sale.createdAt?.seconds) return false;
+    return new Date(sale.createdAt.seconds * 1000).toDateString() === today;
+    });
+
+    const totalRevenue = filtered.reduce(
+    (sum, sale) => sum + Number(sale.finalTotal || 0),
+    0
+    );
+
+    const todaysRevenue = todaysSales.reduce(
+    (sum, sale) => sum + Number(sale.finalTotal || 0),
+    0
+    );
+
+    const totalPlants = filtered.reduce(
+    (sum, sale) =>
+        sum +
+        (sale.items || []).reduce(
+        (qty, item) => qty + (Number(item?.qty || 0) || 0),
+        0
+        ),
+    0
+    );
+
+    const averageBill = filtered.length > 0 ? Math.round(totalRevenue / filtered.length) : 0;
+
   return (
 
     <div>
@@ -52,34 +81,7 @@ export default function AdminSalesHistory() {
         subtitle="View all offline bills."
       />
 
-    const today = new Date().toDateString();
-
-const todaysSales = filtered.filter((sale) => {
-  if (!sale.createdAt?.seconds) return false;
-  return new Date(sale.createdAt.seconds * 1000).toDateString() === today;
-});
-
-const totalRevenue = filtered.reduce(
-  (sum, sale) => sum + Number(sale.finalTotal || 0),
-  0
-);
-
-const todaysRevenue = todaysSales.reduce(
-  (sum, sale) => sum + Number(sale.finalTotal || 0),
-  0
-);
-
-const totalPlants = filtered.reduce(
-  (sum, sale) =>
-    sum +
-    (sale.items || []).reduce(
-      (qty, item) => qty + (Number(item?.qty || 0) || 0),
-      0
-    ),
-  0
-);
-
-const averageBill = filtered.length > 0 ? Math.round(totalRevenue / filtered.length) : 0;
+    
 
       <input
         value={search}
