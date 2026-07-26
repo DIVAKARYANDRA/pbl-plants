@@ -1,7 +1,7 @@
 import { useEffect } from "react";
 import { useParams, useNavigate } from "react-router-dom";
 import { getSaleByBillNo } from "../utils/salesService";
-
+import { useSiteData } from "../context/SiteDataContext";
 import { useState } from "react";
 
 export default function AdminReceipt() {
@@ -9,6 +9,8 @@ export default function AdminReceipt() {
   const { billNo } = useParams();
 
   const navigate = useNavigate();
+
+  const { settings } = useSiteData();
 
   const [sale, setSale] = useState(null);
 
@@ -71,25 +73,97 @@ export default function AdminReceipt() {
 
   return (
 
-    <div className="max-w-sm mx-auto bg-white text-black p-6">
+<>
+<style>{`
+
+@media screen {
+
+  body{
+    background:#f3f4f6;
+  }
+
+}
+
+@media print {
+
+  @page{
+    size:58mm auto;
+    margin:0;
+  }
+
+  html,
+  body{
+
+    width:58mm;
+    margin:0;
+    padding:0;
+
+  }
+
+  body{
+
+    background:white;
+
+    -webkit-print-color-adjust:exact;
+    print-color-adjust:exact;
+
+  }
+
+  .receipt{
+
+    width:58mm;
+
+    margin:0 auto;
+
+    padding:4mm;
+
+    box-shadow:none;
+
+  }
+
+}
+
+`}</style>
+
+<div
+className="
+receipt
+mx-auto
+bg-white
+text-black
+p-4
+text-sm
+font-mono
+"
+>
 
       <div className="text-center">
 
-        <h1 className="text-2xl font-bold">
+  {settings.logo && (
 
-          🌿 PBL PLANTS
+    <img
+      src={settings.logo}
+      alt="PBL Plants"
+      className="w-14 h-14 object-contain mx-auto mb-2"
+    />
 
-        </h1>
+  )}
 
-        <p>
+  <h1 className="text-xl font-bold">
 
-          Walk-in Customer Bill
+    {settings.logoText || "PBL PLANTS"}
 
-        </p>
+  </h1>
 
-      </div>
+  <p className="text-xs text-gray-600">
 
-      <hr className="my-4"/>
+    Walk-in Customer Bill
+
+  </p>
+
+</div>
+
+      <hr className="my-2"/>
 
       <p>
 
@@ -131,7 +205,7 @@ export default function AdminReceipt() {
 
       )}
 
-      <hr className="my-4"/>
+      <hr className="my-2"/>
 
       {sale.items.map(item => (
 
@@ -166,7 +240,7 @@ export default function AdminReceipt() {
 
       ))}
 
-      <hr className="my-4"/>
+      <hr className="my-2"/>
 
       <div className="flex justify-between">
 
@@ -184,7 +258,7 @@ export default function AdminReceipt() {
 
       </div>
 
-      <div className="flex justify-between font-bold text-lg mt-3">
+      <div className="flex justify-between font-bold text-base mt-2">
 
         <span>TOTAL</span>
 
@@ -192,7 +266,7 @@ export default function AdminReceipt() {
 
       </div>
 
-      <hr className="my-4"/>
+      <hr className="my-2"/>
 
       <p>
 
@@ -200,20 +274,46 @@ export default function AdminReceipt() {
 
       </p>
 
-      <hr className="my-4"/>
+      <hr className="my-2"/>
 
-      <div className="text-center">
+      <div className="text-center text-xs mt-4">
 
-        🌿 Thank You 🌿
+  <hr className="my-2"/>
 
-        <br/>
+  <p className="font-semibold">
 
-        Visit Again
+    🌿 Thank You 🌿
 
-      </div>
+  </p>
+
+  <p>
+
+    Visit Again
+
+  </p>
+
+  <p className="mt-2">
+
+    {settings.logoText}
+
+  </p>
+
+  {settings.phone && (
+
+    <p>
+
+      📞 {settings.phone}
+
+    </p>
+
+  )}
+
+</div>
 
     </div>
 
-  );
+</>
+
+);
 
 }

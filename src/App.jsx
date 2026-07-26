@@ -89,10 +89,7 @@ export default function App() {
                   element={<AdminBilling />}
                 />
 
-              <Route
-  path="receipt/:billNo"
-  element={<AdminReceipt />}
-/>
+              
               <Route path="testimonials" element={<AdminTestimonials />} />
               <Route path="faqs" element={<AdminFAQ />} />
                <Route
@@ -100,6 +97,11 @@ export default function App() {
                     element={<AdminEnquiries />}
                 />
             </Route>
+
+            <Route
+            path="receipt/:billNo"
+            element={<AdminReceipt />}
+          />
         
           </Route>
 
