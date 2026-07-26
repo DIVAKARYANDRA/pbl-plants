@@ -47,11 +47,12 @@ const ICONS = {
   wallet: (
       <path d="M3 7a2 2 0 012-2h13a2 2 0 012 2v10a2 2 0 01-2 2H5a2 2 0 01-2-2V7zm14 5h3m-3 0a2 2 0 100 4h3v-4h-3z" />
     ),
-  chart:
-<path d="M5 17V9m7 8V5m7 12v-6M3 21h18"/>
-    receipt: (
+  chart: <path d="M5 17V9m7 8V5m7 12v-6M3 21h18"/>,
+
+  receipt: (
     <path d="M6 2h12v20l-2-1-2 1-2-1-2 1-2-1-2 1V2zm3 5h6m-6 4h6m-6 4h4" />
   ),
+
 };
 
 function Icon({ name }) {
