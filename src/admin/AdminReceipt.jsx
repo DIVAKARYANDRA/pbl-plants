@@ -141,7 +141,7 @@ font-mono
       <div className="text-center mb-3">
 
   <img
-    src="/pbl-logo.png"
+    src="/pbl-logo.jpg"
     alt="PBL Plants"
     className="w-12 h-12 mx-auto mb-2 object-contain"
   />
