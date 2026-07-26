@@ -2,6 +2,7 @@ import { Link } from "react-router-dom";
 import { useWishlist } from "../context/WishlistContext";
 import { useSiteData } from "../context/SiteDataContext";
 import { Badge, PriceTag } from "./UI";
+import { getStockStatus } from "../utils/stockUtils";
 
 export default function ProductCard({ product }) {
   // const { addItem, isInWishlist, lastAdded } = useWishlist();
@@ -10,6 +11,7 @@ export default function ProductCard({ product }) {
   const category = categories.find((c) => c.id === product.categoryId);
   const inWishlist = isInWishlist(product.id);
   const justAdded = lastAdded === product.id;
+  const stockStatus = getStockStatus(product);
 
   return (
     <div className="group relative flex flex-col card-surface rounded-xl2 overflow-hidden transition-all duration-500 hover:shadow-soft hover:-translate-y-1.5">
@@ -26,7 +28,7 @@ export default function ProductCard({ product }) {
           </span>
         )}
         <div className="absolute top-3 right-3">
-          <Badge status={product.stock} />
+          <Badge status={stockStatus} />
         </div>
       </Link>
 
@@ -43,7 +45,7 @@ export default function ProductCard({ product }) {
           <PriceTag price={product.price} discountPrice={product.discountPrice} />
           <button
             onClick={() => toggleItem(product.id)}
-            disabled={product.stock === "Out of Stock"}
+            disabled={stockStatus === "Out of Stock"}
             aria-label={`Add ${product.name} to wishlist`}
             className={`relative flex items-center justify-center h-10 w-10 rounded-full border transition-all duration-300 disabled:opacity-40 disabled:cursor-not-allowed ${
               inWishlist
