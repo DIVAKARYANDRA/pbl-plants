@@ -39,6 +39,11 @@ const NAV = [
     label: "Inventory",
     icon: "layers"
   }, 
+  {
+    to: "/admin/inventory-history",
+    label: "Inventory History",
+    icon: "chart"
+  },
 ];
 
 const ICONS = {

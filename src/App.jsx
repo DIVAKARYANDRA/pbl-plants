@@ -31,6 +31,7 @@ import AdminOrderAnalytics from "./admin/AdminOrderAnalytics";
 import AdminReceipt from "./admin/AdminReceipt";
 import AdminSalesHistory from "./admin/AdminSalesHistory";
 import AdminInventory from "./admin/AdminInventory";
+import AdminInventoryHistory from "./admin/AdminInventoryHistory";
 
 function Providers({ children }) {
   return (
@@ -93,6 +94,11 @@ export default function App() {
               <Route
                   path="billing"
                   element={<AdminBilling />}
+                />
+
+                <Route
+                  path="inventory-history"
+                  element={<AdminInventoryHistory />}
                 />
 
                 <Route

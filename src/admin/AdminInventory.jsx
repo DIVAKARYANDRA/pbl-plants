@@ -454,7 +454,7 @@ return;
 newQty-=qty;
 
 }
-await updateProduct(
+updateProduct(
     selectedProduct.id,
     {
         stockQuantity: newQty
