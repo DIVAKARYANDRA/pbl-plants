@@ -138,25 +138,27 @@ font-mono
 "
 >
 
-      <div className="text-center">
+      <div className="text-center mb-3">
 
-  {settings.logo && (
+  <img
+    src="/pbl-logo.png"
+    alt="PBL Plants"
+    className="w-12 h-12 mx-auto mb-2 object-contain"
+  />
 
-    <img
-      src={settings.logo}
-      alt="PBL Plants"
-      className="w-14 h-14 object-contain mx-auto mb-2"
-    />
+  <h1 className="text-lg font-bold">
 
-  )}
-
-  <h1 className="text-xl font-bold">
-
-    {settings.logoText || "PBL PLANTS"}
+    {settings.logoText || "PBL Plants"}
 
   </h1>
 
-  <p className="text-xs text-gray-600">
+  <p className="text-[11px] text-gray-500">
+
+    {settings.tagline}
+
+  </p>
+
+  <p className="text-[11px] text-gray-600 mt-1">
 
     Walk-in Customer Bill
 
@@ -168,7 +170,7 @@ font-mono
 
       <p>
 
-        <b>Bill No:</b> {sale.billNo}
+        <b>Invoice No:</b> {sale.billNo}
 
       </p>
 
@@ -277,7 +279,7 @@ font-mono
 
       <hr className="my-2"/>
 
-      <div className="text-center text-xs mt-4">
+      <div className="text-center text-[11px] mt-4">
 
   <hr className="my-2"/>
 
@@ -293,21 +295,17 @@ font-mono
 
   </p>
 
-  <p className="mt-2">
+  <p className="mt-2 font-medium">
 
     {settings.logoText}
 
   </p>
 
-  {settings.phone && (
+  <p>
 
-    <p>
+    📞 +{settings.whatsappNumber}
 
-      📞 {settings.phone}
-
-    </p>
-
-  )}
+  </p>
 
 </div>
 
