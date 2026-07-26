@@ -76,6 +76,17 @@ export default function Products() {
     return list;
   }, [products, categories, activeCategorySlug, query, sort]);
 
+  const totalOnlineProducts = products.filter((p) => {
+
+  const availability = p.availability || "both";
+
+    return (
+      availability === "online" ||
+      availability === "both"
+    );
+
+  }).length;
+
   return (
     <div>
       <PageHero
@@ -142,7 +153,7 @@ export default function Products() {
                     activeCategorySlug === "all" ? "bg-forest-700 text-cream-50" : "text-forest-700/70 hover:bg-forest-700/5"
                   }`}
                 >
-                  All Products ({filtered.length})
+                  All Products ({totalOnlineProducts})
                 </button>
                 {categories.map((cat) => {
                   const cnt = products.filter((p) => {
