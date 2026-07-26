@@ -2,8 +2,6 @@ export function printBill(sale) {
 
 alert("printBill() called");
 
-  const win = window.open("", "_blank", "width=420,height=700");
-
 
   const win = window.open("", "_blank", "width=420,height=700");
 
