@@ -3,6 +3,7 @@ import { useSiteData } from "../context/SiteDataContext";
 import { uploadImage } from "../utils/cloudinary";
 import { Field, inputClass, Modal, PageHeader, EmptyState } from "./components/AdminUI";
 import { Badge, PriceTag } from "../components/UI";
+import { getStockStatus } from "../utils/stockUtils";
 
 const EMPTY = {
   name: "",
@@ -163,7 +164,7 @@ export default function AdminProducts() {
                       <PriceTag price={p.price} discountPrice={p.discountPrice} />
                     </td>
                     <td className="px-5 py-3">
-                      <Badge status={p.stock} />
+                      <Badge status={getStockStatus(p)} />
                     </td>
                     <td className="px-5 py-3">{p.featured ? "★" : "—"}</td>
                     <td className="px-5 py-3">
