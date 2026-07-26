@@ -410,6 +410,16 @@ finalTotal
 
 });
 
+console.log({
+  billNo,
+  customerName,
+  phone,
+  paymentMode,
+  items: cart,
+  subtotal,
+  discount: Number(discount),
+  finalTotal
+});
 
 
 for(const item of cart){
