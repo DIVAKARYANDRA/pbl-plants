@@ -11,6 +11,7 @@ export default function AdminReceipt() {
   const navigate = useNavigate();
 
   const { settings } = useSiteData();
+  console.log(settings);
 
   const [sale, setSale] = useState(null);
 
