@@ -18,11 +18,26 @@ const EMPTY = {
   water: "",
   potDetails: "",
   indoorOutdoor: "Indoor",
-  stock: "In Stock",
+  stockQuantity: 0,
+  lowStockAlert: 5,
+  availability: "both",
   featured: false,
 };
 
-const STOCK_OPTIONS = ["In Stock", "Limited Stock", "Out of Stock"];
+const AVAILABILITY_OPTIONS = [
+  {
+    value: "online",
+    label: "🌐 Online Only"
+  },
+  {
+    value: "offline",
+    label: "🏪 Offline Only"
+  },
+  {
+    value: "both",
+    label: "🌐🏪 Online + Offline"
+  }
+];
 const IO_OPTIONS = ["Indoor", "Outdoor", "Indoor/Outdoor", "—"];
 
 export default function AdminProducts() {
@@ -79,6 +94,11 @@ export default function AdminProducts() {
       price: Number(form.price) || 0,
       discountPrice: form.discountPrice ? Number(form.discountPrice) : null,
       images: form.images.filter(Boolean),
+      stockQuantity:
+        Number(form.stockQuantity),
+      
+      lowStockAlert:
+        Number(form.lowStockAlert),
     };
     if (editing) updateProduct(editing.id, payload);
     else addProduct(payload);
@@ -253,9 +273,40 @@ export default function AdminProducts() {
                   {IO_OPTIONS.map((o) => <option key={o} value={o}>{o}</option>)}
                 </select>
               </Field>
-              <Field label="Stock Status">
-                <select className={inputClass} value={form.stock} onChange={set("stock")}>
-                  {STOCK_OPTIONS.map((o) => <option key={o} value={o}>{o}</option>)}
+              <Field label="Available Quantity">
+                <input
+                  type="number"
+                  min="0"
+                  className={inputClass}
+                  value={form.stockQuantity}
+                  onChange={set("stockQuantity")}
+                />
+              </Field>
+              
+              <Field label="Low Stock Alert">
+                <input
+                  type="number"
+                  min="0"
+                  className={inputClass}
+                  value={form.lowStockAlert}
+                  onChange={set("lowStockAlert")}
+                />
+              </Field>
+              
+              <Field label="Availability">
+                <select
+                  className={inputClass}
+                  value={form.availability}
+                  onChange={set("availability")}
+                >
+                  {AVAILABILITY_OPTIONS.map(option => (
+                    <option
+                      key={option.value}
+                      value={option.value}
+                    >
+                      {option.label}
+                    </option>
+                  ))}
                 </select>
               </Field>
               <label className="flex items-center gap-2 mt-6">
