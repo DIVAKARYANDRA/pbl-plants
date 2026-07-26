@@ -30,6 +30,7 @@ import AdminPaymentSettings from "./admin/AdminPaymentSettings";
 import AdminOrderAnalytics from "./admin/AdminOrderAnalytics";
 import AdminReceipt from "./admin/AdminReceipt";
 import AdminSalesHistory from "./admin/AdminSalesHistory";
+import AdminInventory from "./admin/AdminInventory";
 
 function Providers({ children }) {
   return (
@@ -108,6 +109,11 @@ export default function App() {
             path="/admin/receipt/:billNo"
             element={<AdminReceipt />}
           />
+
+          <Route
+            path="inventory"
+            element={<AdminInventory />}
+        />
         
           </Route>
 

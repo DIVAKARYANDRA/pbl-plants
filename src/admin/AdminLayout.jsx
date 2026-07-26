@@ -34,6 +34,11 @@ const NAV = [
     label: "Sales History",
     icon: "wallet"
   },
+  {
+    to: "/admin/inventory",
+    label: "Inventory",
+    icon: "layers"
+  }, 
 ];
 
 const ICONS = {
