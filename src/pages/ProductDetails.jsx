@@ -5,6 +5,7 @@ import { useWishlist } from "../context/WishlistContext";
 import { Badge, PriceTag } from "../components/UI";
 import ProductCard from "../components/ProductCard";
 import Reveal from "../components/Reveal";
+import { getStockStatus } from "../utils/stockUtils";
 
 const SPECS = [
   { key: "plantType", label: "Plant Type" },
@@ -22,12 +23,67 @@ export default function ProductDetails() {
   const [activeImage, setActiveImage] = useState(0);
 
   const product = products.find((p) => p.id === id);
+  const stockStatus = product
+  ? getStockStatus(product)
+  : "Out of Stock";
 
   if (!product) return <Navigate to="/products" replace />;
+  if (product.availability === "offline") {
+
+  return (
+
+    <div className="min-h-[70vh] flex items-center justify-center px-5">
+
+      <div className="max-w-xl text-center">
+
+        <div className="text-7xl mb-6">
+          🌿
+        </div>
+
+        <h1 className="font-display text-4xl text-forest-800">
+
+          Available at our Nursery
+
+        </h1>
+
+        <p className="mt-5 text-forest-700/70 leading-8">
+
+          This plant is currently available only at our physical nursery.
+
+          Please visit us directly or contact us through WhatsApp for availability and pricing.
+
+        </p>
+
+        <Link
+          to="/contact"
+          className="btn-primary mt-8 inline-flex"
+        >
+
+          Contact Us
+
+        </Link>
+
+      </div>
+
+    </div>
+
+  );
+
+}
 
   const category = categories.find((c) => c.id === product.categoryId);
   const inWishlist = isInWishlist(product.id);
-  const related = products.filter((p) => p.categoryId === product.categoryId && p.id !== product.id).slice(0, 4);
+  const related = products
+  .filter(
+    (p) =>
+      p.id !== product.id &&
+      p.categoryId === product.categoryId &&
+      (
+        p.availability === "online" ||
+        p.availability === "both"
+      )
+  )
+  .slice(0, 4);
   const specs = SPECS.filter((s) => product[s.key] && product[s.key] !== "—");
 
   return (
@@ -86,7 +142,7 @@ export default function ProductDetails() {
 
               <div className="flex items-center gap-4">
                 <PriceTag price={product.price} discountPrice={product.discountPrice} size="lg" />
-                <Badge status={product.stock} />
+                <Badge status={stockStatus} />
               </div>
 
               <p className="text-forest-700/70 leading-relaxed">{product.description}</p>
@@ -103,7 +159,7 @@ export default function ProductDetails() {
               <div className="flex flex-col sm:flex-row gap-3 mt-4">
                 <button
                   onClick={() => addItem(product.id)}
-                  disabled={product.stock === "Out of Stock"}
+                  disabled={stockStatus === "Out of Stock"}
                   className={`flex-1 justify-center gap-2 ${inWishlist ? "btn-secondary" : "btn-primary"} disabled:opacity-40 disabled:cursor-not-allowed`}
                 >
                   <svg width="18" height="18" viewBox="0 0 24 24" fill={inWishlist ? "currentColor" : "none"} stroke="currentColor" strokeWidth="1.8">
