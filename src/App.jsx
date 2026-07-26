@@ -99,7 +99,7 @@ export default function App() {
             </Route>
 
             <Route
-            path="receipt/:billNo"
+            path="/admin/receipt/:billNo"
             element={<AdminReceipt />}
           />
         
