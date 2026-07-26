@@ -65,11 +65,13 @@ export default function App() {
               path="/track/:trackingId"
               element={<TrackOrder />}
             />
-            <Route
+            
+          </Route>
+
+          <Route
                 path="/q/:quotationNo"
                 element={<QuotationView />}
             />
-          </Route>
 
           {/* Admin */}
           <Route path="/admin/login" element={<AdminLogin />} />

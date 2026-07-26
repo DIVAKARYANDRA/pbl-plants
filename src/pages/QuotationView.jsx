@@ -94,6 +94,88 @@ Quotation No: {quotation.quotationNo}
 </div>
 
 {/* BODY */}
+
+<div className="p-10 space-y-10">
+
+{/* CUSTOMER + QUOTATION DETAILS */}
+
+<div className="grid md:grid-cols-2 gap-8">
+
+  <div className="bg-sage-50 rounded-xl p-6">
+
+    <h3 className="font-semibold text-lg mb-4">
+
+      Customer Details
+
+    </h3>
+
+    <p><b>Name:</b> {quotation.customerName}</p>
+
+    <p><b>Phone:</b> {quotation.phone}</p>
+
+    <p><b>Address:</b> {quotation.address || "-"}</p>
+
+  </div>
+
+  <div className="bg-sage-50 rounded-xl p-6">
+
+    <h3 className="font-semibold text-lg mb-4">
+
+      Quotation Details
+
+    </h3>
+
+    <p>
+
+      <b>Date:</b>{" "}
+
+      {
+
+        quotation.createdAt?.seconds
+
+          ? new Date(
+              quotation.createdAt.seconds * 1000
+            ).toLocaleDateString("en-IN")
+
+          : "-"
+
+      }
+
+    </p>
+
+    <p>
+
+      <b>Valid Till:</b>{" "}
+
+      {quotation.validTill}
+
+    </p>
+
+    <p>
+
+      <b>Status:</b>
+
+      <span
+        className={`ml-2 px-3 py-1 rounded-full text-sm font-semibold
+        ${
+          quotation.status === "Draft"
+            ? "bg-yellow-100 text-yellow-700"
+            : quotation.status === "Converted"
+            ? "bg-green-100 text-green-700"
+            : quotation.status === "Expired"
+            ? "bg-red-100 text-red-700"
+            : "bg-blue-100 text-blue-700"
+        }`}
+      >
+        {quotation.status}
+      </span>
+
+    </p>
+
+  </div>
+
+</div>
+
 {/* PRODUCTS */}
 
 <div>
