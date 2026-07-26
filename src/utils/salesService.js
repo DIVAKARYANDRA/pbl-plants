@@ -6,11 +6,21 @@ import {
   where,
   getDocs,
   orderBy,
+  deleteDoc,
+  doc,
 } from "firebase/firestore";
 
 import { db } from "./firebaseConfig";
 
 const COLLECTION = "sales";
+
+export async function deleteSale(id) {
+
+  await deleteDoc(
+    doc(db, COLLECTION, id)
+  );
+
+}
 
 export async function createSale(data) {
 

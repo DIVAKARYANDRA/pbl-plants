@@ -167,3 +167,41 @@ export async function reduceStock(productId, qty) {
   });
 
 }
+
+export async function restoreStock(productId, qty) {
+
+  const snap = await getDoc(
+    doc(db, "siteData", "main")
+  );
+
+  if (!snap.exists()) return;
+
+  const data = snap.data();
+
+  const products = data.products.map(product => {
+
+    if (product.id !== productId) {
+
+      return product;
+
+    }
+
+    return {
+
+      ...product,
+
+      stockQuantity:
+        Number(product.stockQuantity || 0) + qty
+
+    };
+
+  });
+
+  await updateDoc(
+    doc(db, "siteData", "main"),
+    {
+      products
+    }
+  );
+
+}

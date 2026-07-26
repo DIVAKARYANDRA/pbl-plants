@@ -1,7 +1,11 @@
 import { useEffect, useMemo, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { PageHeader } from "./components/AdminUI";
-import { getAllSales } from "../utils/salesService";
+import {
+  getAllSales,
+  deleteSale,
+} from "../utils/salesService";
+import { restoreStock } from "../utils/wishlistEnquiryService";
 
 export default function AdminSalesHistory() {
 
@@ -24,6 +28,54 @@ export default function AdminSalesHistory() {
     load();
 
   }, []);
+
+  async function handleDelete(sale) {
+
+  const ok = window.confirm(
+
+`Delete Invoice ${sale.billNo}?
+
+This will:
+
+• Restore product stock
+• Remove this sale permanently
+
+This action cannot be undone.`
+
+);
+
+  if (!ok) return;
+
+  try {
+
+    for (const item of sale.items) {
+
+      await restoreStock(
+        item.id,
+        item.qty
+      );
+
+    }
+
+    await deleteSale(sale.id);
+
+    setSales(prev =>
+      prev.filter(s => s.id !== sale.id)
+    );
+
+    alert("Bill deleted successfully.");
+
+  }
+
+  catch (err) {
+
+    console.error(err);
+
+    alert("Unable to delete bill.");
+
+  }
+
+}
 
   const filtered = useMemo(() => {
 
@@ -261,14 +313,26 @@ export default function AdminSalesHistory() {
 
                 <td className="p-4 text-center">
 
-                  <button
-                        className="px-3 py-2 rounded-lg bg-forest-700 text-white hover:bg-forest-600 transition"
-                        onClick={() =>
-                            navigate(`/admin/receipt/${sale.billNo}`)
-                        }
-                        >
-                        🖨
-                        </button>
+                  <div className="flex justify-center gap-2">
+
+  <button
+    className="px-3 py-2 rounded-lg bg-forest-700 text-white"
+    onClick={() =>
+      navigate(`/admin/receipt/${sale.billNo}`)
+    }
+  >
+    🖨
+  </button>
+
+ <button
+  onClick={() => handleDelete(sale)}
+  className="px-3 py-2 rounded-lg bg-red-600 hover:bg-red-700 text-white transition"
+  title="Delete Bill"
+>
+  🗑
+</button>
+
+</div>
 
                 </td>
 
