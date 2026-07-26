@@ -41,7 +41,7 @@ export default function QuotationView() {
         <div className="bg-forest-800 text-white p-8 flex flex-col md:flex-row justify-between gap-6">
           <div className="flex items-center gap-4">
             <img
-              src="/pbl-logo.png"
+              src="/pbl-logo.jpg"
               alt="PBL Plants"
               className="h-16 w-16 rounded-full bg-white p-2"
             />

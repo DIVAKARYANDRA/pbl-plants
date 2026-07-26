@@ -2,6 +2,16 @@ import { useEffect, useMemo, useState } from "react";
 import { PageHeader } from "./components/AdminUI";
 import { getQuotations } from "../utils/quotationService";
 import { useNavigate } from "react-router-dom";
+import { createSale } from "../utils/salesService";
+import {
+  reduceStock
+} from "../utils/wishlistEnquiryService";
+
+import {
+  updateQuotation
+} from "../utils/quotationService";
+
+import { useNavigate } from "react-router-dom";
 
 export default function AdminQuotationHistory() {
 
@@ -9,6 +19,7 @@ export default function AdminQuotationHistory() {
 
   const [search, setSearch] = useState("");
   const navigate = useNavigate();
+  
 
   useEffect(() => {
 
@@ -215,6 +226,23 @@ window.open(
 💬 WhatsApp
 
 </button>
+
+{
+q.status !== "Converted" && (
+
+<button
+className="btn-primary"
+onClick={()=>
+handleConvert(q)
+}
+>
+
+✅ Convert
+
+</button>
+
+)
+}
 
 </div>
 

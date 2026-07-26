@@ -96,3 +96,12 @@ export async function getQuotationById(id) {
   };
 
 }
+
+export async function updateQuotation(id, data) {
+
+  await updateDoc(
+    doc(db, COLLECTION, id),
+    data
+  );
+
+}
