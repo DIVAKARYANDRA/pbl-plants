@@ -40,7 +40,7 @@ export default function AdminReceipt() {
 
     load();
 
-  }, []);
+}, [billNo, navigate]);
 
   useEffect(() => {
 
