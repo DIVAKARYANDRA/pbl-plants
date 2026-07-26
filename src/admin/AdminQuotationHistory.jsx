@@ -61,11 +61,6 @@ const [generateReceipt, setGenerateReceipt] = useState(true);
 
   async function handleConvert(q) {
 
-  const ok = window.confirm(
-    `Convert quotation ${q.quotationNo} to a Sales Bill?`
-  );
-
-  if (!ok) return;
 
   try {
 
@@ -76,6 +71,11 @@ const [generateReceipt, setGenerateReceipt] = useState(true);
 
     const billNo =
       `PBL-${date}-${String(Date.now()).slice(-4)}`;
+
+
+    const finalTotal =
+    Number(q.finalTotal) -
+    Number(extraDiscount || 0);
 
     // 1. Create Sale
     await createSale({
@@ -93,10 +93,11 @@ const [generateReceipt, setGenerateReceipt] = useState(true);
       subtotal: q.subtotal,
 
       discount:
-        Number(q.discount || 0) +
-        Number(extraDiscount || 0),
+Number(q.discount || 0) +
+Number(extraDiscount || 0),
 
-      finalTotal: q.finalTotal
+finalTotal
+
 
     });
 
@@ -119,9 +120,12 @@ const [generateReceipt, setGenerateReceipt] = useState(true);
       }
     );
 
+setConvertQuotation(null);
+
+
     alert("Quotation converted successfully.");
 
-    load();
+await load();
 
     if (generateReceipt) {
 
@@ -139,7 +143,6 @@ const [generateReceipt, setGenerateReceipt] = useState(true);
 
 }
 
-setConvertQuotation(null);
 
 async function handleDelete(q) {
 
@@ -165,7 +168,7 @@ async function handleDelete(q) {
 
     alert("Quotation deleted successfully.");
 
-    load();
+    await load();
 
   } catch (err) {
 
@@ -366,7 +369,7 @@ onClick={() => {
 
     setConvertQuotation(q);
 
-    setPaymentMode("Completed");
+    setPaymentMode("UPI");
 
     setExtraDiscount(0);
 
