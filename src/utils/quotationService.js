@@ -97,3 +97,11 @@ export async function updateQuotation(id, data) {
   );
 
 }
+
+export async function deleteQuotation(id) {
+
+  await deleteDoc(
+    doc(db, COLLECTION, id)
+  );
+
+}

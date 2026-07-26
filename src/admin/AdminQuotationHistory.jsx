@@ -11,6 +11,9 @@ import {
   updateQuotation
 } from "../utils/quotationService";
 
+import {
+  deleteQuotation
+} from "../utils/quotationService";
 
 export default function AdminQuotationHistory() {
 
@@ -18,6 +21,16 @@ export default function AdminQuotationHistory() {
 
   const [search, setSearch] = useState("");
   const navigate = useNavigate();
+
+  const [convertQuotation, setConvertQuotation] = useState(null);
+
+const [paymentMode, setPaymentMode] = useState("Cash");
+
+const [extraDiscount, setExtraDiscount] = useState(0);
+
+const [conversionNotes, setConversionNotes] = useState("");
+
+const [generateReceipt, setGenerateReceipt] = useState(true);
   
 
   useEffect(() => {
@@ -73,13 +86,15 @@ export default function AdminQuotationHistory() {
 
       phone: q.phone,
 
-      paymentMode: "Pending",
+      paymentMode,
 
       items: q.items,
 
       subtotal: q.subtotal,
 
-      discount: q.discount,
+      discount:
+        Number(q.discount || 0) +
+        Number(extraDiscount || 0),
 
       finalTotal: q.finalTotal
 
@@ -108,13 +123,55 @@ export default function AdminQuotationHistory() {
 
     load();
 
-    navigate(`/admin/receipt/${billNo}`);
+    if (generateReceipt) {
+
+        navigate(`/admin/receipt/${billNo}`);
+
+    }
 
   } catch (err) {
 
     console.error(err);
 
     alert("Unable to convert quotation.");
+
+  }
+
+}
+
+setConvertQuotation(null);
+
+async function handleDelete(q) {
+
+  if (q.status === "Converted") {
+
+    alert(
+      `This quotation has already been converted to Bill ${q.billNo} and cannot be deleted.`
+    );
+
+    return;
+
+  }
+
+  const ok = window.confirm(
+    `Delete quotation ${q.quotationNo}?`
+  );
+
+  if (!ok) return;
+
+  try {
+
+    await deleteQuotation(q.id);
+
+    alert("Quotation deleted successfully.");
+
+    load();
+
+  } catch (err) {
+
+    console.error(err);
+
+    alert("Unable to delete quotation.");
 
   }
 
@@ -305,9 +362,19 @@ q.status !== "Converted" && (
 
 <button
 className="btn-primary"
-onClick={()=>
-handleConvert(q)
-}
+onClick={() => {
+
+    setConvertQuotation(q);
+
+    setPaymentMode("Completed");
+
+    setExtraDiscount(0);
+
+    setConversionNotes("");
+
+    setGenerateReceipt(true);
+
+}}
 >
 
 ✅ Convert
@@ -316,6 +383,17 @@ handleConvert(q)
 
 )
 }
+
+{q.status !== "Converted" && (
+
+<button
+  className="btn-secondary bg-red-50 text-red-600 hover:bg-red-100"
+  onClick={() => handleDelete(q)}
+>
+  🗑 Delete
+</button>
+
+)}
 
 </div>
 
@@ -330,6 +408,162 @@ handleConvert(q)
         </table>
 
       </div>
+
+      {
+convertQuotation && (
+
+<div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50">
+
+<div className="bg-white rounded-xl2 p-8 w-full max-w-lg">
+
+<h2 className="text-2xl font-display">
+
+Convert Quotation
+
+</h2>
+
+<p className="text-gray-500 mt-1">
+
+{convertQuotation.quotationNo}
+
+</p>
+
+<hr className="my-5"/>
+
+<div className="space-y-4">
+
+<div>
+
+<label className="font-medium">
+
+Customer
+
+</label>
+
+<div>
+
+{convertQuotation.customerName}
+
+</div>
+
+</div>
+
+<div>
+
+<label className="font-medium">
+
+Payment Mode
+
+</label>
+
+<select
+className="w-full border rounded-lg p-3 mt-1"
+value={paymentMode}
+onChange={(e)=>
+setPaymentMode(e.target.value)
+}
+>
+
+<option>Cash</option>
+
+<option>UPI</option>
+
+<option>Card</option>
+
+<option>Bank Transfer</option>
+
+<option>Pending</option>
+
+</select>
+
+</div>
+
+<div>
+
+<label className="font-medium">
+
+Extra Discount (₹)
+
+</label>
+
+<input
+type="number"
+className="w-full border rounded-lg p-3 mt-1"
+value={extraDiscount}
+onChange={(e)=>
+setExtraDiscount(e.target.value)
+}
+/>
+
+</div>
+
+<div>
+
+<label className="font-medium">
+
+Conversion Notes
+
+</label>
+
+<textarea
+rows={3}
+className="w-full border rounded-lg p-3 mt-1"
+value={conversionNotes}
+onChange={(e)=>
+setConversionNotes(e.target.value)
+}
+/>
+
+</div>
+
+<label className="flex gap-3 items-center">
+
+<input
+type="checkbox"
+checked={generateReceipt}
+onChange={(e)=>
+setGenerateReceipt(e.target.checked)
+}
+/>
+
+Generate Receipt Immediately
+
+</label>
+
+</div>
+
+<div className="flex justify-end gap-3 mt-8">
+
+<button
+className="btn-secondary"
+onClick={()=>
+setConvertQuotation(null)
+}
+>
+
+Cancel
+
+</button>
+
+<button
+className="btn-primary"
+onClick={()=>
+handleConvert(convertQuotation)
+}
+>
+
+Convert Bill
+
+</button>
+
+</div>
+
+</div>
+
+</div>
+
+)
+}
 
     </div>
 
