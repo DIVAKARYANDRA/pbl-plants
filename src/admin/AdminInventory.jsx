@@ -418,7 +418,7 @@ Cancel
 
 <button
 className="btn-primary"
-onClick={()=>{
+onClick={async () => {
 
 const qty =
 Number(quantity);
@@ -454,32 +454,24 @@ return;
 newQty-=qty;
 
 }
-
-updateProduct(
-selectedProduct.id,
-{
-stockQuantity:newQty
-}
+await updateProduct(
+    selectedProduct.id,
+    {
+        stockQuantity: newQty
+    }
 );
 
-
 await addInventoryMovement({
-
     productId: selectedProduct.id,
-
     productName: selectedProduct.name,
-
     action,
-
     quantity: qty,
-
     reason,
-
     previousStock: selectedProduct.stockQuantity,
-
     newStock: newQty
-
 });
+
+setSelectedProduct(null);
 
 setSelectedProduct(null);
 
