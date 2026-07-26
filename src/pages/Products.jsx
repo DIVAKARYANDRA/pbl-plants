@@ -35,11 +35,17 @@ export default function Products() {
   };
 
   const filtered = useMemo(() => {
-    let list = products.filter(
-  (product) =>
-    product.availability === "online" ||
-    product.availability === "both"
-);
+    let list = products.filter(product => {
+
+      const availability =
+        product.availability || "both";
+
+      return (
+        availability === "online" ||
+        availability === "both"
+      );
+
+    });
 
     if (activeCategorySlug !== "all") {
       const cat = categories.find((c) => c.slug === activeCategorySlug);

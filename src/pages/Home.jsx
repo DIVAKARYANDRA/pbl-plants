@@ -11,14 +11,17 @@ import ContactSection from "../components/ContactSection";
 
 export default function Home() {
   const { settings, products, categories, founder, testimonials, faqs, gallery } = useSiteData();
-  const featured = products
-  .filter(
-    (p) =>
-      p.featured &&
-      (p.availability === "online" ||
-        p.availability === "both")
-  )
-  .slice(0, 8);
+  const availability =
+    p.availability || "both";
+
+  return (
+    p.featured &&
+    (
+      availability === "online" ||
+      availability === "both"
+    )
+  );
+
 
   return (
     <div>

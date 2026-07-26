@@ -28,7 +28,9 @@ export default function ProductDetails() {
   : "Out of Stock";
 
   if (!product) return <Navigate to="/products" replace />;
-  if (product.availability === "offline") {
+  const availability = product.availability || "both";
+
+  if (availability === "offline") {
 
   return (
 
