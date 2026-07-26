@@ -48,6 +48,10 @@ export default function AdminProducts() {
   const [form, setForm] = useState(EMPTY);
   const [search, setSearch] = useState("");
   const [uploading, setUploading] = useState(false);
+  const [categoryFilter, setCategoryFilter] = useState("all");
+  const [inventoryFilter, setInventoryFilter] = useState("all");
+  const [availabilityFilter, setAvailabilityFilter] = useState("all");
+  const [featuredFilter, setFeaturedFilter] = useState("all");
 
   const openAdd = () => {
     setEditing(null);
@@ -110,7 +114,45 @@ export default function AdminProducts() {
     if (confirm(`Delete "${p.name}"? This cannot be undone.`)) deleteProduct(p.id);
   };
 
-  const filtered = products.filter((p) => p.name.toLowerCase().includes(search.toLowerCase()));
+  const filtered = products.filter((p) => {
+
+      const stockStatus = getStockStatus(p);
+
+      const availability =
+        p.availability || "both";
+
+      const matchesSearch =
+        p.name
+          .toLowerCase()
+          .includes(search.toLowerCase());
+
+      const matchesCategory =
+        categoryFilter === "all" ||
+        p.categoryId === categoryFilter;
+
+      const matchesInventory =
+        inventoryFilter === "all" ||
+        stockStatus === inventoryFilter;
+
+      const matchesAvailability =
+        availabilityFilter === "all" ||
+        availability === availabilityFilter;
+
+      const matchesFeatured =
+        featuredFilter === "all" ||
+        (featuredFilter === "featured"
+          ? p.featured
+          : !p.featured);
+
+      return (
+        matchesSearch &&
+        matchesCategory &&
+        matchesInventory &&
+        matchesAvailability &&
+        matchesFeatured
+      );
+
+    });
 
   return (
     <div>
@@ -141,10 +183,109 @@ export default function AdminProducts() {
             <thead>
               <tr className="text-left text-forest-700/50 border-b border-forest-700/10">
                 <th className="px-5 py-3 font-medium">Product</th>
-                <th className="px-5 py-3 font-medium">Category</th>
+                <th className="px-5 py-3">
+                  <select
+                    value={categoryFilter}
+                    onChange={(e)=>setCategoryFilter(e.target.value)}
+                    className="bg-transparent text-sm font-medium outline-none"
+                  >
+
+                    <option value="all">
+                      Category
+                    </option>
+
+                    {categories.map(cat=>(
+                      <option
+                        key={cat.id}
+                        value={cat.id}
+                      >
+                        {cat.name}
+                      </option>
+                    ))}
+
+                  </select>
+
+                </th>
                 <th className="px-5 py-3 font-medium">Price</th>
-                <th className="px-5 py-3 font-medium">Status</th>
-                <th className="px-5 py-3 font-medium">Featured</th>
+                <th className="px-5 py-3">
+
+                  <select
+                  value={inventoryFilter}
+                  onChange={(e)=>setInventoryFilter(e.target.value)}
+                  className="bg-transparent text-sm font-medium outline-none"
+                  >
+
+                  <option value="all">
+                  Inventory
+                  </option>
+
+                  <option value="In Stock">
+                  🟢 In Stock
+                  </option>
+
+                  <option value="Limited Stock">
+                  🟡 Limited
+                  </option>
+
+                  <option value="Out of Stock">
+                  🔴 Out
+                  </option>
+
+                  </select>
+
+                  </th>
+
+                <th className="px-5 py-3">
+
+                <select
+                value={availabilityFilter}
+                onChange={(e)=>setAvailabilityFilter(e.target.value)}
+                className="bg-transparent text-sm font-medium outline-none"
+                >
+
+                <option value="all">
+                Availability
+                </option>
+
+                <option value="online">
+                🌐 Online
+                </option>
+
+                <option value="offline">
+                🏪 Offline
+                </option>
+
+                <option value="both">
+                🌐🏪 Both
+                </option>
+
+                </select>
+
+                </th>
+
+                <th className="px-5 py-3">
+
+                    <select
+                    value={featuredFilter}
+                    onChange={(e)=>setFeaturedFilter(e.target.value)}
+                    className="bg-transparent text-sm font-medium outline-none"
+                    >
+
+                    <option value="all">
+                    Featured
+                    </option>
+
+                    <option value="featured">
+                    ⭐ Featured
+                    </option>
+
+                    <option value="regular">
+                    Regular
+                    </option>
+
+                    </select>
+
+                    </th>
                 <th className="px-5 py-3 font-medium text-right">Actions</th>
               </tr>
             </thead>
@@ -164,7 +305,55 @@ export default function AdminProducts() {
                       <PriceTag price={p.price} discountPrice={p.discountPrice} />
                     </td>
                     <td className="px-5 py-3">
-                      <Badge status={getStockStatus(p)} />
+
+                      <div className="space-y-1">
+
+                        <Badge
+                          status={getStockStatus(p)}
+                        />
+
+                        <p className="text-xs text-gray-500">
+
+                          Qty :
+                          <strong className="ml-1">
+
+                            {p.stockQuantity ?? "-"}
+
+                          </strong>
+
+                        </p>
+
+                      </div>
+
+                    </td>
+                    <td className="px-5 py-3">
+
+                      <span
+                        className="
+                          inline-flex
+                          rounded-full
+                          px-3
+                          py-1
+                          text-xs
+                          font-medium
+                          bg-slate-100
+                        "
+                      >
+
+                        {
+                          p.availability === "online"
+
+                            ? "🌐 Online"
+
+                            : p.availability === "offline"
+
+                            ? "🏪 Offline"
+
+                            : "🌐🏪 Both"
+                        }
+
+                      </span>
+
                     </td>
                     <td className="px-5 py-3">{p.featured ? "★" : "—"}</td>
                     <td className="px-5 py-3">
