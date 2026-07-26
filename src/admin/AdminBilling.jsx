@@ -469,14 +469,11 @@ alert(
 
         </div>
 
+
       </div>
 
-    </div>
 
-  );
-
-}
-
+      
 {
 generatedSale && (
 
@@ -503,4 +500,14 @@ window.print()
 </div>
 
 )
+}
+
+    </div>
+
+    
+
+
+
+  );
+
 }
