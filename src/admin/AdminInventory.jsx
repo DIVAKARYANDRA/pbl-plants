@@ -491,7 +491,7 @@ onClick={async () => {
 
         console.error(err);
 
-        alert("Unable to update inventory.");
+        alert(err.message);
 
     }
 
