@@ -8,6 +8,7 @@ import {
   updateDoc,
   deleteDoc,
   doc,
+  getDoc,
   serverTimestamp
 } from "firebase/firestore";
 
@@ -75,6 +76,23 @@ export async function getQuotationByNumber(quotationNo) {
   return {
     id: snap.docs[0].id,
     ...snap.docs[0].data()
+  };
+
+}
+
+export async function getQuotationById(id) {
+
+  const ref = doc(db, COLLECTION, id);
+
+  const snap = await getDoc(ref);
+
+  if (!snap.exists()) {
+    return null;
+  }
+
+  return {
+    id: snap.id,
+    ...snap.data()
   };
 
 }

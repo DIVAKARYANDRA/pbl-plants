@@ -49,6 +49,11 @@ const NAV = [
     label: "Quotations",
     icon: "file"
   },
+  {
+    to: "/admin/quotation-history",
+    label: "Quotation History",
+    icon: "file"
+  },
 ];
 
 const ICONS = {

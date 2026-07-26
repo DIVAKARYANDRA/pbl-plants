@@ -33,6 +33,9 @@ import AdminSalesHistory from "./admin/AdminSalesHistory";
 import AdminInventory from "./admin/AdminInventory";
 import AdminInventoryHistory from "./admin/AdminInventoryHistory";
 import AdminQuotation from "./admin/AdminQuotation";
+import AdminQuotationHistory from "./admin/AdminQuotationHistory";
+import AdminQuotationEditor from "./admin/AdminQuotationEditor";
+
 
 function Providers({ children }) {
   return (
@@ -91,6 +94,16 @@ export default function App() {
                   path="quotations"
                   element={<AdminQuotation />}
               />
+
+              <Route
+                path="quotation-history"
+                element={<AdminQuotationHistory />}
+            />
+
+            <Route
+                path="quotation/:id"
+                element={<AdminQuotationEditor />}
+            />
 
               <Route
                 path="analytics"
