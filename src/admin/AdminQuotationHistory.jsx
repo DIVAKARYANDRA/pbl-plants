@@ -139,22 +139,86 @@ export default function AdminQuotationHistory() {
 
                 </td>
 
-                <td className="text-center">
+                <td className="p-4">
 
-                  <div className="flex justify-center gap-2">
+<div className="flex flex-wrap justify-center gap-2">
 
 <button
-    className="btn-secondary"
-    onClick={() =>
-        navigate(`/admin/quotation/${q.id}`)
-    }
+className="btn-secondary"
+onClick={()=>
+window.open(
+`/q/${q.quotationNo}`,
+"_blank"
+)
+}
 >
-    👁 View
+
+👁 View
+
+</button>
+
+<button
+className="btn-secondary"
+onClick={async()=>{
+
+const link =
+`${window.location.origin}/q/${q.quotationNo}`;
+
+await navigator.clipboard.writeText(
+link
+);
+
+alert(
+"Quotation link copied."
+);
+
+}}
+>
+
+🔗 Copy
+
+</button>
+
+<button
+className="btn-secondary"
+onClick={()=>{
+
+const link =
+`${window.location.origin}/q/${q.quotationNo}`;
+
+const message =
+`🌿 Hello ${q.customerName},
+
+Your quotation is ready.
+
+Quotation No:
+${q.quotationNo}
+
+Please view it here:
+
+${link}
+
+Thank you,
+PBL Plants`;
+
+window.open(
+
+`https://wa.me/${q.phone}?text=${encodeURIComponent(message)}`,
+
+"_blank"
+
+);
+
+}}
+>
+
+💬 WhatsApp
+
 </button>
 
 </div>
 
-                </td>
+</td>
 
               </tr>
 
