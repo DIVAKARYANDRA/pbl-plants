@@ -3,22 +3,143 @@ import { useSiteData } from "../context/SiteDataContext";
 import { PageHeader } from "./components/AdminUI";
 import { useEffect, useState } from "react";
 import { getWishlistEnquiryCount } from "../utils/wishlistEnquiryService";
+import { getSales } from "../utils/salesService";
+import { getQuotations } from "../utils/quotationService";
 
 export default function AdminDashboard() {
   const { products, categories, testimonials, faqs, gallery } = useSiteData();
   const featuredCount = products.filter((p) => p.featured).length;
   const [wishlistInquiries, setWishlistInquiries] = useState(0);
+  const [sales, setSales] = useState([]);
+
+const [quotations, setQuotations] = useState([]);
 
       useEffect(() => {
-        async function load() {
-          const count = await getWishlistEnquiryCount();
-          setWishlistInquiries(count);
-        }
-      
-        load();
-      }, []);
+
+  async function load() {
+
+    const count =
+      await getWishlistEnquiryCount();
+
+    setWishlistInquiries(count);
+
+
+    const salesData =
+      await getSales();
+
+    setSales(salesData);
+
+
+    const quotationData =
+      await getQuotations();
+
+    setQuotations(quotationData);
+
+  }
+
+  load();
+
+}, []);
+
+
+  const today = new Date();
+
+
+const todaySales = sales
+.filter(s => {
+
+  if(!s.createdAt?.seconds)
+    return false;
+
+  const date =
+    new Date(
+      s.createdAt.seconds * 1000
+    );
+
+  return (
+    date.toDateString()
+    ===
+    today.toDateString()
+  );
+
+})
+.reduce(
+  (sum,s)=>
+    sum + Number(s.finalTotal || 0),
+  0
+);
+
+
+const monthlySales = sales
+.filter(s=>{
+
+  if(!s.createdAt?.seconds)
+    return false;
+
+  const date =
+    new Date(
+      s.createdAt.seconds * 1000
+    );
+
+
+  return (
+    date.getMonth()
+      === today.getMonth()
+    &&
+    date.getFullYear()
+      === today.getFullYear()
+  );
+
+})
+.reduce(
+  (sum,s)=>
+    sum + Number(s.finalTotal || 0),
+  0
+);
+
+
+const pendingQuotations =
+  quotations.filter(
+    q =>
+      q.status !== "Converted"
+  ).length;
+
+
+const lowStockProducts =
+  products.filter(
+    p =>
+      Number(p.stockQuantity || 0)
+      <= 5
+  ).length;
 
   const stats = [
+    {
+ label:"Today's Sales",
+ value:`₹${todaySales}`,
+ to:"/admin/sales",
+ icon:"money"
+},
+
+{
+ label:"This Month Sales",
+ value:`₹${monthlySales}`,
+ to:"/admin/sales",
+ icon:"chart"
+},
+
+{
+ label:"Pending Quotations",
+ value:pendingQuotations,
+ to:"/admin/quotations",
+ icon:"quote"
+},
+
+{
+ label:"Low Stock Products",
+ value:lowStockProducts,
+ to:"/admin/inventory",
+ icon:"warning"
+},
     { label: "Total Products", value: products.length, to: "/admin/products", icon: "leaf" },
     { label: "Categories", value: categories.length, to: "/admin/categories", icon: "layers" },
     { label: "Featured Products", value: featuredCount, to: "/admin/products", icon: "star" },
@@ -30,7 +151,7 @@ export default function AdminDashboard() {
 
   return (
     <div>
-      <PageHeader title="Dashboard" subtitle="A quick overview of your PBL Plants catalog." />
+      <PageHeader title="Dashboard" subtitle="Business overview of your PBL Plants operations." />
 
       <div className="grid grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-5">
         {stats.map((s) => (

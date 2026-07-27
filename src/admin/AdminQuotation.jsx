@@ -3,6 +3,20 @@ import { PageHeader } from "./components/AdminUI";
 import { useSiteData } from "../context/SiteDataContext";
 import { createQuotation } from "../utils/quotationService";
 
+function getDefaultValidTill() {
+
+    const today = new Date();
+
+    today.setFullYear(
+        today.getFullYear() + 1
+    );
+
+    return today
+        .toISOString()
+        .split("T")[0];
+
+}
+
 export default function AdminQuotation() {
 
   const { products } = useSiteData();
@@ -15,7 +29,9 @@ export default function AdminQuotation() {
 
   const [address, setAddress] = useState("");
 
-const [validTill, setValidTill] = useState("");
+const [validTill, setValidTill] = useState(
+    getDefaultValidTill()
+);
 
 const [notes, setNotes] = useState("");
 

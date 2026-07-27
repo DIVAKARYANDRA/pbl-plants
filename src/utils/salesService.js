@@ -69,3 +69,16 @@ export async function getAllSales() {
   }));
 
 }
+
+export async function getSales() {
+
+  const snapshot = await getDocs(
+    collection(db, COLLECTION)
+  );
+
+  return snapshot.docs.map(doc => ({
+    id: doc.id,
+    ...doc.data()
+  }));
+
+}
