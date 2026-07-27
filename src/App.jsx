@@ -112,6 +112,11 @@ export default function App() {
                 element={<AdminQuotationEditor />}
             />
 
+            <Route
+                path="quotation/edit/:id"
+                element={<AdminQuotationEdit />}
+            />
+
               <Route
                 path="analytics"
                 element={<AdminOrderAnalytics />}
