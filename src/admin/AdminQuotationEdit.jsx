@@ -259,22 +259,6 @@ const [search, setSearch] = useState("");
 
     }
 
-
-
-    if(!quotation){
-
-        return (
-
-            <p className="p-10">
-
-                Loading...
-
-            </p>
-
-        );
-
-    }
-
     const searchResults = useMemo(() => {
 
     if (!search.trim()) return [];
@@ -297,6 +281,24 @@ const [search, setSearch] = useState("");
         .slice(0,8);
 
 }, [search, products]);
+
+
+
+    if(!quotation){
+
+        return (
+
+            <p className="p-10">
+
+                Loading...
+
+            </p>
+
+        );
+
+    }
+
+    
 
 
 
