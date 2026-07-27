@@ -97,30 +97,3 @@ export async function updateQuotation(id, data) {
   );
 
 }
-
-
-export async function getQuotationById(id) {
-
-  const ref = doc(
-    db,
-    COLLECTION,
-    id
-  );
-
-  const snap = await getDoc(ref);
-
-  if (!snap.exists()) {
-
-    return null;
-
-  }
-
-  return {
-
-    id: snap.id,
-
-    ...snap.data()
-
-  };
-
-}
