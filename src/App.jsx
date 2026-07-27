@@ -36,6 +36,7 @@ import AdminQuotation from "./admin/AdminQuotation";
 import AdminQuotationHistory from "./admin/AdminQuotationHistory";
 import AdminQuotationEditor from "./admin/AdminQuotationEditor";
 import QuotationView from "./pages/QuotationView";
+import AdminQuotationEdit from "./admin/AdminQuotationEdit";
 
 function Providers({ children }) {
   return (

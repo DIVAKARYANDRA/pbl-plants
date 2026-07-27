@@ -364,6 +364,25 @@ window.open(
 q.status !== "Converted" && (
 
 <button
+className="btn-secondary"
+onClick={() =>
+navigate(
+`/admin/quotation/edit/${q.id}`
+)
+}
+>
+
+✏️ Edit
+
+</button>
+
+)
+}
+
+{
+q.status !== "Converted" && (
+
+<button
 className="btn-primary"
 onClick={() => {
 
