@@ -395,15 +395,13 @@ const saleData = {
   customerName,
   phone,
   paymentMode,
-  items,
+  items: cart,
   subtotal,
-  discount,
+  discount: Number(discount),
   finalTotal
 };
 
 console.log("SALE DATA", saleData);
-
-await createSale(saleData);
 
 await createSale({
 
