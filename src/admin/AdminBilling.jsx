@@ -26,21 +26,26 @@ export default function AdminBilling() {
     if (!search.trim()) return [];
 
     return products
-      .filter((p) => {
+  .filter((p) => {
 
-        const availability =
-          p.availability || "both";
+    const availability =
+      p.availability || "both";
 
-        return (
-          (availability === "offline" ||
-            availability === "both") &&
-          p.name
-            .toLowerCase()
-            .includes(search.toLowerCase())
-        );
+    return (
 
-      })
-      .slice(0, 8);
+      (availability === "offline" ||
+       availability === "both") &&
+
+      Number(p.stockQuantity || 0) > 0 &&
+
+      p.name
+        .toLowerCase()
+        .includes(search.toLowerCase())
+
+    );
+
+  })
+  .slice(0, 8);
 
   }, [search, products]);
 
