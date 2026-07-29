@@ -390,6 +390,21 @@ const date =
 const billNo =
 `PBL-${date}-${String(Date.now()).slice(-4)}`;
 
+const saleData = {
+  billNo,
+  customerName,
+  phone,
+  paymentMode,
+  items,
+  subtotal,
+  discount,
+  finalTotal
+};
+
+console.log("SALE DATA", saleData);
+
+await createSale(saleData);
+
 await createSale({
 
 billNo,
