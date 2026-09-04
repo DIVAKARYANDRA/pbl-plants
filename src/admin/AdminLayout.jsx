@@ -51,17 +51,21 @@ function Icon({ name }) {
 }
 
 export default function AdminLayout() {
-  // 2. Extracted user from useAuth()
   const { user, logout } = useAuth();
   const { settings } = useSiteData();
   const [sidebarOpen, setSidebarOpen] = useState(false);
 
-  // 3. Filter navigation array based on current user's role
-  const currentRole = user?.role;
+  // 1. Safely extract role across different potential object shapes & normalize casing/formatting
+  const rawRole = user?.role || user?.user?.role || user?.data?.role || user?.userType || "";
+  const currentRole = String(rawRole).trim().toLowerCase().replace(/\s+/g, "_");
 
+  // 2. Filter NAV based on currentRole
   const filteredNav = NAV.filter((item) => {
-    if (!currentRole) return false; // Don't show restricted links if role is undefined
-    return item.roles.includes(currentRole);
+    // If no role is found on user, don't display restricted items
+    if (!currentRole) return false;
+    
+    // Check if the user's role exists in the allowed roles array
+    return item.roles.map((r) => r.toLowerCase()).includes(currentRole);
   });
 
   return (
@@ -81,12 +85,11 @@ export default function AdminLayout() {
             {settings.logoText}
           </Link>
           <p className="text-xs text-cream-100/45 mt-0.5">
-            Admin Dashboard {user?.role ? `(${user.role})` : ""}
+            Admin Dashboard {currentRole ? `(${currentRole})` : "(No Role Detected)"}
           </p>
         </div>
 
         <nav className="flex-1 overflow-y-auto px-3 py-4 flex flex-col gap-1">
-          {/* 4. Mapped over filteredNav instead of NAV */}
           {filteredNav.map((item) => (
             <NavLink
               key={item.to}
