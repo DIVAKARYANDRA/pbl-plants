@@ -1,3 +1,4 @@
+import { useState, useEffect } from "react";
 import { BrowserRouter, Routes, Route, Navigate, Outlet } from "react-router-dom";
 import { SiteDataProvider } from "./context/SiteDataContext";
 import { WishlistProvider } from "./context/WishlistContext";
@@ -48,22 +49,37 @@ function Providers({ children }) {
   );
 }
 
-// Fixed Role Guard Component
+// Role Guard Component with Async Protection
 function RoleProtectedRoute({ allowedRoles, children }) {
   const { user, role, userRole, loading } = useAuth();
+  const [isChecking, setIsChecking] = useState(true);
 
-  // 1. Wait if auth state is resolving from Firebase
-  if (loading) {
-    return <div className="p-8 text-center text-forest-800">Loading permissions...</div>;
-  }
-
-  // 2. Extract and normalize role directly from useAuth context
+  // Extract and normalize role
   const currentRole = String(role || userRole || user?.role || "")
     .trim()
     .toLowerCase()
     .replace(/\s+/g, "_");
 
-  // 3. Verify access permissions
+  useEffect(() => {
+    // Wait briefly if currentRole is not populated yet
+    if (!loading && currentRole) {
+      setIsChecking(false);
+    } else if (!loading && !user) {
+      setIsChecking(false);
+    } else {
+      const timer = setTimeout(() => setIsChecking(false), 300);
+      return () => clearTimeout(timer);
+    }
+  }, [loading, currentRole, user]);
+
+  if (loading || isChecking) {
+    return (
+      <div className="flex items-center justify-center p-12 text-forest-800">
+        <span className="font-medium text-sm">Verifying access rights...</span>
+      </div>
+    );
+  }
+
   const hasAccess = allowedRoles.map((r) => r.toLowerCase()).includes(currentRole);
 
   if (!user || !hasAccess) {
@@ -115,7 +131,7 @@ export default function App() {
               <Route path="sales" element={<AdminSalesHistory />} />
               <Route path="enquiries" element={<AdminEnquiries />} />
 
-              {/* ADMIN ONLY ROUTES (Direct Route Wrappers) */}
+              {/* ADMIN ONLY ROUTES */}
               <Route
                 path="settings"
                 element={
