@@ -1,7 +1,7 @@
-import { BrowserRouter, Routes, Route } from "react-router-dom";
+import { BrowserRouter, Routes, Route, Navigate, Outlet } from "react-router-dom";
 import { SiteDataProvider } from "./context/SiteDataContext";
 import { WishlistProvider } from "./context/WishlistContext";
-import { AuthProvider } from "./context/AuthContext";
+import { AuthProvider, useAuth } from "./context/AuthContext";
 import AdminOffers from "./admin/AdminOffers";
 import CustomerLayout from "./components/CustomerLayout";
 import Home from "./pages/Home";
@@ -48,6 +48,17 @@ function Providers({ children }) {
   );
 }
 
+// Role Guard Component
+function RoleProtectedRoute({ allowedRoles }) {
+  const { user } = useAuth(); // Assuming role is stored in user object
+
+  if (!user || !allowedRoles.includes(user.role)) {
+    return <Navigate to="/admin/products" replace />;
+  }
+
+  return <Outlet />;
+}
+
 export default function App() {
   return (
     <BrowserRouter>
@@ -62,101 +73,47 @@ export default function App() {
             <Route path="/about" element={<About />} />
             <Route path="/gallery" element={<Gallery />} />
             <Route path="/contact" element={<Contact />} />
-            <Route
-              path="/track/:trackingId"
-              element={<TrackOrder />}
-            />
-            
+            <Route path="/track/:trackingId" element={<TrackOrder />} />
           </Route>
 
-          <Route
-                path="/q/:quotationNo"
-                element={<QuotationView />}
-            />
+          <Route path="/q/:quotationNo" element={<QuotationView />} />
 
           {/* Admin */}
           <Route path="/admin/login" element={<AdminLogin />} />
+          
           <Route element={<ProtectedRoute />}>
             <Route path="/admin" element={<AdminLayout />}>
-              <Route index element={<AdminDashboard />} />
-              <Route path="settings" element={<AdminSettings />} />
-              <Route path="products" element={<AdminProducts />} />
-              <Route
-                  path="inventory"
-                  element={<AdminInventory />}
-              />
-              <Route path="categories" element={<AdminCategories />} />
-              <Route path="founder" element={<AdminFounder />} />
-              <Route path="gallery" element={<AdminGallery />} />
-              <Route 
-                path="offers" 
-                element={<AdminOffers />} 
-              />
-              <Route
-                path="payment-settings"
-                element={<AdminPaymentSettings />}
-              />
-
-              <Route
-                  path="quotations"
-                  element={<AdminQuotation />}
-              />
-
-              <Route
-                path="quotation-history"
-                element={<AdminQuotationHistory />}
-            />
-
-            <Route
-                path="quotation/:id"
-                element={<AdminQuotationEditor />}
-            />
-
-            <Route
-                path="quotation/edit/:id"
-                element={<AdminQuotationEdit />}
-            />
-
-              <Route
-                path="analytics"
-                element={<AdminOrderAnalytics />}
-              />
-
-              <Route
-                  path="billing"
-                  element={<AdminBilling />}
-                />
-
-                <Route
-                  path="inventory-history"
-                  element={<AdminInventoryHistory />}
-                />
-
-                <Route
-                  path="sales"
-                  element={<AdminSalesHistory />}
-                />
-
               
-              <Route path="testimonials" element={<AdminTestimonials />} />
-              <Route path="faqs" element={<AdminFAQ />} />
-               <Route
-                    path="enquiries"
-                    element={<AdminEnquiries />}
-                />
+              {/* Routes accessible by BOTH admin & product_manager */}
+              <Route index element={<AdminDashboard />} />
+              <Route path="products" element={<AdminProducts />} />
+              <Route path="inventory" element={<AdminInventory />} />
+              <Route path="inventory-history" element={<AdminInventoryHistory />} />
+
+              {/* ADMIN ONLY ROUTES */}
+              <Route element={<RoleProtectedRoute allowedRoles={["admin"]} />}>
+                <Route path="settings" element={<AdminSettings />} />
+                <Route path="categories" element={<AdminCategories />} />
+                <Route path="founder" element={<AdminFounder />} />
+                <Route path="gallery" element={<AdminGallery />} />
+                <Route path="offers" element={<AdminOffers />} />
+                <Route path="payment-settings" element={<AdminPaymentSettings />} />
+                <Route path="quotations" element={<AdminQuotation />} />
+                <Route path="quotation-history" element={<AdminQuotationHistory />} />
+                <Route path="quotation/:id" element={<AdminQuotationEditor />} />
+                <Route path="quotation/edit/:id" element={<AdminQuotationEdit />} />
+                <Route path="analytics" element={<AdminOrderAnalytics />} />
+                <Route path="billing" element={<AdminBilling />} />
+                <Route path="sales" element={<AdminSalesHistory />} />
+                <Route path="testimonials" element={<AdminTestimonials />} />
+                <Route path="faqs" element={<AdminFAQ />} />
+                <Route path="enquiries" element={<AdminEnquiries />} />
+              </Route>
+
             </Route>
 
-            <Route
-            path="/admin/receipt/:billNo"
-            element={<AdminReceipt />}
-          />
-
-          
-        
+            <Route path="/admin/receipt/:billNo" element={<AdminReceipt />} />
           </Route>
-
-          
-         
 
           <Route path="*" element={<NotFound />} />
         </Routes>
