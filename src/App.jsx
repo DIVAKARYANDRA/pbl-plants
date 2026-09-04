@@ -89,13 +89,7 @@ export default function App() {
               <Route path="products" element={<AdminProducts />} />
               <Route path="inventory" element={<AdminInventory />} />
               <Route path="inventory-history" element={<AdminInventoryHistory />} />
-
-              {/* ADMIN ONLY ROUTES */}
-              <Route element={<RoleProtectedRoute allowedRoles={["admin"]} />}>
-                <Route path="settings" element={<AdminSettings />} />
-                <Route path="categories" element={<AdminCategories />} />
-                <Route path="founder" element={<AdminFounder />} />
-                <Route path="gallery" element={<AdminGallery />} />
+               <Route path="gallery" element={<AdminGallery />} />
                 <Route path="offers" element={<AdminOffers />} />
                 <Route path="payment-settings" element={<AdminPaymentSettings />} />
                 <Route path="quotations" element={<AdminQuotation />} />
@@ -105,9 +99,16 @@ export default function App() {
                 <Route path="analytics" element={<AdminOrderAnalytics />} />
                 <Route path="billing" element={<AdminBilling />} />
                 <Route path="sales" element={<AdminSalesHistory />} />
+               <Route path="enquiries" element={<AdminEnquiries />} />
+
+              {/* ADMIN ONLY ROUTES */}
+              <Route element={<RoleProtectedRoute allowedRoles={["admin"]} />}>
+                <Route path="settings" element={<AdminSettings />} />
+                <Route path="categories" element={<AdminCategories />} />
+                <Route path="founder" element={<AdminFounder />} />
                 <Route path="testimonials" element={<AdminTestimonials />} />
                 <Route path="faqs" element={<AdminFAQ />} />
-                <Route path="enquiries" element={<AdminEnquiries />} />
+               
               </Route>
 
             </Route>
