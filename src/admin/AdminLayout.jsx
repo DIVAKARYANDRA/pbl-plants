@@ -57,9 +57,12 @@ export default function AdminLayout() {
   const [sidebarOpen, setSidebarOpen] = useState(false);
 
   // 3. Filter navigation array based on current user's role
-  const filteredNav = NAV.filter((item) =>
-    user?.role ? item.roles.includes(user.role) : true
-  );
+  const currentRole = user?.role;
+
+  const filteredNav = NAV.filter((item) => {
+    if (!currentRole) return false; // Don't show restricted links if role is undefined
+    return item.roles.includes(currentRole);
+  });
 
   return (
     <div className="min-h-screen bg-sage-50 flex">
