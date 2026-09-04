@@ -1,7 +1,7 @@
-import { BrowserRouter, Routes, Route, Navigate, Outlet } from "react-router-dom";
+import { BrowserRouter, Routes, Route } from "react-router-dom";
 import { SiteDataProvider } from "./context/SiteDataContext";
 import { WishlistProvider } from "./context/WishlistContext";
-import { AuthProvider, useAuth } from "./context/AuthContext";
+import { AuthProvider } from "./context/AuthContext";
 import AdminOffers from "./admin/AdminOffers";
 import CustomerLayout from "./components/CustomerLayout";
 import Home from "./pages/Home";
@@ -48,17 +48,6 @@ function Providers({ children }) {
   );
 }
 
-// Role Guard Component
-function RoleProtectedRoute({ allowedRoles }) {
-  const { user } = useAuth(); // Assuming role is stored in user object
-
-  if (!user || !allowedRoles.includes(user.role)) {
-    return <Navigate to="/admin/products" replace />;
-  }
-
-  return <Outlet />;
-}
-
 export default function App() {
   return (
     <BrowserRouter>
@@ -83,8 +72,6 @@ export default function App() {
 
           <Route element={<ProtectedRoute />}>
             <Route path="/admin" element={<AdminLayout />}>
-              
-              {/* Routes accessible by BOTH admin & product_manager */}
               <Route index element={<AdminDashboard />} />
               <Route path="products" element={<AdminProducts />} />
               <Route path="inventory" element={<AdminInventory />} />
@@ -101,15 +88,12 @@ export default function App() {
               <Route path="sales" element={<AdminSalesHistory />} />
               <Route path="enquiries" element={<AdminEnquiries />} />
 
-              {/* ADMIN ONLY ROUTES */}
-              <Route element={<RoleProtectedRoute allowedRoles={["admin"]} />}>
-                <Route path="settings" element={<AdminSettings />} />
-                <Route path="categories" element={<AdminCategories />} />
-                <Route path="founder" element={<AdminFounder />} />
-                <Route path="testimonials" element={<AdminTestimonials />} />
-                <Route path="faqs" element={<AdminFAQ />} />
-              </Route>
-
+              {/* All admin routes open to logged-in users (hidden in sidebar via AdminLayout) */}
+              <Route path="settings" element={<AdminSettings />} />
+              <Route path="categories" element={<AdminCategories />} />
+              <Route path="founder" element={<AdminFounder />} />
+              <Route path="testimonials" element={<AdminTestimonials />} />
+              <Route path="faqs" element={<AdminFAQ />} />
             </Route>
 
             <Route path="/admin/receipt/:billNo" element={<AdminReceipt />} />
