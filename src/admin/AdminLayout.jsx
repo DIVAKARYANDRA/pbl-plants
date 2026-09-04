@@ -3,57 +3,26 @@ import { NavLink, Outlet, Link } from "react-router-dom";
 import { useAuth } from "../context/AuthContext";
 import { useSiteData } from "../context/SiteDataContext";
 
+// 1. Added 'roles' property to define access per route
 const NAV = [
-  { to: "/admin", label: "Dashboard", end: true, icon: "grid" },
-  { to: "/admin/settings", label: "Website Settings", icon: "settings" },
-  { to: "/admin/products", label: "Products", icon: "leaf" },
-  { to: "/admin/categories", label: "Categories", icon: "layers" },
-  { to: "/admin/founder", label: "Founder Section", icon: "user" },
-  { to: "/admin/gallery", label: "Gallery", icon: "image" },
-  { to: "/admin/offers", label: "Offers", icon: "tag" },
-  { to: "/admin/testimonials", label: "Testimonials", icon: "star" },
-  { to: "/admin/faqs", label: "FAQs", icon: "help" },
-  { to: "/admin/enquiries", label: "Customer Enquiries", icon: "mail" },
-  {
-    to: "/admin/payment-settings",
-    label: "Payment Settings",
-    icon: "wallet"
-  },
-  {
-    to: "/admin/analytics",
-    label: "Order Analytics",
-    icon: "chart"
-  },
-  {
-    to: "/admin/billing",
-    label: "Offline Billing",
-    icon: "receipt"
-  },
-  {
-    to: "/admin/sales",
-    label: "Sales History",
-    icon: "wallet"
-  },
-  {
-    to: "/admin/inventory",
-    label: "Inventory",
-    icon: "layers"
-  }, 
-  {
-    to: "/admin/inventory-history",
-    label: "Inventory History",
-    icon: "chart"
-  },
-  {
-    to: "/admin/quotations",
-    label: "Quotations",
-    icon: "file"
-  },
-  {
-    to: "/admin/quotation-history",
-    label: "Quotation History",
-    icon: "file"
-  },
+  { to: "/admin", label: "Dashboard", end: true, icon: "grid", roles: ["admin", "product_manager"] },
+  { to: "/admin/products", label: "Products", icon: "leaf", roles: ["admin", "product_manager"] },
+  { to: "/admin/inventory", label: "Inventory", icon: "layers", roles: ["admin", "product_manager"] },
+  { to: "/admin/inventory-history", label: "Inventory History", icon: "chart", roles: ["admin", "product_manager"] },
+  { to: "/admin/categories", label: "Categories", icon: "layers", roles: ["admin"] },
+  { to: "/admin/settings", label: "Website Settings", icon: "settings", roles: ["admin"] },
+  { to: "/admin/founder", label: "Founder Section", icon: "user", roles: ["admin"] },
+  { to: "/admin/gallery", label: "Gallery", icon: "image", roles: ["admin", "product_manager"] },
+  { to: "/admin/offers", label: "Offers", icon: "tag", roles: ["admin", "product_manager"]},
+  { to: "/admin/testimonials", label: "Testimonials", icon: "star", roles: ["admin"] },
+  { to: "/admin/faqs", label: "FAQs", icon: "help", roles: ["admin"] },
+  { to: "/admin/enquiries", label: "Customer Enquiries", icon: "mail", roles: ["admin", "product_manager"] },
+  { to: "/admin/payment-settings", label: "Payment Settings", icon: "wallet", roles: ["admin", "product_manager"] },
+  { to: "/admin/analytics", label: "Order Analytics", icon: "chart", roles: ["admin", "product_manager"] },
+  { to: "/admin/billing", label: "Offline Billing", icon: "receipt", roles: ["admin", "product_manager"] },
+  { to: "/admin/sales", label: "Sales History", icon: "wallet", roles: ["admin", "product_manager"]},
+  { to: "/admin/quotations", label: "Quotations", icon: "file", roles: ["admin", "product_manager"] },
+  { to: "/admin/quotation-history", label: "Quotation History", icon: "file", roles: ["admin", "product_manager"] },
 ];
 
 const ICONS = {
@@ -66,20 +35,11 @@ const ICONS = {
   star: <path d="M12 2.5l2.9 6.1 6.6.7-4.9 4.6 1.3 6.6-5.9-3.3-5.9 3.3 1.3-6.6-4.9-4.6 6.6-.7L12 2.5z" />,
   tag: <path d="M20 12l-8 8-8-8V4h8l8 8zM8 8h.01" />,
   help: <path d="M12 22a10 10 0 100-20 10 10 0 000 20zM9.5 9a2.5 2.5 0 015 .5c0 1.5-2 1.8-2 3.5m0 3h.01" />,
-  mail: (
-      <path d="M4 6h16v12H4V6zm0 0l8 6 8-6" />
-    ),
-  wallet: (
-      <path d="M3 7a2 2 0 012-2h13a2 2 0 012 2v10a2 2 0 01-2 2H5a2 2 0 01-2-2V7zm14 5h3m-3 0a2 2 0 100 4h3v-4h-3z" />
-    ),
+  mail: <path d="M4 6h16v12H4V6zm0 0l8 6 8-6" />,
+  wallet: <path d="M3 7a2 2 0 012-2h13a2 2 0 012 2v10a2 2 0 01-2 2H5a2 2 0 01-2-2V7zm14 5h3m-3 0a2 2 0 100 4h3v-4h-3z" />,
   chart: <path d="M5 17V9m7 8V5m7 12v-6M3 21h18"/>,
-
-  receipt: (
-    <path d="M6 2h12v20l-2-1-2 1-2-1-2 1-2-1-2 1V2zm3 5h6m-6 4h6m-6 4h4" />
-  ),
-  file:
-<path d="M14 2H6a2 2 0 00-2 2v16a2 2 0 002 2h12a2 2 0 002-2V8zm0 0v6h6"/>,
-
+  receipt: <path d="M6 2h12v20l-2-1-2 1-2-1-2 1-2-1-2 1V2zm3 5h6m-6 4h6m-6 4h4" />,
+  file: <path d="M14 2H6a2 2 0 00-2 2v16a2 2 0 002 2h12a2 2 0 002-2V8zm0 0v6h6"/>,
 };
 
 function Icon({ name }) {
@@ -91,9 +51,15 @@ function Icon({ name }) {
 }
 
 export default function AdminLayout() {
-  const { logout } = useAuth();
+  // 2. Extracted user from useAuth()
+  const { user, logout } = useAuth();
   const { settings } = useSiteData();
   const [sidebarOpen, setSidebarOpen] = useState(false);
+
+  // 3. Filter navigation array based on current user's role
+  const filteredNav = NAV.filter((item) =>
+    user?.role ? item.roles.includes(user.role) : true
+  );
 
   return (
     <div className="min-h-screen bg-sage-50 flex">
@@ -111,11 +77,14 @@ export default function AdminLayout() {
           <Link to="/admin" className="font-display text-xl text-cream-50">
             {settings.logoText}
           </Link>
-          <p className="text-xs text-cream-100/45 mt-0.5">Admin Dashboard</p>
+          <p className="text-xs text-cream-100/45 mt-0.5">
+            Admin Dashboard {user?.role ? `(${user.role})` : ""}
+          </p>
         </div>
 
         <nav className="flex-1 overflow-y-auto px-3 py-4 flex flex-col gap-1">
-          {NAV.map((item) => (
+          {/* 4. Mapped over filteredNav instead of NAV */}
+          {filteredNav.map((item) => (
             <NavLink
               key={item.to}
               to={item.to}
