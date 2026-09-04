@@ -1,4 +1,3 @@
-import { useState, useEffect } from "react";
 import { BrowserRouter, Routes, Route, Navigate, Outlet } from "react-router-dom";
 import { SiteDataProvider } from "./context/SiteDataContext";
 import { WishlistProvider } from "./context/WishlistContext";
@@ -49,44 +48,15 @@ function Providers({ children }) {
   );
 }
 
-// Role Guard Component with Async Protection
-function RoleProtectedRoute({ allowedRoles, children }) {
-  const { user, role, userRole, loading } = useAuth();
-  const [isChecking, setIsChecking] = useState(true);
+// Role Guard Component
+function RoleProtectedRoute({ allowedRoles }) {
+  const { user } = useAuth(); // Assuming role is stored in user object
 
-  // Extract and normalize role
-  const currentRole = String(role || userRole || user?.role || "")
-    .trim()
-    .toLowerCase()
-    .replace(/\s+/g, "_");
-
-  useEffect(() => {
-    // Wait briefly if currentRole is not populated yet
-    if (!loading && currentRole) {
-      setIsChecking(false);
-    } else if (!loading && !user) {
-      setIsChecking(false);
-    } else {
-      const timer = setTimeout(() => setIsChecking(false), 300);
-      return () => clearTimeout(timer);
-    }
-  }, [loading, currentRole, user]);
-
-  if (loading || isChecking) {
-    return (
-      <div className="flex items-center justify-center p-12 text-forest-800">
-        <span className="font-medium text-sm">Verifying access rights...</span>
-      </div>
-    );
-  }
-
-  const hasAccess = allowedRoles.map((r) => r.toLowerCase()).includes(currentRole);
-
-  if (!user || !hasAccess) {
+  if (!user || !allowedRoles.includes(user.role)) {
     return <Navigate to="/admin/products" replace />;
   }
 
-  return children ? children : <Outlet />;
+  return <Outlet />;
 }
 
 export default function App() {
@@ -132,46 +102,13 @@ export default function App() {
               <Route path="enquiries" element={<AdminEnquiries />} />
 
               {/* ADMIN ONLY ROUTES */}
-              <Route
-                path="settings"
-                element={
-                  <RoleProtectedRoute allowedRoles={["admin"]}>
-                    <AdminSettings />
-                  </RoleProtectedRoute>
-                }
-              />
-              <Route
-                path="categories"
-                element={
-                  <RoleProtectedRoute allowedRoles={["admin"]}>
-                    <AdminCategories />
-                  </RoleProtectedRoute>
-                }
-              />
-              <Route
-                path="founder"
-                element={
-                  <RoleProtectedRoute allowedRoles={["admin"]}>
-                    <AdminFounder />
-                  </RoleProtectedRoute>
-                }
-              />
-              <Route
-                path="testimonials"
-                element={
-                  <RoleProtectedRoute allowedRoles={["admin"]}>
-                    <AdminTestimonials />
-                  </RoleProtectedRoute>
-                }
-              />
-              <Route
-                path="faqs"
-                element={
-                  <RoleProtectedRoute allowedRoles={["admin"]}>
-                    <AdminFAQ />
-                  </RoleProtectedRoute>
-                }
-              />
+              <Route element={<RoleProtectedRoute allowedRoles={["admin"]} />}>
+                <Route path="settings" element={<AdminSettings />} />
+                <Route path="categories" element={<AdminCategories />} />
+                <Route path="founder" element={<AdminFounder />} />
+                <Route path="testimonials" element={<AdminTestimonials />} />
+                <Route path="faqs" element={<AdminFAQ />} />
+              </Route>
 
             </Route>
 
