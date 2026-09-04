@@ -51,20 +51,19 @@ function Icon({ name }) {
 }
 
 export default function AdminLayout() {
-  const { user, logout } = useAuth();
+  const { user, role, userRole, logout } = useAuth();
   const { settings } = useSiteData();
   const [sidebarOpen, setSidebarOpen] = useState(false);
 
-  // 1. Safely extract role across different potential object shapes & normalize casing/formatting
-  const rawRole = user?.role || user?.user?.role || user?.data?.role || user?.userType || "";
-  const currentRole = String(rawRole).trim().toLowerCase().replace(/\s+/g, "_");
+  // 2. Fall back to role or userRole
+  const currentRole = String(role || userRole || user?.role || "")
+    .trim()
+    .toLowerCase()
+    .replace(/\s+/g, "_");
 
-  // 2. Filter NAV based on currentRole
+  // 3. Filter navigation items
   const filteredNav = NAV.filter((item) => {
-    // If no role is found on user, don't display restricted items
     if (!currentRole) return false;
-    
-    // Check if the user's role exists in the allowed roles array
     return item.roles.map((r) => r.toLowerCase()).includes(currentRole);
   });
 
