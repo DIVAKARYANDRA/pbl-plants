@@ -49,10 +49,18 @@ function Providers({ children }) {
 }
 
 // Role Guard Component
+// Role Guard Component
 function RoleProtectedRoute({ allowedRoles }) {
-  const { user } = useAuth(); // Assuming role is stored in user object
+  const { user, role, userRole } = useAuth();
 
-  if (!user || !allowedRoles.includes(user.role)) {
+  // Safely extract and normalize the role
+  const currentRole = String(role || userRole || user?.role || "")
+    .trim()
+    .toLowerCase()
+    .replace(/\s+/g, "_");
+
+  // If user is not logged in or role is not allowed, redirect to /admin/products
+  if (!user || !allowedRoles.map((r) => r.toLowerCase()).includes(currentRole)) {
     return <Navigate to="/admin/products" replace />;
   }
 
