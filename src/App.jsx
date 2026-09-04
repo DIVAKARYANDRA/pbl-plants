@@ -48,23 +48,29 @@ function Providers({ children }) {
   );
 }
 
-// Role Guard Component
-// Role Guard Component
-function RoleProtectedRoute({ allowedRoles }) {
-  const { user, role, userRole } = useAuth();
+// Fixed Role Guard Component
+function RoleProtectedRoute({ allowedRoles, children }) {
+  const { user, role, userRole, loading } = useAuth();
 
-  // Safely extract and normalize the role
+  // 1. Wait if auth state is resolving from Firebase
+  if (loading) {
+    return <div className="p-8 text-center text-forest-800">Loading permissions...</div>;
+  }
+
+  // 2. Extract and normalize role directly from useAuth context
   const currentRole = String(role || userRole || user?.role || "")
     .trim()
     .toLowerCase()
     .replace(/\s+/g, "_");
 
-  // If user is not logged in or role is not allowed, redirect to /admin/products
-  if (!user || !allowedRoles.map((r) => r.toLowerCase()).includes(currentRole)) {
+  // 3. Verify access permissions
+  const hasAccess = allowedRoles.map((r) => r.toLowerCase()).includes(currentRole);
+
+  if (!user || !hasAccess) {
     return <Navigate to="/admin/products" replace />;
   }
 
-  return <Outlet />;
+  return children ? children : <Outlet />;
 }
 
 export default function App() {
@@ -88,7 +94,7 @@ export default function App() {
 
           {/* Admin */}
           <Route path="/admin/login" element={<AdminLogin />} />
-          
+
           <Route element={<ProtectedRoute />}>
             <Route path="/admin" element={<AdminLayout />}>
               
@@ -97,27 +103,59 @@ export default function App() {
               <Route path="products" element={<AdminProducts />} />
               <Route path="inventory" element={<AdminInventory />} />
               <Route path="inventory-history" element={<AdminInventoryHistory />} />
-               <Route path="gallery" element={<AdminGallery />} />
-                <Route path="offers" element={<AdminOffers />} />
-                <Route path="payment-settings" element={<AdminPaymentSettings />} />
-                <Route path="quotations" element={<AdminQuotation />} />
-                <Route path="quotation-history" element={<AdminQuotationHistory />} />
-                <Route path="quotation/:id" element={<AdminQuotationEditor />} />
-                <Route path="quotation/edit/:id" element={<AdminQuotationEdit />} />
-                <Route path="analytics" element={<AdminOrderAnalytics />} />
-                <Route path="billing" element={<AdminBilling />} />
-                <Route path="sales" element={<AdminSalesHistory />} />
-               <Route path="enquiries" element={<AdminEnquiries />} />
+              <Route path="gallery" element={<AdminGallery />} />
+              <Route path="offers" element={<AdminOffers />} />
+              <Route path="payment-settings" element={<AdminPaymentSettings />} />
+              <Route path="quotations" element={<AdminQuotation />} />
+              <Route path="quotation-history" element={<AdminQuotationHistory />} />
+              <Route path="quotation/:id" element={<AdminQuotationEditor />} />
+              <Route path="quotation/edit/:id" element={<AdminQuotationEdit />} />
+              <Route path="analytics" element={<AdminOrderAnalytics />} />
+              <Route path="billing" element={<AdminBilling />} />
+              <Route path="sales" element={<AdminSalesHistory />} />
+              <Route path="enquiries" element={<AdminEnquiries />} />
 
-              {/* ADMIN ONLY ROUTES */}
-              <Route element={<RoleProtectedRoute allowedRoles={["admin"]} />}>
-                <Route path="settings" element={<AdminSettings />} />
-                <Route path="categories" element={<AdminCategories />} />
-                <Route path="founder" element={<AdminFounder />} />
-                <Route path="testimonials" element={<AdminTestimonials />} />
-                <Route path="faqs" element={<AdminFAQ />} />
-               
-              </Route>
+              {/* ADMIN ONLY ROUTES (Direct Route Wrappers) */}
+              <Route
+                path="settings"
+                element={
+                  <RoleProtectedRoute allowedRoles={["admin"]}>
+                    <AdminSettings />
+                  </RoleProtectedRoute>
+                }
+              />
+              <Route
+                path="categories"
+                element={
+                  <RoleProtectedRoute allowedRoles={["admin"]}>
+                    <AdminCategories />
+                  </RoleProtectedRoute>
+                }
+              />
+              <Route
+                path="founder"
+                element={
+                  <RoleProtectedRoute allowedRoles={["admin"]}>
+                    <AdminFounder />
+                  </RoleProtectedRoute>
+                }
+              />
+              <Route
+                path="testimonials"
+                element={
+                  <RoleProtectedRoute allowedRoles={["admin"]}>
+                    <AdminTestimonials />
+                  </RoleProtectedRoute>
+                }
+              />
+              <Route
+                path="faqs"
+                element={
+                  <RoleProtectedRoute allowedRoles={["admin"]}>
+                    <AdminFAQ />
+                  </RoleProtectedRoute>
+                }
+              />
 
             </Route>
 
